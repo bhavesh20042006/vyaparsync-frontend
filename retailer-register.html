@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Vyaparsync</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Hide the OTP step initially */
+        #otpStep { display: none; } 
+    </style>
+</head>
+<body style="margin: 0; padding: 0;">
+
+    <a href="index.html" style="position: absolute; top: 25px; left: 25px; text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 5px;">
+        ⬅ Back to Market
+    </a>
+
+    <button onclick="toggleDark()" style="position: absolute; top: 15px; right: 25px; width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border: none; border-radius: 8px; cursor: pointer;">🌙</button>
+
+    <div class="auth-wrapper">
+        <div class="auth-container" style="animation-delay: 0.1s;">
+            <div class="auth-header">
+                <h2>Join Vyaparsync 🏪</h2>
+                <p>Start selling to thousands of local customers instantly.</p>
+            </div>
+            
+            <div id="detailsStep">
+                <div class="input-group">
+                    <input type="text" id="sellerName" placeholder=" " required>
+                    <label>Full Name</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="email" id="sellerEmail" placeholder=" " required>
+                    <label>Business Email</label>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="sellerShop" placeholder=" " required>
+                    <label>Shop Name</label>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 30px;">
+                    <select id="sellerMarket" class="auth-select" required>
+                        <option value="" disabled selected>📍 Select Your Market Area</option>
+                        <option value="Lajpat Nagar">Lajpat Nagar</option>
+                        <option value="Sarojini Nagar">Sarojini Nagar</option>
+                        <option value="Chandni Chowk">Chandni Chowk</option>
+                    </select>
+                </div>
+                
+                <button onclick="requestSellerOTP()" class="auth-submit-btn" id="sendBtn">Verify Email & Create Account ✨</button>
+
+                <div class="auth-links">
+                    <p>Already a partner? <a href="login.html">Log In</a></p>
+                </div>
+            </div>
+
+            <div id="otpStep" style="text-align: center;">
+                <p style="color: var(--text-muted); margin-bottom: 20px;">We sent a 6-digit secure code to <br><b id="displayEmail" style="color: var(--text-main);"></b></p>
+                
+                <div class="input-group" style="margin-bottom: 30px;">
+                    <input type="text" id="sellerOTP" placeholder="• • • • • •" maxlength="6" style="letter-spacing: 8px; font-size: 24px; font-weight: bold; text-align: center;" required>
+                </div>
+
+                <button onclick="verifySellerOTP()" class="auth-submit-btn" id="verifyBtn">Verify & Open Dashboard 🚀</button>
+                
+                <button onclick="window.location.reload()" style="background: none; border: none; color: var(--primary); margin-top: 20px; cursor: pointer; text-decoration: underline; font-weight: bold;">Use a different email</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

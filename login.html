@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | VyaparSync</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: var(--bg-color); margin: 0; padding: 20px; box-sizing: border-box; }
+    .auth-card { background: var(--card-bg); padding: 40px; border-radius: var(--border-radius); box-shadow: var(--shadow); width: 100%; max-width: 400px; text-align: center; }
+    .auth-card input { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid rgba(0,0,0,0.1); border-radius: 8px; font-size: 16px; box-sizing: border-box; text-align: center; background: transparent; color: var(--text-main); }
+    .auth-card input:focus { border-color: var(--primary); outline: none; }
+    .btn-auth { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: var(--transition); }
+    .btn-auth:hover { background: var(--primary-hover); transform: translateY(-2px); }
+    
+    /* 🔘 The Role Toggle Switch */
+    .role-toggle { display: flex; background: rgba(0,0,0,0.05); border-radius: 8px; margin-bottom: 25px; padding: 5px; }
+    .toggle-btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
+    .toggle-btn.active { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--primary); }
+    .toggle-btn.inactive { background: transparent; color: var(--text-muted); }
+
+    #otpStep { display: none; }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" style="position: absolute; top: 25px; left: 25px; text-decoration: none; color: var(--text-main); font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 5px;">
+      ⬅ Back to Market
+  </a>
+  <button onclick="toggleDark()" style="position: absolute; top: 15px; right: 25px; width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border: none; border-radius: 8px; cursor: pointer;">🌙</button>
+
+  <div class="auth-card">
+    <h2 style="color: var(--primary); margin-top: 0;">🛍 VyaparSync</h2>
+    <p id="subtitleText" style="color: var(--text-muted); margin-bottom: 20px;">Secure Passwordless Login</p>
+
+    <div class="role-toggle" id="loginToggle">
+        <button id="btnCustomer" class="toggle-btn active" onclick="switchLogin('customer')">Shopper</button>
+        <button id="btnRetailer" class="toggle-btn inactive" onclick="switchLogin('retailer')">Retailer</button>
+    </div>
+
+    <div id="emailStep">
+        <input type="email" id="authEmail" placeholder="Enter your email address" required>
+        <button onclick="requestOTP()" class="btn-auth" id="sendBtn">Send Secure Code</button>
+        
+        <p id="helperText" style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+            New here? We will automatically create an account for you.
+        </p>
+    </div>
+
+    <div id="otpStep">
+        <p style="font-size: 14px; color: var(--text-muted);">We sent a 6-digit code to <br><b id="displayEmail" style="color: var(--text-main);"></b></p>
+        <input type="text" id="authOTP" placeholder="• • • • • •" maxlength="6" style="letter-spacing: 8px; font-size: 24px; font-weight: bold;">
+        <button onclick="verifyOTP()" class="btn-auth" id="verifyBtn">Verify & Login</button>
+        <button onclick="window.location.reload()" style="background: none; border: none; color: var(--primary); margin-top: 15px; cursor: pointer; text-decoration: underline;">Use a different email</button>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="script.js"></script>
+
+  <script>
+      function switchLogin(role) {
+          const btnCustomer = document.getElementById("btnCustomer");
+          const btnRetailer = document.getElementById("btnRetailer");
+          const subtitle = document.getElementById("subtitleText");
+          const helper = document.getElementById("helperText");
+
+          if (role === 'customer') {
+              btnCustomer.className = "toggle-btn active";
+              btnRetailer.className = "toggle-btn inactive";
+              subtitle.innerText = "Secure Passwordless Login";
+              helper.innerHTML = `New here? We will automatically create an account for you.`;
+          } else {
+              btnRetailer.className = "toggle-btn active";
+              btnCustomer.className = "toggle-btn inactive";
+              subtitle.innerText = "Seller Business Portal";
+              helper.innerHTML = `Want to sell on VyaparSync? <a href="retailer-register.html" style="color: var(--primary); font-weight: bold;">Partner with us</a>`;
+          }
+      }
+  </script>
+</body>
+</html>

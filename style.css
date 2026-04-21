@@ -1,0 +1,489 @@
+/* 🌟 IMPORT MODERN FONT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* 🎨 CSS VARIABLES (The Original Orange UI) */
+:root {
+  --primary: #ff6a00;
+  --primary-hover: #e65c00;
+  --bg-color: #f4f6f8;
+  --card-bg: #ffffff;
+  --text-main: #2d3436;
+  --text-muted: #636e72;
+  --nav-bg: #131921;
+  --shadow: 0 10px 20px rgba(0,0,0,0.05);
+  --border-radius: 16px;
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body.dark {
+  --bg-color: #121212;
+  --card-bg: #1e1e1e;
+  --text-main: #ffffff;
+  --text-muted: #aaaaaa;
+  --nav-bg: #000000;
+  --shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+/* 🧱 BASE STYLES */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  transition: background-color 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
+}
+
+/* 🎩 MODERN NAVBAR */
+header {
+  background: var(--nav-bg);
+  color: white;
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.search-bar {
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+  font-size: 14px;
+  width: 300px;
+  outline: none;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 🔗 NAVIGATION LINKS */
+nav {
+  background: white;
+  padding: 15px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+body.dark nav {
+  background: #1a1a1a;
+}
+
+nav a {
+  color: var(--text-main);
+  text-decoration: none;
+  margin-right: 25px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+nav a:hover {
+  color: var(--primary);
+}
+
+/* 🦸‍♂️ HERO BANNER */
+.hero {
+  background: linear-gradient(135deg, rgba(255,106,0,0.1) 0%, rgba(255,255,255,0) 100%);
+  padding: 60px 5%;
+  text-align: center;
+}
+
+body.dark .hero {
+  background: linear-gradient(135deg, rgba(255,106,0,0.1) 0%, rgba(18,18,18,0) 100%);
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+  background: -webkit-linear-gradient(45deg, #ff6a00, #ffc107);
+  background: linear-gradient(45deg, #ff6a00, #ffc107);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 📦 RESPONSIVE PRODUCT GRID */
+.product {
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.product:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+body.dark .product:hover {
+  box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+}
+
+.product img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.product h3 {
+  margin: 10px 0 5px;
+  font-size: 18px;
+}
+
+.product p {
+  color: var(--text-muted);
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.price {
+  font-size: 22px !important;
+  font-weight: 700;
+  color: var(--primary) !important;
+  margin: 15px 0 !important;
+}
+
+/* 🔘 MODERN BUTTONS */
+button, .add-to-cart-btn {
+  background: linear-gradient(135deg, var(--primary), #ff8c00);
+  color: white;
+  border: none;
+  padding: 12px;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  width: 100%;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy physics */
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(255, 106, 0, 0.2);
+}
+
+button:hover, .add-to-cart-btn:hover {
+  background: linear-gradient(135deg, var(--primary-hover), #e67e00);
+  transform: translateY(-3px); /* Levitation effect */
+  box-shadow: 0 8px 18px rgba(255, 106, 0, 0.4);
+}
+
+button:active, .add-to-cart-btn:active {
+  transform: scale(0.95); /* Tactile squeeze effect */
+  box-shadow: 0 2px 5px rgba(255, 106, 0, 0.2);
+}
+
+.buy-now-btn {
+  background: linear-gradient(135deg, #2d3436, #1a1a1a);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+body.dark .buy-now-btn {
+  background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
+}
+
+.buy-now-btn:hover {
+  background: linear-gradient(135deg, #000000, #111111);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+body.dark .buy-now-btn:hover {
+  box-shadow: 0 8px 18px rgba(255, 255, 255, 0.1);
+}
+
+/* 🌟 PREMIUM BUTTON ANIMATIONS (CEO & Dashboard) */
+.premium-btn {
+  background: linear-gradient(135deg, #f1c40f, #f39c12) !important;
+  color: #111 !important;
+  position: relative;
+  overflow: hidden;
+  animation: pulse-glow 2s infinite alternate;
+  border: none;
+  background-size: 200% 200%;
+}
+
+.premium-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  animation: none;
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.4); }
+  100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 25px rgba(255, 106, 0, 0.6); }
+}
+
+/* 🔵 NORMAL NAVIGATION BUTTON ANIMATIONS (Cart & Orders) */
+.nav-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white !important;
+  min-width: 125px; /* Ensures short buttons are perfectly uniform */
+  width: auto; /* Allows long buttons to expand safely */
+  padding: 0 15px;
+  height: 40px; /* Exact uniform height */
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  text-decoration: none;
+  border: none;
+  white-space: nowrap;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+}
+
+.nav-btn.orders { background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
+.nav-btn.cart { background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
+
+.nav-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+/* 🍞 CUSTOM TOAST NOTIFICATIONS */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.toast {
+  min-width: 250px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateX(120%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast.success { background: #2ecc71; border-left: 6px solid #27ae60; }
+.toast.error { background: #e74c3c; border-left: 6px solid #c0392b; }
+.toast.info { background: #3498db; border-left: 6px solid #2980b9; }
+
+/* 📱 MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .search-bar {
+    width: 100%;
+  }
+  .hero h1 {
+    font-size: 2em;
+  }
+}
+
+/* =========================================
+   🔐 AUTHENTICATION PAGES (Login / Register)
+   ========================================= */
+
+.auth-wrapper {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,106,0,0.05) 0%, rgba(255,255,255,0) 100%);
+  padding: 20px;
+}
+
+body.dark .auth-wrapper {
+  background: linear-gradient(135deg, rgba(255,106,0,0.1) 0%, rgba(18,18,18,0) 100%);
+}
+
+.auth-container {
+  background: var(--card-bg);
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  /* 🔥 The Entrance Animation */
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+body.dark .auth-container {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.auth-header h2 {
+  font-size: 28px;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.auth-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* 🪄 Floating Label Input Magic */
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background: transparent;
+  font-size: 16px;
+  color: var(--text-main);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+body.dark .input-group input, 
+body.dark .auth-select {
+  border-color: rgba(255,255,255,0.1);
+}
+
+.input-group input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.1);
+}
+
+.input-group label {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--card-bg);
+  padding: 0 5px;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  font-size: 15px;
+}
+
+/* When input is focused OR has text inside, slide the label up! */
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
+  top: 0;
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* Select Box Styling */
+.auth-select {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-radius: 10px;
+  background: transparent;
+  font-size: 16px;
+  color: var(--text-main);
+  outline: none;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.auth-select:focus {
+  border-color: var(--primary);
+}
+
+/* ⚡ Animated Submit Button */
+.auth-submit-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 10px;
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+}
+
+.auth-submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease;
+  z-index: -1;
+}
+
+.auth-submit-btn:hover::before {
+  left: 0;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.auth-links a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}
+
+/* Keyframes for the entrance */
+@keyframes slideUpFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

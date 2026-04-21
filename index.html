@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VyaparSync - B2B Marketplace</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header style="display: flex; justify-content: space-between; align-items: center;">
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <h2>🛍 VyaparSync</h2>
+    <input 
+      type="text" 
+      id="mainSearchInput" 
+      class="search-bar"
+      placeholder="Search products, markets..." 
+      onkeyup="delayFilter()" 
+    >
+  </div>
+  
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <button onclick="loadWishlist()" class="nav-btn wishlist" style="background: transparent; border: 1px solid #e74c3c; color: #e74c3c; cursor: pointer; padding: 10px 15px; border-radius: 20px; font-weight: bold; text-decoration: none;">❤️ Wishlist</button>
+    <a href="orders.html" class="nav-btn orders">📦 Orders</a>
+    <a href="cart.html" class="nav-btn cart">🛒 Cart</a>
+    <div id="userSection" style="font-weight: 600; display: flex; align-items: center;">
+      </div>
+  </div>
+</header>
+
+<div style="background: var(--card-bg); padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 14px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 18px;">📍</span>
+        <div>
+            <span style="color: var(--text-muted); font-size: 12px; display: block; line-height: 1;">Delivering to</span>
+            <b id="userLocationDisplay" style="color: var(--text-main); cursor: pointer;" onclick="getUserLocation()">Click to detect your location 🔽</b>
+        </div>
+    </div>
+</div>
+
+<nav style="background: var(--card-bg); padding: 15px 5%; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; gap: 15px; flex-wrap: wrap; align-items: center; box-shadow: var(--shadow);">
+    
+    <select id="filterCategory" onchange="applyFilters()" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; outline: none;">
+        <option value="All">All Categories</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Hardware">Hardware</option>
+        <option value="Food">Food</option>
+        <option value="Jewellery">Jewellery</option>
+    </select>
+
+    <div style="display: flex; gap: 5px; align-items: center;">
+        <span style="font-size: 14px; color: var(--text-muted);">₹</span>
+        <input type="number" id="minPrice" placeholder="Min" style="width: 70px; padding: 6px; border-radius: 6px; border: 1px solid #ccc;" onkeyup="delayFilter()">
+        <span style="font-size: 14px; color: var(--text-muted);">-</span>
+        <input type="number" id="maxPrice" placeholder="Max" style="width: 70px; padding: 6px; border-radius: 6px; border: 1px solid #ccc;" onkeyup="delayFilter()">
+    </div>
+
+    <label style="display: flex; align-items: center; gap: 5px; font-size: 14px; cursor: pointer;">
+        <input type="checkbox" id="inStockToggle" onchange="applyFilters()"> In Stock Only
+    </label>
+
+    <select id="sortFilter" onchange="applyFilters()" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; margin-left: auto;">
+        <option value="newest">Sort: Newest First</option>
+        <option value="price_asc">Price: Low to High</option>
+        <option value="price_desc">Price: High to Low</option>
+        <option value="rating">Highest Rated</option>
+    </select>
+    
+    <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; margin: 0; border-radius: 8px; background: #2d3436; color: white; border: none; cursor: pointer;">🌙 Dark</button>
+</nav>
+
+<section class="hero">
+  <h1>India's Markets, Delivered.</h1>
+  <p style="font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">Experience the authenticity of local bazaars without leaving your home. Real-time inventory straight from the shopkeeper's hands to yours.</p>
+</section>
+
+<main style="padding: 20px 5%;">
+    <div id="products"></div>
+</main>
+
+<div id="toast-container"></div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

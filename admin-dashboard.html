@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEO Command Center | VyaparSync</title>
+  <style>
+    body { display: flex; min-height: 100vh; margin: 0; background: #0a0a0a; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .sidebar { width: 260px; background: #111; padding: 30px 20px; display: flex; flex-direction: column; border-right: 1px solid #333; }
+    .sidebar h2 { color: #f1c40f; margin-bottom: 40px; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+    .main-content { flex: 1; padding: 40px; background: radial-gradient(circle at top, #1a1a1a, #0a0a0a); }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .section-card { background: #1a1a1a; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); margin-bottom: 30px; border-top: 4px solid #f1c40f; border: 1px solid #333; border-top: 4px solid #f1c40f; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { color: #888; font-weight: 600; font-size: 14px; text-transform: uppercase; padding: 15px; border-bottom: 1px solid #333; }
+    td { padding: 15px; border-bottom: 1px solid #222; }
+    tr:hover { background: rgba(255, 255, 255, 0.03); }
+    .btn-approve { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 10px; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-approve:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+    .btn-reject { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-reject:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>👑 CEO Portal</h2>
+  <a href="#" style="color: white; text-decoration: none; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid #333;">🛡️ Trust & Safety</a>
+  <button onclick="logoutAdmin()" style="margin-top: auto; padding: 15px; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Secure Logout</button>
+</div>
+
+<div class="main-content">
+  <div class="header">
+    <h1 style="margin: 0; font-weight: 300; font-size: 32px;">Trust & Safety Operations</h1>
+    <a href="index.html" style="background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 30px; text-decoration: none; color: white; font-weight: bold; border: 1px solid #333; transition: 0.3s;">View Storefront 👁️</a>
+  </div>
+
+  <div class="section-card">
+    <h2 style="margin-top: 0;">Pending Seller Approvals</h2>
+    <p style="color: #aaa; font-size: 14px; margin-bottom: 20px;">Review businesses before they go live on the marketplace.</p>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Owner Name</th>
+          <th>Shop Name</th>
+          <th>Market Location</th>
+          <th>Email</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="pendingSellersList">
+        </tbody>
+    </table>
+  </div>
+
+  <div class="section-card">
+    <h2 style="margin-top: 0;">Pending Product Approvals</h2>
+    <p style="color: #aaa; font-size: 14px; margin-bottom: 20px;">Review products for counterfeit goods, illegal items, or missing images.</p>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Product Details</th>
+          <th>Shop Name</th>
+          <th>Price & Stock</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="pendingProductsList">
+        </tbody>
+    </table>
+  </div>
+
+  <div class="section-card">
+    <h2 style="margin-top: 0; color: #3498db;">🛡️ Trust & Safety: Document Verification</h2>
+    <p style="color: #aaa; font-size: 14px; margin-bottom: 20px;">Review GST numbers and documents to grant the "Verified Seller" badge.</p>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Shop Name</th>
+          <th>Owner Email</th>
+          <th>Submitted GST / Doc</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="documentQueueList">
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script>
+    // Adjust the URL if your configuration is different
+    const API_URL = window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : "https://vyaparsync-backend.up.railway.app";
+    function sanitizeHTML(str) {
+        if (typeof str !== 'string' && typeof str !== 'number') return str;
+        return typeof DOMPurify !== "undefined" ? DOMPurify.sanitize(String(str)) : String(str);
+    }
+    function escapeAttr(str) {
+        if (str == null) return "";
+        return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function sanitizeHTML(str) {
+        if (typeof str !== 'string' && typeof str !== 'number') return str;
+        return typeof DOMPurify !== "undefined" ? DOMPurify.sanitize(String(str)) : String(str);
+    }
+    function escapeAttr(str) {
+        if (str == null) return "";
+        return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    async function fetchPendingSellers() {
+        const token = localStorage.getItem("token");
+        if (!token) return window.location.href = "login.html";
+
+        try {
+            const res = await fetch(`${API_URL}/admin/sellers/pending`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            
+            if (res.status === 403) {
+                alert("ACCESS DENIED. You are not the CEO.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            const sellers = await res.json();
+            const tbody = document.getElementById("pendingSellersList");
+            tbody.innerHTML = "";
+
+            if (sellers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #555; padding: 30px;">No pending applications.</td></tr>`;
+                return;
+            }
+
+            sellers.forEach(seller => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${sanitizeHTML(seller.name)}</b></td>
+                        <td>${sanitizeHTML(seller.shopName || 'N/A')}</td>
+                        <td>📍 ${sanitizeHTML(seller.marketLocation || 'N/A')}</td>
+                        <td style="color: #aaa;">${sanitizeHTML(seller.email)}</td>
+                        <td>
+                            <button class="btn-approve" onclick="approveSeller('${seller._id}')">Approve ✅</button>
+                            <button class="btn-reject" onclick="rejectSeller('${seller._id}')">Reject ❌</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (err) { console.error(err); }
+    }
+
+    async function approveSeller(id) {
+        if(!confirm("Approve this seller to go live?")) return;
+        const token = localStorage.getItem("token");
+        await fetch(`${API_URL}/admin/sellers/${id}/approve`, { method: "PUT", headers: { "Authorization": `Bearer ${token}` } });
+        fetchPendingSellers();
+    }
+
+    async function rejectSeller(id) {
+        if(!confirm("Reject and delete this fraudulent application?")) return;
+        const token = localStorage.getItem("token");
+        await fetch(`${API_URL}/admin/sellers/${id}/reject`, { method: "DELETE", headers: { "Authorization": `Bearer ${token}` } });
+        fetchPendingSellers();
+    }
+
+
+    async function fetchPendingProducts() {
+        const token = localStorage.getItem("token");
+        try {
+            const res = await fetch(`${API_URL}/admin/products/pending`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const products = await res.json();
+            const tbody = document.getElementById("pendingProductsList");
+            tbody.innerHTML = "";
+
+            if (products.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #555; padding: 30px;">No pending products. Clean inbox! 🎉</td></tr>`;
+                return;
+            }
+
+            products.forEach(product => {
+                let imgHtml = product.image ? `<img src="${escapeAttr(product.image)}" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;">` : "📄 No Image";
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="display: flex; align-items: center; gap: 15px;">
+                            ${imgHtml}
+                            <b>${sanitizeHTML(product.name)}</b>
+                        </td>
+                        <td>${sanitizeHTML(product.shopName)}</td>
+                        <td>₹${product.price} <span style="color: #aaa; font-size: 12px;">(${product.stock} units)</span></td>
+                        <td>
+                            <button class="btn-approve" onclick="approveProduct('${product._id}')">Approve ✅</button>
+                            <button class="btn-reject" onclick="rejectProduct('${product._id}')">Delete ❌</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (err) { console.error(err); }
+    }
+
+    async function approveProduct(id) {
+        if(!confirm("Approve this product for the public marketplace?")) return;
+        const token = localStorage.getItem("token");
+        await fetch(`${API_URL}/admin/products/${id}/approve`, { method: "PUT", headers: { "Authorization": `Bearer ${token}` } });
+        fetchPendingProducts();
+    }
+
+    async function rejectProduct(id) {
+        if(!confirm("Delete this product for violating terms?")) return;
+        const token = localStorage.getItem("token");
+        await fetch(`${API_URL}/admin/products/${id}`, { method: "DELETE", headers: { "Authorization": `Bearer ${token}` } });
+        fetchPendingProducts();
+    }
+
+    function logoutAdmin() {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+
+    async function fetchDocumentQueue() {
+        const token = localStorage.getItem("token");
+        try {
+            const res = await fetch(`${API_URL}/admin/sellers/pending-docs`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const sellers = await res.json();
+            const tbody = document.getElementById("documentQueueList");
+            tbody.innerHTML = "";
+
+            if (sellers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #555; padding: 30px;">No pending documents to verify.</td></tr>`;
+                return;
+            }
+
+            sellers.forEach(seller => {
+                let docDisplay = "";
+                
+                if (seller.gstNumber) {
+                    docDisplay += `<div style="margin-bottom: 5px;"><span style="font-family: monospace; background: #222; padding: 4px 8px; border-radius: 4px;">GST: ${seller.gstNumber}</span>`;
+                    if (seller.verificationDocumentUrl) docDisplay += ` <a href="${seller.verificationDocumentUrl}" target="_blank" style="color: #3498db; font-size: 12px; margin-left: 10px;">📄 View GST Doc</a>`;
+                    docDisplay += `</div>`;
+                }
+                
+                if (seller.panNumber) {
+                    docDisplay += `<div style="margin-bottom: 5px;"><span style="font-family: monospace; background: #222; padding: 4px 8px; border-radius: 4px;">PAN: ${seller.panNumber}</span>`;
+                    if (seller.panDocumentUrl) docDisplay += ` <a href="${seller.panDocumentUrl}" target="_blank" style="color: #3498db; font-size: 12px; margin-left: 10px;">📄 View PAN</a>`;
+                    docDisplay += `</div>`;
+                }
+
+                if (seller.aadhaarNumber) {
+                    docDisplay += `<div style="margin-bottom: 5px;"><span style="font-family: monospace; background: #222; padding: 4px 8px; border-radius: 4px;">Aadhaar: ${seller.aadhaarNumber}</span>`;
+                    if (seller.aadhaarDocumentUrl) docDisplay += ` <a href="${seller.aadhaarDocumentUrl}" target="_blank" style="color: #3498db; font-size: 12px; margin-left: 10px;">📄 View Aadhaar</a>`;
+                    docDisplay += `</div>`;
+                }
+
+                if (seller.fssaiNumber) {
+                    docDisplay += `<div style="margin-bottom: 5px;"><span style="font-family: monospace; background: #222; padding: 4px 8px; border-radius: 4px;">FSSAI: ${seller.fssaiNumber}</span>`;
+                    if (seller.fssaiDocumentUrl) docDisplay += ` <a href="${seller.fssaiDocumentUrl}" target="_blank" style="color: #3498db; font-size: 12px; margin-left: 10px;">📄 View FSSAI</a>`;
+                    docDisplay += `</div>`;
+                }
+
+                if (seller.msmeNumber) {
+                    docDisplay += `<div style="margin-bottom: 5px;"><span style="font-family: monospace; background: #222; padding: 4px 8px; border-radius: 4px;">MSME: ${seller.msmeNumber}</span>`;
+                    if (seller.msmeDocumentUrl) docDisplay += ` <a href="${seller.msmeDocumentUrl}" target="_blank" style="color: #3498db; font-size: 12px; margin-left: 10px;">📄 View MSME</a>`;
+                    docDisplay += `</div>`;
+                }
+
+                if (!docDisplay) docDisplay = "<span style='color: #888;'>No documents uploaded</span>";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${seller.shopName}</b></td>
+                        <td>${seller.email}</td>
+                        <td>${docDisplay}</td>
+                        <td>
+                            <button class="btn-approve" onclick="upgradeSellerTier('${seller._id}', 'Verified')">Verify GST ✅</button>
+                            <button class="btn-reject" onclick="rejectDocuments('${seller._id}')">Reject ❌</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (err) { console.error(err); }
+    }
+
+    async function upgradeSellerTier(id, tier) {
+        if(!confirm(`Upgrade this seller to ${tier} status? They will receive the Trust Badge.`)) return;
+        const token = localStorage.getItem("token");
+        
+        await fetch(`${API_URL}/admin/sellers/${id}/verify`, { 
+            method: "PUT", 
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
+            body: JSON.stringify({ tier: tier })
+        });
+        
+        fetchDocumentQueue(); // Refresh table
+    }
+
+    async function rejectDocuments(id) {
+        if(!confirm("Reject these documents? (Seller will remain Basic tier)")) return;
+        // In a full app, you might hit an API to clear their GST field and send them an email
+        alert("For now, reach out to the seller via email to request valid documents.");
+    }
+
+    // Init
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchPendingSellers();
+        fetchPendingProducts();
+        fetchDocumentQueue(); // 🛡️ Load the queue!
+    });
+</script>
+</body>
+</html>

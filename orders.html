@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders | VyaparSync</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .orders-container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .order-card {
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-color);
+      transition: var(--transition);
+    }
+
+    body.dark .order-card {
+        border-color: rgba(255,255,255,0.05);
+    }
+
+    .order-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow);
+    }
+    
+    .order-info h3 { margin: 0 0 8px 0; color: var(--text-main); font-size: 18px; }
+    .order-info p { margin: 4px 0; color: var(--text-muted); font-size: 14px; }
+    
+    .status-badge {
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 14px;
+      display: inline-block;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .status-pending { background: rgba(255, 153, 0, 0.1); color: #e67e22; border: 1px solid #e67e22; }
+    .status-shipped { background: rgba(46, 204, 113, 0.1); color: #27ae60; border: 1px solid #2ecc71; }
+  </style>
+</head>
+<body style="margin: 0; padding: 0;">
+
+  <header style="max-width: 800px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
+    <h1 style="color: var(--primary); margin: 0; font-size: 28px;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0; cursor: pointer;">🌙</button>
+        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+    </div>
+  </header>
+
+  <div class="orders-container">
+    <h2 style="margin-top: 0; border-bottom: 2px solid rgba(0,0,0,0.05); padding-bottom: 15px; color: var(--text-main);">My Order History 📦</h2>
+    
+    <div id="customerOrdersList">
+        <p style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading your orders...</p>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

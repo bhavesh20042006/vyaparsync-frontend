@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Cart - VyaparSync Checkout</title>
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+    /* Cart Specific Styles (Using Global Variables) */
+    .cart-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(0,0,0,0.05);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    body.dark .cart-header {
+      border-bottom: 2px solid rgba(255,255,255,0.05);
+    }
+    
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    body.dark .cart-item {
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .cart-item img { 
+      width: 80px; 
+      height: 80px; 
+      border-radius: 10px; 
+      object-fit: cover; 
+    }
+    
+    .cart-info { 
+      flex: 1; 
+      margin-left: 20px; 
+    }
+    
+    .cart-info h3 { 
+      margin: 0 0 5px 0; 
+      color: var(--text-main); 
+      font-size: 18px; 
+    }
+    
+    .cart-info p { 
+      margin: 0; 
+      color: var(--text-muted); 
+      font-size: 14px; 
+    }
+    
+    .cart-price { 
+      font-size: 18px; 
+      font-weight: 700; 
+      color: var(--text-main); 
+    }
+    
+    .btn-remove { 
+      background: #ff4757; 
+      color: white; 
+      border: none; 
+      padding: 8px 12px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      margin-left: 20px; 
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    
+    .btn-remove:hover { 
+      background: #ff6b81; 
+      transform: scale(1.05);
+    }
+    
+    .cart-summary {
+      margin-top: 30px;
+      text-align: right;
+      padding: 25px;
+      background: rgba(0,0,0,0.02);
+      border-radius: 12px;
+      border: 1px dashed rgba(0,0,0,0.1);
+    }
+
+    body.dark .cart-summary {
+      background: rgba(255,255,255,0.02);
+      border-color: rgba(255,255,255,0.1);
+    }
+    
+    .checkout-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px 40px;
+      font-size: 18px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+    }
+    
+    .checkout-btn:hover { 
+      background: var(--primary-hover); 
+      transform: translateY(-2px); 
+    }
+
+    /* Quantity Controls */
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .qty-btn {
+      background: var(--bg-color);
+      color: var(--text-main);
+      border: 1px solid rgba(0,0,0,0.1);
+      width: 28px;
+      height: 28px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+    }
+    
+    body.dark .qty-btn {
+        border-color: rgba(255,255,255,0.1);
+    }
+
+    .qty-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <header style="max-width: 800px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
+    <h1 style="color: var(--primary); margin: 0; font-size: 28px;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0;">🌙</button>
+        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+    </div>
+  </header>
+
+  <div class="cart-container">
+    <div class="cart-header">
+      <h2 style="margin: 0; font-size: 24px;">Your Shopping Cart 🛒</h2>
+      <span id="itemCount" style="color: var(--text-muted); font-weight: 600;">0 Items</span>
+    </div>
+    
+    <div id="cartItemsList">
+        <p style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading your cart...</p>
+    </div>
+
+    <div class="cart-summary">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-muted); font-size: 15px;">
+          <span>Subtotal</span>
+          <span id="cartSubtotal">₹0</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--text-muted); font-size: 15px;">
+          <span>Platform Fee</span>
+          <span>₹10</span>
+      </div>
+      
+      <div id="walletDiscountRow" style="display: none; justify-content: space-between; margin-bottom: 15px; color: #2ecc71; font-size: 15px; font-weight: bold;">
+          <span>Wallet Discount Applied</span>
+          <span id="cartWalletDiscount">-₹0</span>
+      </div>
+      
+      <div style="border-top: 1px dashed rgba(0,0,0,0.1); margin: 15px 0; padding-top: 15px;">
+          <p style="margin: 0; color: var(--text-muted); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Total to Pay</p>
+          <h1 id="cartTotal" style="margin: 5px 0 20px 0; color: var(--primary); font-size: 36px;">₹0</h1>
+      </div>
+      
+      <div style="text-align: center; margin-top: 15px;">
+          <button class="checkout-btn" onclick="startCheckoutProcess()" style="margin-top: 0; background: #27ae60;">
+              Proceed to Secure Checkout 🔒
+          </button>
+          
+          <div style="margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; color: #888; font-size: 12px;">
+              <span>100% Secure Payments via</span>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" style="height: 16px;">
+              <span style="font-weight: bold; color: #555;">GPay • PhonePe • Paytm</span>
+          </div>
+      </div>
+      
+      <p style="font-size: 12px; color: var(--text-muted); margin-top: 15px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;">
+        🔒 Secure 128-bit SSL Encrypted Payment
+      </p>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
