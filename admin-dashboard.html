@@ -96,7 +96,7 @@
     // Adjust the URL if your configuration is different
     const API_URL = window.location.hostname === "localhost"
       ? "http://localhost:5000"
-      : "https://vyaparsync-backend-production.up.railway.app";
+      : "https://vyaparsync.onrender.com";
     function sanitizeHTML(str) {
         if (typeof str !== 'string' && typeof str !== 'number') return str;
         return typeof DOMPurify !== "undefined" ? DOMPurify.sanitize(String(str)) : String(str);

@@ -1,7 +1,7 @@
 // ⚙️ CONFIGURATION: Centralized API URL
 const API_URL = window.location.hostname === "localhost"
   ? "http://localhost:5000"
-  : "https://vyaparsync-backend-production.up.railway.app"; 
+  : "https://vyaparsync.onrender.com"; 
 
 // =======================================================
 // 🛡️ SECURITY HELPERS (XSS PREVENTION)
