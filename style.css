@@ -39,30 +39,34 @@ header {
   background: var(--nav-bg);
   color: white;
   padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
 }
 
 header h2 {
   margin: 0;
   font-size: 24px;
   font-weight: 700;
-.header-main-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  letter-spacing: 1px;
 }
 
-.header-search-row {
+.header-logo-search {
   display: flex;
-  width: 100%;
-  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .search-bar {
@@ -70,8 +74,7 @@ header h2 {
   border-radius: 30px;
   border: none;
   font-size: 14px;
-  width: 100%;
-  max-width: 600px;
+  width: 300px;
   outline: none;
   font-family: 'Poppins', sans-serif;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
@@ -79,29 +82,16 @@ header h2 {
 
 /* 🔗 NAVIGATION LINKS */
 nav {
-  background: var(--card-bg);
+  background: white;
   padding: 15px 5%;
   display: flex;
   align-items: center;
-  gap: 15px;
-  box-shadow: var(--shadow);
-  /* Make the nav scrollable horizontally on mobile */
-  overflow-x: auto;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Hide scrollbar for a cleaner chip look */
-nav::-webkit-scrollbar {
-  display: none;
-}
-nav {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 body.dark nav {
-  background: var(--card-bg);
+  background: #1a1a1a;
 }
 
 nav a {
@@ -278,7 +268,6 @@ body.dark .buy-now-btn:hover {
   box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
 }
 
-.nav-btn.wishlist { background: transparent; color: #e74c3c !important; border: 1px solid #e74c3c; box-shadow: none; }
 .nav-btn.orders { background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
 .nav-btn.cart { background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
 
@@ -327,103 +316,41 @@ body.dark .buy-now-btn:hover {
 /* 📱 MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
   header {
-    padding: 10px 5%;
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  
+  .header-logo-search {
+    flex-direction: column;
+    width: 100%;
     gap: 10px;
   }
   
-  header h2 {
-    font-size: 20px;
+  .search-bar {
+    width: 90%;
   }
   
   .nav-buttons {
-    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    width: 100%;
   }
 
-  /* ICON ONLY MOBILE BUTTONS */
   .nav-buttons .nav-btn,
   .nav-buttons button,
   .nav-buttons a {
-    min-width: 40px;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border-radius: 50%;
-    font-size: 16px;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Hide the text label on mobile so only the icon shows */
-  .nav-buttons .text {
-    display: none;
-  }
-  
-  .nav-buttons .icon {
-    font-size: 18px;
+    font-size: 14px;
+    padding: 8px 12px;
+    width: 45%;
     margin: 0;
   }
   
-  .search-bar {
-    width: 100%;
-    padding: 12px 15px;
-    font-size: 14px;
-  }
-  
-  /* Hide redundant body search bar on mobile */
-  .body-search-bar {
-    display: none !important;
-  }
-  
-  /* SLIMMER HERO */
-  .hero {
-    padding: 30px 5%;
-  }
-  
   .hero h1 {
-    font-size: 1.8em;
-  }
-  
-  /* 2 COLUMN PRODUCT GRID */
-  #products-grid, #grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
-  }
-  
-  .product {
-    padding: 12px;
-  }
-  
-  .product img {
-    height: 140px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-  }
-  
-  .product h3 {
-    font-size: 14px;
-    margin: 5px 0 2px;
-  }
-  
-  .product p {
-    font-size: 11px;
-    margin: 2px 0;
-  }
-  
-  .product .price {
-    font-size: 16px !important;
-    margin: 8px 0 !important;
-  }
-  
-  .add-to-cart-btn, .buy-now-btn {
-    padding: 8px;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  
-  /* Make Action Buttons Side-by-Side */
-  .product > div[style*="display: flex; gap: 10px;"] {
-    gap: 5px !important;
+    font-size: 2em;
   }
 }
 
