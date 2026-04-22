@@ -81,13 +81,21 @@ header h2 {
 }
 
 /* 🔗 NAVIGATION LINKS */
-nav {
+nav, .filter-nav {
   background: white;
   padding: 15px 5%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.filter-nav {
+  background: var(--card-bg);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  gap: 15px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow);
 }
 
 body.dark nav {
@@ -345,8 +353,31 @@ body.dark .buy-now-btn:hover {
   .nav-buttons a {
     font-size: 14px;
     padding: 8px 12px;
-    width: 45%;
+    width: 100%; /* Fallback for old code if needed */
     margin: 0;
+  }
+  
+  .filter-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 15px 5%;
+  }
+  
+  .filter-nav select, .filter-nav > div, .filter-nav label, .filter-nav button {
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+  
+  /* Make price inputs smaller so they fit */
+  .filter-nav input[type="number"] {
+    width: 40% !important;
+  }
+  
+  /* Make the Dark button span 2 columns if needed, or let it fit normally */
+  .filter-nav button {
+    grid-column: span 2;
   }
   
   .hero h1 {
