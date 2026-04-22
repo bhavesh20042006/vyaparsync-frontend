@@ -486,17 +486,17 @@ function showUser() {
   if (user) {
     let dashboardLink = "";
     if (user.role === "retailer") {
-        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn" style="white-space: nowrap;">Seller Hub</a>`;
+        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Hub</a>`;
     } else if (user.role === "admin") {
-        dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn" style="white-space: nowrap;">CEO Command</a>`;
+        dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn">CEO Command</a>`;
     }
       
     userSection.innerHTML = `
         ${dashboardLink}
-        <button onclick="logout()" class="nav-btn" style="white-space: nowrap; background: #e74c3c; box-shadow: 0 4px 10px rgba(231,76,60,0.2);">Logout</button>
+        <button onclick="logout()" class="nav-btn" style="background: #e74c3c; box-shadow: 0 4px 10px rgba(231,76,60,0.2);">Logout</button>
     `;
   } else {
-    userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn" style="white-space: nowrap; background: linear-gradient(135deg, var(--primary), #e67e22) !important;">Login / Sell with us</a>`;
+    userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn" style="background: linear-gradient(135deg, var(--primary), #e67e22) !important;">Login / Sell with us</a>`;
   }
 }
 

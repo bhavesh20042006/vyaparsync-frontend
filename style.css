@@ -342,28 +342,29 @@ body.dark .buy-now-btn:hover {
   .nav-buttons {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 10px;
-    padding: 10px 5%;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 10px 2%;
     width: 100%;
-    overflow-x: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    overflow: hidden;
   }
   
-  .nav-buttons::-webkit-scrollbar {
-    display: none;
-  }
-
   .nav-buttons .nav-btn,
   .nav-buttons button,
   .nav-buttons a {
-    font-size: 13px;
-    padding: 8px 15px;
-    width: auto;
-    flex: 0 0 auto;
+    flex: 1 1 0;
+    width: 0; /* forces equal distribution */
+    font-size: 10px !important;
+    padding: 6px 2px !important;
     margin: 0;
-    white-space: nowrap;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+    white-space: normal !important;
+    border-radius: 8px !important;
   }
   
   .filter-nav {
