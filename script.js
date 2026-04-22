@@ -486,19 +486,17 @@ function showUser() {
   if (user) {
     let dashboardLink = "";
     if (user.role === "retailer") {
-        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn" style="flex: 1; justify-content: center;">Seller Hub</a>`;
+        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn" style="white-space: nowrap;">Seller Hub</a>`;
     } else if (user.role === "admin") {
-        dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn" style="flex: 1; justify-content: center;">CEO Command</a>`;
+        dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn" style="white-space: nowrap;">CEO Command</a>`;
     }
       
     userSection.innerHTML = `
-      <div style="display: flex; gap: 10px; width: 100%;">
         ${dashboardLink}
-        <button onclick="logout()" class="nav-btn" style="flex: 1; justify-content: center; background: #e74c3c; box-shadow: 0 4px 10px rgba(231,76,60,0.2);">Logout</button>
-      </div>
+        <button onclick="logout()" class="nav-btn" style="white-space: nowrap; background: #e74c3c; box-shadow: 0 4px 10px rgba(231,76,60,0.2);">Logout</button>
     `;
   } else {
-    userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn" style="width: 100%; justify-content: center; background: linear-gradient(135deg, var(--primary), #e67e22) !important;">Login / Sell with us</a>`;
+    userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn" style="white-space: nowrap; background: linear-gradient(135deg, var(--primary), #e67e22) !important;">Login / Sell with us</a>`;
   }
 }
 
