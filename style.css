@@ -276,8 +276,10 @@ body.dark .buy-now-btn:hover {
   box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
 }
 
+.nav-btn.wishlist { background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
 .nav-btn.orders { background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
 .nav-btn.cart { background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
+.nav-btn.logout-btn { background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); }
 
 .nav-btn:hover {
   transform: translateY(-3px) scale(1.05);
@@ -346,6 +348,7 @@ body.dark .buy-now-btn:hover {
     gap: 4px;
     padding: 10px 2%;
     width: 100%;
+    box-sizing: border-box !important;
     overflow: hidden;
   }
   
@@ -354,11 +357,12 @@ body.dark .buy-now-btn:hover {
   .nav-buttons a {
     flex: 1 1 0;
     width: 0; /* forces equal distribution */
+    min-width: 0 !important; /* CRITICAL: overrides the desktop 125px min-width */
     font-size: 10px !important;
     padding: 6px 2px !important;
     margin: 0;
     text-align: center;
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     align-items: center;
     justify-content: center;
