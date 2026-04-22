@@ -1,7 +1,6 @@
-// ⚙️ CONFIGURATION: Centralized API URL
-const API_URL = window.location.hostname === "localhost"
+const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
   ? "http://localhost:5000"
-  : "https://vyaparsync.onrender.com"; 
+  : "https://vyaparsync.onrender.com";  
 
 // =======================================================
 // 🛡️ SECURITY HELPERS (XSS PREVENTION)
@@ -25,8 +24,13 @@ function escapeAttr(str) {
 }
 
 // 🔥 GLOBAL STATE
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let currentProducts = []; 
+let cart = [];
+try {
+    cart = JSON.parse(localStorage.getItem("cart")) || [];
+} catch (e) {
+    cart = [];
+}
+let currentProducts = [];  
 let currentMarketName = ""; 
 let currentWishlist = [];
 
@@ -448,7 +452,12 @@ function clearSearch() {
 function addToCart(id) {
   const product = currentProducts.find(p => p._id === id);
   if (!product) return;
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = [];
+  try {
+      cart = JSON.parse(localStorage.getItem("cart")) || [];
+  } catch (e) {
+      cart = [];
+  }
   const existingItem = cart.find(item => item.id === id);
   if (existingItem) existingItem.quantity += 1;
   else cart.push({ id: product._id, name: product.name, price: product.price, quantity: 1, image: product.image, market: product.market });
@@ -462,7 +471,13 @@ function buy(id) {
 }
 
 function showUser() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  let user = null;
+  try {
+      user = JSON.parse(localStorage.getItem("user"));
+  } catch (e) {
+      console.error("Failed to parse user from local storage");
+      localStorage.removeItem("user");
+  }
   const userSection = document.getElementById("userSection");
   if (!userSection) return;
   
@@ -760,7 +775,12 @@ async function connectBankAccount() {
 function loadCart() {
   const listContainer = document.getElementById("cartItemsList");
   if (!listContainer) return; 
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = [];
+  try {
+      cart = JSON.parse(localStorage.getItem("cart")) || [];
+  } catch (e) {
+      cart = [];
+  }
   const subTotalContainer = document.getElementById("cartSubtotal");
   const totalContainer = document.getElementById("cartTotal");
   const itemCount = document.getElementById("itemCount");
@@ -795,7 +815,10 @@ function loadCart() {
   let finalTotal = subTotal + platformFee;
   let walletUsed = 0;
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  let user = null;
+  try {
+      user = JSON.parse(localStorage.getItem("user"));
+  } catch (e) {}
   const walletRow = document.getElementById("walletDiscountRow");
 
   if (user && user.walletBalance > 0 && subTotal > 0) {

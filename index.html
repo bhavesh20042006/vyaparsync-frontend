@@ -10,8 +10,8 @@
 </head>
 <body>
 
-<header style="display: flex; justify-content: space-between; align-items: center;">
-  <div style="display: flex; align-items: center; gap: 20px;">
+<header class="header-top">
+  <div class="header-logo-search">
     <h2>🛍 VyaparSync</h2>
     <input 
       type="text" 
@@ -22,11 +22,11 @@
     >
   </div>
   
-  <div style="display: flex; align-items: center; gap: 15px;">
+  <div class="nav-buttons">
     <button onclick="loadWishlist()" class="nav-btn wishlist" style="background: transparent; border: 1px solid #e74c3c; color: #e74c3c; cursor: pointer; padding: 10px 15px; border-radius: 20px; font-weight: bold; text-decoration: none;">❤️ Wishlist</button>
     <a href="orders.html" class="nav-btn orders">📦 Orders</a>
     <a href="cart.html" class="nav-btn cart">🛒 Cart</a>
-    <div id="userSection" style="font-weight: 600; display: flex; align-items: center;">
+    <div id="userSection" class="user-section">
       </div>
   </div>
 </header>
