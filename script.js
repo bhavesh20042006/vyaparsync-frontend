@@ -98,7 +98,7 @@ function loadHome() {
   container.innerHTML = `
     <div id="current-view" data-view="home"></div>
     
-    <div style="margin-bottom: 40px; text-align: center; display: flex; justify-content: center;">
+    <div class="body-search-bar" style="margin-bottom: 40px; text-align: center; display: flex; justify-content: center;">
         <input type="text" id="searchInput" placeholder="Search for products, shops, or markets... 🔍" onkeyup="delayFilter()" style="width: 100%; max-width: 600px; padding: 18px 25px; font-size: 16px; border-radius: 30px; border: 2px solid rgba(255,106,0,0.2); background: var(--card-bg); color: var(--text-main); outline: none; box-shadow: var(--shadow); transition: var(--transition);" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='rgba(255,106,0,0.2)'">
     </div>
 
@@ -486,19 +486,19 @@ function showUser() {
   if (user) {
     let dashboardLink = "";
     if (user.role === "retailer") {
-        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Hub</a>`;
+        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn" title="Seller Hub"><span class="icon">🏪</span><span class="text">Seller Hub</span></a>`;
     } else if (user.role === "admin") {
-        dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn">CEO Command</a>`;
+        dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn" title="CEO Command"><span class="icon">👑</span><span class="text">CEO Command</span></a>`;
     }
       
     userSection.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 15px;">
+      <div style="display: contents;">
         ${dashboardLink}
-        <button onclick="logout()" class="nav-btn" style="background: #e74c3c; box-shadow: 0 4px 10px rgba(231,76,60,0.2);">Logout</button>
+        <button onclick="logout()" class="nav-btn" style="background: #e74c3c; box-shadow: 0 4px 10px rgba(231,76,60,0.2);" title="Logout"><span class="icon">🚪</span><span class="text">Logout</span></button>
       </div>
     `;
   } else {
-    userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn" style="background: linear-gradient(135deg, var(--primary), #e67e22) !important;">Login / Sell with us</a>`;
+    userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn" style="background: linear-gradient(135deg, var(--primary), #e67e22) !important;" title="Login / Sell with us"><span class="icon">👤</span><span class="text">Login / Sell</span></a>`;
   }
 }
 
