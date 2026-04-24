@@ -118,8 +118,19 @@ function loadHome() {
 
   if (savedLat && savedLng) {
       fetchNearbyMarkets(savedLat, savedLng);
+      // Auto-update location text if available
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${savedLat}&lon=${savedLng}`)
+        .then(res => res.json())
+        .then(data => {
+            const area = data.address.suburb || data.address.city_district || data.address.city || "Current Location";
+            const disp = document.getElementById("userLocationDisplay");
+            if(disp) disp.innerText = `${area} 🟢`;
+        }).catch(() => {
+            const disp = document.getElementById("userLocationDisplay");
+            if(disp) disp.innerText = "GPS Active 🟢";
+        });
   } else {
-      fetchAllMarkets(); // Fallback if they haven't given GPS permission yet
+      getUserLocation(); // Auto-detect on load
   }
 
   fetch(`${API_URL}/products`)
