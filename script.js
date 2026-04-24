@@ -192,8 +192,8 @@ function getUserLocation() {
 }
 
 function fetchNearbyMarkets(lat, lng) {
-    // Fetch markets within 10km (10000 meters)
-    fetch(`${API_URL}/products/markets/nearby?lat=${lat}&lng=${lng}&radius=10000`)
+    // Fetch markets within 50km (50000 meters)
+    fetch(`${API_URL}/products/markets/nearby?lat=${lat}&lng=${lng}&radius=50000`)
         .then(res => res.json())
         .then(markets => {
             renderMarketGrid(markets, true);
@@ -217,7 +217,7 @@ function renderMarketGrid(markets, isNearby) {
     grid.innerHTML = "";
     
     if (markets.length === 0) {
-        grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">No markets found within 10km. Try exploring other areas!</p>`;
+        grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">No markets found within 50km. Try exploring other areas!</p>`;
         return;
     }
     
