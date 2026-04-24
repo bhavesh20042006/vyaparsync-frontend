@@ -806,30 +806,63 @@ function loadCart() {
     if(totalContainer) totalContainer.innerText = "₹0";
     return;
   }
-  cart.forEach((item, index) => {
-    let itemQty = item.quantity || 1;
-    let itemPriceTotal = item.price * itemQty;
-    subTotal += itemPriceTotal;
-    const div = document.createElement("div");
-    div.className = "cart-item";
-    let itemImageSrc = item.image || 'https://via.placeholder.com/60';
-    if (itemImageSrc && !itemImageSrc.startsWith('http')) {
-        itemImageSrc = `${API_URL}/${itemImageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
-    }
-    const safeItemImage = escapeAttr(itemImageSrc);
-    
-    div.innerHTML = `
-      <img src="${safeItemImage}" alt="Product" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect width=%2260%22 height=%2260%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2210px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
-      <div class="cart-info">
-        <h3>${sanitizeHTML(item.name)}</h3>
-        <p>Sold by: <b>${sanitizeHTML(item.market || 'Vyaparsync')}</b></p>
-        <p>Qty: ${itemQty}</p>
-      </div>
-      <div class="cart-price">₹${itemPriceTotal}</div>
-      <button class="btn-remove" onclick="removeFromCart(${index})">X</button>
-    `;
-    listContainer.appendChild(div);
-  });
+  // Group cart items by seller
+  const groupedCart = cart.reduce((acc, item, index) => {
+      const shopName = item.market || 'Vyaparsync';
+      if (!acc[shopName]) acc[shopName] = [];
+      acc[shopName].push({ ...item, originalIndex: index });
+      return acc;
+  }, {});
+
+  for (const [shopName, items] of Object.entries(groupedCart)) {
+      const groupDiv = document.createElement("div");
+      groupDiv.className = "shop-group-card";
+      groupDiv.style.marginBottom = "20px";
+      groupDiv.style.padding = "15px";
+      groupDiv.style.border = "1px solid rgba(0,0,0,0.1)";
+      groupDiv.style.borderRadius = "10px";
+      groupDiv.style.background = "var(--bg-color)";
+
+      groupDiv.innerHTML = `<h3 style="margin-top:0; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 10px; color: var(--primary);">🏬 Sold by: ${sanitizeHTML(shopName)}</h3>`;
+      
+      let shopTotal = 0;
+      
+      items.forEach((item) => {
+          let itemQty = item.quantity || 1;
+          let itemPriceTotal = item.price * itemQty;
+          shopTotal += itemPriceTotal;
+          subTotal += itemPriceTotal;
+          
+          let itemImageSrc = item.image || 'https://via.placeholder.com/60';
+          if (itemImageSrc && !itemImageSrc.startsWith('http')) {
+              itemImageSrc = `${API_URL}/${itemImageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
+          }
+          const safeItemImage = escapeAttr(itemImageSrc);
+          
+          const div = document.createElement("div");
+          div.className = "cart-item";
+          div.innerHTML = `
+            <img src="${safeItemImage}" alt="Product" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect width=%2260%22 height=%2260%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2210px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
+            <div class="cart-info">
+              <h3>${sanitizeHTML(item.name)}</h3>
+              <p>Qty: ${itemQty}</p>
+            </div>
+            <div class="cart-price">₹${itemPriceTotal}</div>
+            <button class="btn-remove" onclick="removeFromCart(${item.originalIndex})">X</button>
+          `;
+          groupDiv.appendChild(div);
+      });
+      
+      const shopTotalDiv = document.createElement("div");
+      shopTotalDiv.style.textAlign = "right";
+      shopTotalDiv.style.fontWeight = "bold";
+      shopTotalDiv.style.marginTop = "10px";
+      shopTotalDiv.style.color = "var(--text-muted)";
+      shopTotalDiv.innerHTML = `Subtotal: ₹${shopTotal}`;
+      groupDiv.appendChild(shopTotalDiv);
+      
+      listContainer.appendChild(groupDiv);
+  }
   const platformFee = 10;
   let finalTotal = subTotal + platformFee;
   let walletUsed = 0;
@@ -1096,7 +1129,7 @@ window.checkoutCart = async function() {
     const response = await fetch(`${API_URL}/orders/create-payment`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify({ amount: totalAmount })
+      body: JSON.stringify({ cartItems: cart })
     });
     if (!response.ok) {
         const errorText = await response.text();
