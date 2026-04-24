@@ -323,7 +323,7 @@ function createProductHTML(p) {
         <button onclick="event.stopPropagation(); toggleWishlist('${p._id}', this)" style="position: absolute; top: 10px; right: 10px; background: white; border: none; border-radius: 50%; width: 35px; height: 35px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: ${heartColor}; z-index: 10; padding: 0; margin: 0; transition: transform 0.2s;">
             ♥
         </button>
-        <img src="${safeImage}" alt="${attrName}">
+        <img src="${safeImage}" alt="${attrName}" onerror="this.onerror=null; this.src='https://via.placeholder.com/200?text=No+Image';">
         <h3>${safeName}</h3>
         <p style="cursor: pointer; margin-bottom: 5px;" onclick="loadShops('${safeMarket}')">
             🏬 ${safeShopName} ${badgeHtml} | 🏙️ ${safeMarket}
@@ -812,8 +812,14 @@ function loadCart() {
     subTotal += itemPriceTotal;
     const div = document.createElement("div");
     div.className = "cart-item";
+    let itemImageSrc = item.image || 'https://via.placeholder.com/60';
+    if (itemImageSrc && !itemImageSrc.startsWith('http')) {
+        itemImageSrc = `${API_URL}/${itemImageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
+    }
+    const safeItemImage = escapeAttr(itemImageSrc);
+    
     div.innerHTML = `
-      <img src="${item.image || 'https://via.placeholder.com/60'}" alt="Product">
+      <img src="${safeItemImage}" alt="Product" onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=No+Image';">
       <div class="cart-info">
         <h3>${sanitizeHTML(item.name)}</h3>
         <p>Sold by: <b>${sanitizeHTML(item.market || 'Vyaparsync')}</b></p>
