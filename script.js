@@ -299,7 +299,11 @@ function createProductHTML(p) {
     const attrName = escapeAttr(p.name);
     const safeShopName = sanitizeHTML(p.shopName);
     const safeMarket = sanitizeHTML(p.market);
-    const safeImage = escapeAttr(p.image) || 'https://via.placeholder.com/200';
+    let imageSrc = p.image || 'https://via.placeholder.com/200';
+    if (imageSrc && !imageSrc.startsWith('http')) {
+        imageSrc = `${API_URL}/${imageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
+    }
+    const safeImage = escapeAttr(imageSrc);
     const escapedReviewName = escapeAttr(p.name.replace(/'/g, "\\'"));
 
     let badgeHtml = "";
