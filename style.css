@@ -254,21 +254,23 @@ body.dark .buy-now-btn:hover {
 
 /* 🔵 NORMAL NAVIGATION BUTTON ANIMATIONS (Cart & Orders) */
 .nav-btn {
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
   gap: 5px;
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white !important;
-  min-width: 125px; /* Ensures short buttons are perfectly uniform */
-  width: auto; /* Allows long buttons to expand safely */
-  padding: 0 15px;
-  height: 40px; /* Exact uniform height */
+  min-width: 130px !important; /* Ensures short buttons are perfectly uniform */
+  width: auto !important; /* Allows long buttons to expand safely */
+  padding: 0 15px !important;
+  margin: 0 !important; /* Fixes vertical alignment between button and a tags */
+  height: 42px !important; /* Exact uniform height */
+  box-sizing: border-box !important;
   border-radius: 8px;
   font-weight: bold;
   font-size: 14px;
   text-decoration: none;
-  border: none;
+  border: none !important;
   white-space: nowrap;
   font-family: inherit;
   cursor: pointer;
@@ -356,11 +358,14 @@ body.dark .buy-now-btn:hover {
   .nav-buttons button,
   .nav-buttons a {
     flex: 1 1 0;
-    width: 0; /* forces equal distribution */
-    min-width: 0 !important; /* CRITICAL: overrides the desktop 125px min-width */
-    font-size: 10px !important;
-    padding: 6px 2px !important;
-    margin: 0;
+    width: 0 !important; /* forces equal distribution */
+    min-width: 0 !important; /* CRITICAL: overrides the desktop 130px min-width */
+    font-size: 11px !important;
+    padding: 4px 2px !important;
+    margin: 0 !important;
+    height: auto !important;
+    min-height: 45px !important; /* Uniform height for touch */
+    box-sizing: border-box !important;
     text-align: center;
     display: flex !important;
     flex-direction: column;
@@ -368,7 +373,7 @@ body.dark .buy-now-btn:hover {
     justify-content: center;
     line-height: 1.2;
     white-space: normal !important;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
   }
   
   .filter-nav {
