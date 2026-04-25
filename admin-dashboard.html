@@ -73,6 +73,25 @@
   </div>
 
   <div class="section-card">
+    <h2 style="margin-top: 0; color: #f39c12;">Escrow: Proof of Dispatch</h2>
+    <p style="color: #aaa; font-size: 14px; margin-bottom: 20px;">Review seller proofs and release funds from Razorpay Escrow.</p>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Order Details</th>
+          <th>Shop Name</th>
+          <th>Amount</th>
+          <th>Proof Image</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="pendingEscrowList">
+        </tbody>
+    </table>
+  </div>
+
+  <div class="section-card">
     <h2 style="margin-top: 0; color: #3498db;">🛡️ Trust & Safety: Document Verification</h2>
     <p style="color: #aaa; font-size: 14px; margin-bottom: 20px;">Review GST numbers and documents to grant the "Verified Seller" badge.</p>
     
@@ -312,11 +331,62 @@
         alert("For now, reach out to the seller via email to request valid documents.");
     }
 
+    async function fetchPendingEscrow() {
+        const token = localStorage.getItem("token");
+        try {
+            const res = await fetch(`${API_URL}/admin/orders/pending-escrow`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const orders = await res.json();
+            const tbody = document.getElementById("pendingEscrowList");
+            tbody.innerHTML = "";
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #555; padding: 30px;">No pending escrow releases.</td></tr>`;
+                return;
+            }
+
+            orders.forEach(order => {
+                let imgHtml = order.dispatchProofImage ? `<a href="${escapeAttr(order.dispatchProofImage)}" target="_blank"><img src="${escapeAttr(order.dispatchProofImage)}" style="width: 60px; height: 60px; border-radius: 5px; object-fit: cover; border: 1px solid #555;"></a>` : "📄 No Image";
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <b>${sanitizeHTML(order.productName)}</b><br>
+                            <span style="font-size: 12px; color: #aaa;">ID: ${order._id}</span>
+                        </td>
+                        <td>${sanitizeHTML(order.sellerId?.shopName || 'Unknown Shop')}</td>
+                        <td style="color: #f1c40f; font-weight: bold;">₹${order.price}</td>
+                        <td>${imgHtml}</td>
+                        <td>
+                            <button class="btn-approve" onclick="approveEscrow('${order._id}')">Approve & Release ✅</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (err) { console.error(err); }
+    }
+
+    async function approveEscrow(id) {
+        if(!confirm("Verify proof and release funds from Razorpay Escrow?")) return;
+        const token = localStorage.getItem("token");
+        try {
+            const res = await fetch(`${API_URL}/orders/${id}/approve-dispatch`, { method: "PUT", headers: { "Authorization": `Bearer ${token}` } });
+            const data = await res.json();
+            if(!res.ok) throw new Error(data.message);
+            alert("Funds Released successfully! 💸");
+            fetchPendingEscrow();
+        } catch(err) {
+            alert(err.message);
+        }
+    }
+
     // Init
     document.addEventListener("DOMContentLoaded", () => {
         fetchPendingSellers();
         fetchPendingProducts();
         fetchDocumentQueue(); // 🛡️ Load the queue!
+        fetchPendingEscrow(); // Load escrow approvals
     });
 </script>
 </body>

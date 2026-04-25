@@ -130,6 +130,7 @@
 
   <div class="stats-grid">
     <div class="stat-card"><h3>Total Revenue</h3><p id="stat-revenue">₹0</p></div>
+    <div class="stat-card" style="border-left-color: #f39c12;"><h3>Pending Escrow</h3><p id="stat-escrow" style="color: #f39c12;">₹0</p></div>
     <div class="stat-card"><h3>Active Orders</h3><p id="stat-orders">0</p></div>
     <div class="stat-card"><h3>Products Listed</h3><p id="stat-products">0</p></div>
   </div>
@@ -599,17 +600,23 @@
         try {
             const res = await fetch(`${API_URL}/orders/seller/${sellerDetails._id}`, { headers: { "Authorization": `Bearer ${token}` } });
             const orders = await res.json();
-            let revenue = 0; let pending = 0;
+            let revenue = 0; let pending = 0; let escrow = 0;
             const tbody = document.getElementById("sellerOrdersList");
             tbody.innerHTML = "";
             
             orders.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             orders.forEach(order => {
-                revenue += order.price;
                 order.status = order.status || "Pending";
-                if (!order.status.includes("Shipped")) pending++;
-                const isShipped = order.status.includes("Shipped");
+                if (!order.status.includes("Shipped") && !order.status.includes("Delivered")) {
+                   pending++;
+                   if(!order.status.includes("Rejected") && !order.status.includes("Cancelled")) {
+                       escrow += order.price;
+                   }
+                } else {
+                   revenue += order.price;
+                }
+                const isShipped = order.status.includes("Shipped") || order.status.includes("Delivered");
                 
                 let waBtn = "";
                 if (order.shippingAddress && order.shippingAddress.phone) {
@@ -625,8 +632,16 @@
 
                 let actionBtn = isShipped || order.status.includes("Rejected") || order.status.includes("Cancelled") ? 
                     `${waBtn}<span style="color: var(--text-muted); font-size: 12px;">${order.status}</span>` : 
-                    `${waBtn}<button style="background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;" onclick="dispatchOrder('${order._id}')">Ship 🚚</button>
-                     <button style="background: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-left: 5px;" onclick="cancelOrder('${order._id}')">Reject</button>`;
+                    order.status.includes("Verification Pending") ? 
+                    `<span style="color: #f39c12; font-size: 12px; font-weight: bold;">Under Admin Review ⏳</span>` :
+                    `${waBtn}
+                     <div style="display: flex; flex-direction: column; gap: 5px;">
+                       <input type="file" id="proof-${order._id}" accept="image/*" style="font-size: 10px; width: 150px; padding: 2px;">
+                       <div style="display: flex; gap: 5px;">
+                         <button style="background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px;" onclick="uploadDispatchProof('${order._id}')">Upload Proof 📸</button>
+                         <button style="background: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px;" onclick="cancelOrder('${order._id}')">Reject</button>
+                       </div>
+                     </div>`;
 
                 tbody.innerHTML += `
                     <tr>
@@ -640,22 +655,34 @@
                 `;
             });
             document.getElementById("stat-revenue").innerText = `₹${revenue}`;
+            document.getElementById("stat-escrow").innerText = `₹${escrow}`;
             document.getElementById("stat-orders").innerText = pending;
         } catch (err) { console.error(err); }
     }
 
-    async function dispatchOrder(orderId) {
+    async function uploadDispatchProof(orderId) {
+        const fileInput = document.getElementById(`proof-${orderId}`);
+        if (!fileInput.files.length) return showToast("Please choose an image as proof first.", "error");
+
         const token = localStorage.getItem("token");
+        const formData = new FormData();
+        formData.append("image", fileInput.files[0]);
+
         try {
-            const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({ status: "Shipped 🚚" })
+            const res = await fetch(`${API_URL}/orders/${orderId}/proof-of-dispatch`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
+                body: formData
             });
-            if (!res.ok) throw new Error("Failed to dispatch");
-            showToast("Item Shipped! 📦", "success");
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+
+            showToast("Proof uploaded! Waiting for Admin verification ⏳", "success");
             loadOrders(); 
-        } catch (err) { showToast(err.message, "error"); }
+        } catch (err) { 
+            showToast(err.message, "error"); 
+        }
     }
 
     // Basic POS placeholder
