@@ -1238,13 +1238,12 @@ function loadMyOrders() {
         if (order.status.includes("Shipped")) {
             trackingHTML = `
                 <div style="margin-top: 15px; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px dashed rgba(0,0,0,0.1);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px;">
-                        <span style="color: var(--text-muted);">Partner: <b style="color: var(--text-main);">${order.deliveryPartner || 'Vyapar Logistics'}</b></span>
-                        <span style="color: var(--text-muted);">Tracking: <b style="color: var(--primary);">${order.trackingId || 'LIVE-SIM-01'}</b></span>
+                    <div style="text-align: center; margin-bottom: 10px; font-size: 13px;">
+                        <span style="color: var(--text-main); font-weight: bold;">🚚 Dispatched from ${order.market || 'seller'}. Arriving soon via local courier.</span>
                     </div>
                     <div id="map-${order._id}" style="height: 180px; width: 100%; border-radius: 8px; z-index: 1;"></div>
                     <div style="text-align: center; margin-top: 8px; font-size: 11px; color: #2ecc71; font-weight: bold;">
-                        🟢 Live GPS Active
+                        🟢 Local Courier Dispatched
                     </div>
                 </div>
             `;
