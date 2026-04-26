@@ -623,25 +623,56 @@ body.dark .auth-select {
   .horizontal-scroll-grid .product {
     min-width: 105px;
     padding: 8px;
+    overflow: hidden;
+  }
+  .horizontal-scroll-grid .product > button {
+    display: none !important;
+  }
+  .horizontal-scroll-grid .product > div:last-child:not([style*="display: flex"]) {
+    display: none !important;
+  }
+  .horizontal-scroll-grid .product img {
+    height: 70px !important;
+    width: 100%;
+    object-fit: cover;
   }
   .horizontal-scroll-grid .product h3 {
     font-size: 11px;
+    margin: 4px 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .horizontal-scroll-grid .product p {
     font-size: 9px;
+    margin: 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .horizontal-scroll-grid .product div {
+    font-size: 9px;
+    margin: 2px 0 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .horizontal-scroll-grid .product .price {
     font-size: 13px !important;
+    margin: 4px 0 !important;
   }
-  .horizontal-scroll-grid .product button, 
+  .horizontal-scroll-grid .product > div[style*="display: flex"] {
+    flex-direction: column;
+    gap: 4px !important;
+    margin-top: 4px !important;
+    overflow: visible;
+  }
   .horizontal-scroll-grid .product .add-to-cart-btn, 
   .horizontal-scroll-grid .product .buy-now-btn {
-    padding: 5px;
-    font-size: 9px;
-    margin-top: 4px;
+    padding: 4px !important;
+    font-size: 9px !important;
+    margin: 0 !important;
+    width: 100%;
   }
   .product {
     padding: 10px;
