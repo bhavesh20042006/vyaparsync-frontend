@@ -108,7 +108,7 @@ function loadHome() {
     </div>
     <div>
         <h2 style="margin-bottom: 15px; font-size: 24px; font-weight: 700; text-align: center;">Trending Today</h2>
-        <div id="products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px;"></div>
+        <div id="products-grid" class="product-grid"></div>
     </div>
   `;
 
@@ -225,7 +225,7 @@ function renderMarketGrid(markets, isNearby) {
         let badge = isNearby ? `<span style="position:absolute; top:-10px; right:-10px; background:#2ecc71; color:white; padding:4px 8px; font-size:10px; border-radius:10px; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);">Nearby 📍</span>` : "";
         
         grid.innerHTML += `
-            <div style="position: relative; min-width: 180px; padding: 20px 30px; background: var(--card-bg); color: var(--text-main); border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); transition: var(--transition); border: 2px solid transparent; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.color='var(--text-main)'" onclick="loadShops('${market.name}')">
+            <div class="market-card" style="position: relative; padding: 20px 30px; background: var(--card-bg); color: var(--text-main); border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); transition: var(--transition); border: 2px solid transparent; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.color='var(--text-main)'" onclick="loadShops('${market.name}')">
               ${badge}
               <h3 style="margin: 0; font-size: 18px; font-weight: 700;">${sanitizeHTML(market.name)}</h3>
             </div>
@@ -245,7 +245,7 @@ function loadShops(marketName) {
             <button onclick="loadHome()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Home</button>
             <h2 style="font-size: 24px; font-weight: 700; margin: 0;">🏪 Shops in ${marketName}</h2>
         </div>
-        <div id="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px;"></div>
+        <div id="grid" class="product-grid"></div>
       `;
       const grid = document.getElementById("grid");
       if (shops.length === 0) grid.innerHTML = "<p>No shops in this market yet.</p>";
@@ -272,7 +272,7 @@ function loadProducts(shopName) {
             <button onclick="loadShops('${currentMarketName}')" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Shops</button>
             <h2 style="font-size: 24px; font-weight: 700; margin: 0;">🍔 ${shopName} Menu</h2>
         </div>
-        <div id="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px;"></div>
+        <div id="grid" class="product-grid"></div>
       `;
       const grid = document.getElementById("grid");
       if (products.length === 0) grid.innerHTML = "<p>This shop hasn't added any products yet.</p>";
@@ -556,7 +556,7 @@ function applyFilters() {
                       <h2 style="font-size: 24px; margin: 0;" id="searchTitle">🔍 Search Results</h2>
                   </div>
                   
-                  <div id="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px;"></div>
+                  <div id="grid" class="product-grid"></div>
                 `;
                 
                 const inputElement = document.getElementById("searchInput");
@@ -1051,7 +1051,7 @@ async function loadWishlist() {
                 <button onclick="loadHome()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Home</button>
                 <h2 style="font-size: 24px; font-weight: 700; margin: 0;">❤️ My Wishlist</h2>
             </div>
-            <div id="grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px;"></div>
+            <div id="grid" class="product-grid"></div>
         `;
         
         const grid = document.getElementById("grid");

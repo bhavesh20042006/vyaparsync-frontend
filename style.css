@@ -583,3 +583,47 @@ body.dark .auth-select {
     transform: translateY(0);
   }
 }
+
+/* 📱 ECOMMERCE MOBILE & GRID STYLES */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
+}
+.market-card {
+  min-width: 180px;
+}
+
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .product {
+    padding: 10px;
+    border-radius: 10px;
+  }
+  .product h3 {
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  .product p {
+    font-size: 11px;
+    margin: 2px 0;
+  }
+  .price {
+    font-size: 16px !important;
+    margin: 5px 0 !important;
+  }
+  button, .add-to-cart-btn, .buy-now-btn {
+    padding: 8px;
+    font-size: 12px;
+  }
+  .market-card {
+    min-width: 120px;
+    padding: 15px 10px !important;
+  }
+  .market-card h3 {
+    font-size: 14px !important;
+  }
+}
