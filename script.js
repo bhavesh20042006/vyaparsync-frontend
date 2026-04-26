@@ -108,7 +108,7 @@ function loadHome() {
     </div>
     <div>
         <h2 style="margin-bottom: 15px; font-size: 24px; font-weight: 700; text-align: center;">Trending Today</h2>
-        <div id="products-grid" class="product-grid"></div>
+        <div id="products-grid" class="horizontal-scroll-grid"></div>
     </div>
   `;
 
@@ -976,7 +976,11 @@ function loadCart() {
             <img src="${safeItemImage}" alt="Product" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect width=%2260%22 height=%2260%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2210px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
             <div class="cart-info">
               <h3>${sanitizeHTML(item.name)}</h3>
-              <p>Qty: ${itemQty}</p>
+              <div class="qty-controls" style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                  <button style="background: var(--card-bg); border: 1px solid rgba(0,0,0,0.1); width: 25px; height: 25px; border-radius: 5px; cursor: pointer; color: var(--text-main);" onclick="updateCartQuantity('${item.id}', -1)">-</button>
+                  <span style="font-weight: bold; color: var(--text-main); font-size: 14px;">${itemQty}</span>
+                  <button style="background: var(--card-bg); border: 1px solid rgba(0,0,0,0.1); width: 25px; height: 25px; border-radius: 5px; cursor: pointer; color: var(--text-main);" onclick="updateCartQuantity('${item.id}', 1)">+</button>
+              </div>
             </div>
             <div class="cart-price">₹${itemPriceTotal}</div>
             <button class="btn-remove" onclick="removeFromCart(${item.originalIndex})">X</button>
@@ -1024,6 +1028,20 @@ window.removeFromCart = function(index) {
   localStorage.setItem("cart", JSON.stringify(cart));
   loadCart();
   showToast("Item removed from cart.", "info");
+}
+
+window.updateCartQuantity = function(id, change) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const index = cart.findIndex(i => i.id === id);
+    if (index !== -1) {
+        cart[index].quantity = (cart[index].quantity || 1) + change;
+        if (cart[index].quantity <= 0) {
+            cart.splice(index, 1);
+            showToast("Item removed from cart.", "info");
+        }
+        localStorage.setItem("cart", JSON.stringify(cart));
+        loadCart();
+    }
 }
 
 // =======================================================
