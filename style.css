@@ -634,7 +634,9 @@ body.dark .auth-select {
   .horizontal-scroll-grid .product img {
     height: 70px !important;
     width: 100%;
-    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    object-fit: contain !important;
+    background-color: #ffffff;
   }
   .horizontal-scroll-grid .product h3 {
     font-size: 11px;
