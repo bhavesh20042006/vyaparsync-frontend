@@ -21,14 +21,6 @@
       onkeyup="delayFilter()" 
     >
   </div>
-  
-  <div class="nav-buttons">
-    <button onclick="loadWishlist()" class="nav-btn wishlist">❤️ Wishlist</button>
-    <a href="orders.html" class="nav-btn orders">📦 Orders</a>
-    <a href="cart.html" class="nav-btn cart">🛒 Cart</a>
-    <div id="userSection" class="user-section" style="display: contents;">
-      </div>
-  </div>
 </header>
 
 <div style="background: var(--card-bg); padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 14px;">
@@ -87,6 +79,7 @@
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 <script src="script.js?v=2"></script>
+<nav id="bottomNav" class="bottom-nav"></nav>
 
 </body>
 </html>
