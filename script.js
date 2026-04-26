@@ -320,14 +320,37 @@ function createProductHTML(p) {
 
     return `
       <div class="product" style="position: relative; cursor: pointer;" onclick="loadProductDetails('${p._id}')">
-        <button onclick="event.stopPropagation(); toggleWishlist('${p._id}', this)" style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); border: none; border-radius: 50%; width: 28px; height: 28px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: ${heartColor}; z-index: 10; padding: 0; margin: 0; transition: transform 0.2s;">
+        <button onclick="event.stopPropagation(); toggleWishlist('${p._id}', this)" style="position: absolute; top: 10px; right: 10px; background: white; border: none; border-radius: 50%; width: 35px; height: 35px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: ${heartColor}; z-index: 10; padding: 0; margin: 0; transition: transform 0.2s;">
             ♥
         </button>
         <img src="${safeImage}" alt="${attrName}" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
-        <h3 title="${safeName}">${safeName}</h3>
-        <p class="shop-name" title="${safeShopName}">🏬 ${safeShopName}</p>
+        <h3>${safeName}</h3>
+        <p style="cursor: pointer; margin-bottom: 5px;" onclick="event.stopPropagation(); loadShops('${safeMarket}')">
+            🏬 ${safeShopName} ${badgeHtml} | 🏙️ ${safeMarket}
+        </p>
+        ${trustScoreHtml}
+        
+        <div style="margin: 5px 0; font-size: 14px; color: var(--text-muted);">
+            ${starsHtml} <span style="font-weight: bold; color: var(--text-main);">${rating}</span> (${p.totalReviews || 0} reviews)
+        </div>
+
+        <p>Stock: <b>${p.stock}</b></p>
         <p class="price">₹${p.price}</p>
-        <button class="add-plus-btn" onclick="event.stopPropagation(); addToCart('${p._id}')">+</button>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+            <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p._id}')" style="margin-top: 0; background: #f1c40f; color: #333;">🛒 Add</button>
+            <button class="buy-now-btn" onclick="event.stopPropagation(); buy('${p._id}')" style="margin-top: 0;">⚡ Buy</button>
+        </div>
+
+        <button onclick="event.stopPropagation(); openReviewPrompt('${p._id}', '${escapedReviewName}')" style="width: 100%; margin-top: 10px; background: transparent; border: 1px dashed rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-size: 13px;">📝 Write a Review</button>
+        
+        ${p.reviews && p.reviews.length > 0 ? `
+            <div style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 8px; font-size: 12px; text-align: left; border-left: 3px solid #f1c40f;">
+                <b style="color: var(--text-main);">${sanitizeHTML(p.reviews[p.reviews.length - 1].customerName)}</b> 
+                <span style="color: #27ae60; font-weight: bold; font-size: 10px;">✅ Verified</span><br>
+                <i style="color: var(--text-muted);">"${sanitizeHTML(p.reviews[p.reviews.length - 1].comment)}"</i>
+            </div>
+        ` : ''}
       </div>
     `;
 }
@@ -601,61 +624,26 @@ function showUser() {
       console.error("Failed to parse user from local storage");
       localStorage.removeItem("user");
   }
-  const bottomNav = document.getElementById("bottomNav");
-  if (!bottomNav) return;
+  const userSection = document.getElementById("userSection");
+  if (!userSection) return;
   
-  let navHtml = `
-    <a href="index.html" class="bottom-nav-item active">
-      <span class="icon">🏠</span>
-      <span>Home</span>
-    </a>
-    <button onclick="loadWishlist()" class="bottom-nav-item">
-      <span class="icon">❤️</span>
-      <span>Wishlist</span>
-    </button>
-    <a href="orders.html" class="bottom-nav-item">
-      <span class="icon">📦</span>
-      <span>Orders</span>
-    </a>
-    <a href="cart.html" class="bottom-nav-item">
-      <span class="icon">🛒</span>
-      <span>Cart</span>
-    </a>
-  `;
-
+  const btnStyle = "display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; border-radius: 8px; font-weight: bold; font-size: 14px; text-decoration: none; box-sizing: border-box; cursor: pointer; transition: 0.2s;";
+  
   if (user) {
+    let dashboardLink = "";
     if (user.role === "retailer") {
-        navHtml = `
-            <a href="seller-dashboard.html" class="bottom-nav-item" style="color: #f1c40f;">
-              <span class="icon">🏬</span>
-              <span>Hub</span>
-            </a>
-            ` + navHtml;
+        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Dashboard</a>`;
     } else if (user.role === "admin") {
-        navHtml = `
-            <a href="admin-dashboard.html" class="bottom-nav-item" style="color: #3498db;">
-              <span class="icon">👑</span>
-              <span>Admin</span>
-            </a>
-            ` + navHtml;
+        dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn">CEO Cmd</a>`;
     }
-    
-    navHtml += `
-      <button onclick="logout()" class="bottom-nav-item">
-        <span class="icon">🚪</span>
-        <span>Logout</span>
-      </button>
+      
+    userSection.innerHTML = `
+        ${dashboardLink}
+        <button onclick="logout()" class="nav-btn logout-btn">Logout</button>
     `;
   } else {
-    navHtml += `
-      <a href="login.html" class="bottom-nav-item" style="color: var(--primary);">
-        <span class="icon">🚪</span>
-        <span>Login</span>
-      </a>
-    `;
+    userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn">Login</a>`;
   }
-  
-  bottomNav.innerHTML = navHtml;
 }
 
 function logout() {

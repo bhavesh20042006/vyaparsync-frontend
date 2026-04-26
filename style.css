@@ -28,55 +28,10 @@ body.dark {
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
-  padding-bottom: 70px; /* Space for bottom nav */
   background-color: var(--bg-color);
   color: var(--text-main);
   transition: background-color 0.4s ease, color 0.4s ease;
   overflow-x: hidden;
-}
-
-/* 📱 BOTTOM NAVIGATION BAR */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: var(--card-bg);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 10px 0;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-  z-index: 2000;
-  border-top: 1px solid rgba(0,0,0,0.05);
-}
-
-body.dark .bottom-nav {
-  border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-.bottom-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 600;
-  transition: var(--transition);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  padding: 5px;
-}
-
-.bottom-nav-item span.icon {
-  font-size: 20px;
-  margin-bottom: 2px;
-}
-
-.bottom-nav-item:hover, .bottom-nav-item.active {
-  color: var(--primary);
 }
 
 /* 🎩 MODERN NAVBAR */
@@ -105,13 +60,13 @@ header h2 {
 .header-logo-search {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 15px;
+  gap: 20px;
 }
 
 .nav-buttons {
-  display: none; /* Moved to bottom nav */
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .search-bar {
@@ -183,15 +138,13 @@ body.dark .hero {
 /* 📦 RESPONSIVE PRODUCT GRID */
 .product {
   background: var(--card-bg);
-  padding: 12px;
+  padding: 20px;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  text-align: left;
+  text-align: center;
   transition: var(--transition);
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 .product:hover {
@@ -397,64 +350,37 @@ body.dark .buy-now-btn:hover {
     width: 90%;
   }
   
-  #products-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
+  .nav-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 10px 2%;
+    width: 100%;
+    box-sizing: border-box !important;
+    overflow: hidden;
   }
   
-  .product {
-    padding: 10px;
-  }
-
-  .product img {
-    border-radius: 8px;
-    margin-bottom: 8px;
-  }
-
-  .product h3 {
-    font-size: 14px;
-    margin: 5px 0 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .product p.shop-name {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin: 0 0 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .product p.price {
-    font-size: 16px !important;
-    margin: 5px 0 0 !important;
-  }
-
-  .add-plus-btn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: var(--primary);
-    color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
+  .nav-buttons .nav-btn,
+  .nav-buttons button,
+  .nav-buttons a {
+    flex: 1 1 0;
+    width: 0 !important; /* forces equal distribution */
+    min-width: 0 !important; /* CRITICAL: overrides the desktop 130px min-width */
+    font-size: 11px !important;
+    padding: 4px 2px !important;
+    margin: 0 !important;
+    height: auto !important;
+    min-height: 45px !important; /* Uniform height for touch */
+    box-sizing: border-box !important;
+    text-align: center;
+    display: flex !important;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    border: none;
-    box-shadow: 0 4px 10px rgba(255, 106, 0, 0.3);
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .add-plus-btn:active {
-    transform: scale(0.9);
+    line-height: 1.2;
+    white-space: normal !important;
+    border-radius: 6px !important;
   }
   
   .filter-nav {
