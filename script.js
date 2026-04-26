@@ -319,13 +319,13 @@ function createProductHTML(p) {
     }
 
     return `
-      <div class="product" style="position: relative;">
+      <div class="product" style="position: relative; cursor: pointer;" onclick="loadProductDetails('${p._id}')">
         <button onclick="event.stopPropagation(); toggleWishlist('${p._id}', this)" style="position: absolute; top: 10px; right: 10px; background: white; border: none; border-radius: 50%; width: 35px; height: 35px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: ${heartColor}; z-index: 10; padding: 0; margin: 0; transition: transform 0.2s;">
             ♥
         </button>
         <img src="${safeImage}" alt="${attrName}" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
         <h3>${safeName}</h3>
-        <p style="cursor: pointer; margin-bottom: 5px;" onclick="loadShops('${safeMarket}')">
+        <p style="cursor: pointer; margin-bottom: 5px;" onclick="event.stopPropagation(); loadShops('${safeMarket}')">
             🏬 ${safeShopName} ${badgeHtml} | 🏙️ ${safeMarket}
         </p>
         ${trustScoreHtml}
@@ -338,11 +338,11 @@ function createProductHTML(p) {
         <p class="price">₹${p.price}</p>
         
         <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-            <button class="add-to-cart-btn" onclick="addToCart('${p._id}')" style="margin-top: 0; background: #f1c40f; color: #333;">🛒 Add</button>
-            <button class="buy-now-btn" onclick="buy('${p._id}')" style="margin-top: 0;">⚡ Buy</button>
+            <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p._id}')" style="margin-top: 0; background: #f1c40f; color: #333;">🛒 Add</button>
+            <button class="buy-now-btn" onclick="event.stopPropagation(); buy('${p._id}')" style="margin-top: 0;">⚡ Buy</button>
         </div>
 
-        <button onclick="openReviewPrompt('${p._id}', '${escapedReviewName}')" style="width: 100%; margin-top: 10px; background: transparent; border: 1px dashed rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-size: 13px;">📝 Write a Review</button>
+        <button onclick="event.stopPropagation(); openReviewPrompt('${p._id}', '${escapedReviewName}')" style="width: 100%; margin-top: 10px; background: transparent; border: 1px dashed rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-size: 13px;">📝 Write a Review</button>
         
         ${p.reviews && p.reviews.length > 0 ? `
             <div style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 8px; font-size: 12px; text-align: left; border-left: 3px solid #f1c40f;">
@@ -353,6 +353,137 @@ function createProductHTML(p) {
         ` : ''}
       </div>
     `;
+}
+
+function loadProductDetails(productId) {
+    const product = currentProducts.find(p => p._id === productId);
+    if (!product) return;
+
+    const container = document.getElementById("products");
+    
+    let imageSrc = product.image || 'https://via.placeholder.com/600';
+    if (imageSrc && !imageSrc.startsWith('http')) {
+        imageSrc = `${API_URL}/${imageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
+    }
+    const safeImage = escapeAttr(imageSrc);
+    
+    let sizesHtml = "";
+    if (product.sizes && product.sizes.length > 0) {
+        sizesHtml = `
+            <div style="margin: 20px 0;">
+                <b style="display: block; margin-bottom: 8px; color: var(--text-main);">Available Sizes:</b>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    ${product.sizes.map(size => `<button class="size-btn" onclick="selectSize(this)" style="padding: 10px 15px; border: 2px solid rgba(0,0,0,0.1); background: transparent; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s;">${sanitizeHTML(size)}</button>`).join('')}
+                </div>
+                <input type="hidden" id="selectedSize" value="">
+            </div>
+        `;
+    }
+
+    let starsHtml = "";
+    const rating = product.averageRating || 0;
+    for (let i = 1; i <= 5; i++) {
+        starsHtml += i <= Math.round(rating) ? '<span style="color: #f1c40f;">★</span>' : '<span style="color: #ddd;">★</span>';
+    }
+
+    container.innerHTML = `
+        <div id="current-view" data-view="product-details"></div>
+        <div style="margin-bottom: 25px;">
+            <button onclick="loadHome()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; padding: 10px 20px; cursor: pointer;">⬅ Back</button>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; background: var(--card-bg); padding: 40px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+            
+            <div style="flex: 1; min-width: 300px; max-width: 500px;">
+                <img src="${safeImage}" style="width: 100%; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            </div>
+            
+            <div style="flex: 2; min-width: 300px;">
+                <h1 style="margin-top: 0; margin-bottom: 10px; color: var(--text-main); font-size: 32px;">${sanitizeHTML(product.name)}</h1>
+                
+                <div style="font-size: 16px; color: var(--text-muted); margin-bottom: 15px;">
+                    ${starsHtml} <span style="font-weight: bold; color: var(--text-main);">${rating}</span> (${product.totalReviews || 0} verified reviews)
+                </div>
+
+                <div style="padding: 10px 15px; background: rgba(0,0,0,0.03); border-radius: 8px; display: inline-block; margin-bottom: 20px;">
+                    Sold by <b>${sanitizeHTML(product.shopName)}</b> | 🏙️ ${sanitizeHTML(product.market)}
+                    <div style="font-size: 12px; margin-top: 5px;">Category: <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px;">${sanitizeHTML(product.category || 'General')}</span></div>
+                </div>
+
+                <div style="font-size: 36px; font-weight: bold; color: var(--primary); margin-bottom: 15px;">
+                    ₹${product.price}
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    ${product.stock > 0 ? `<span style="color: #27ae60; font-weight: bold;">In Stock (${product.stock} available)</span>` : `<span style="color: #e74c3c; font-weight: bold;">Out of Stock</span>`}
+                </div>
+
+                ${sizesHtml}
+
+                <div style="margin: 30px 0;">
+                    <b style="display: block; margin-bottom: 10px; font-size: 18px; color: var(--text-main);">Product Details:</b>
+                    <p style="color: var(--text-muted); line-height: 1.6; white-space: pre-wrap;">${sanitizeHTML(product.description || "No description provided.")}</p>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button onclick="addToCartWithSize('${product._id}')" style="flex: 1; padding: 15px; background: #f1c40f; color: #111; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">🛒 Add to Cart</button>
+                    <button onclick="buyWithSize('${product._id}')" style="flex: 1; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">⚡ Buy Now</button>
+                </div>
+            </div>
+            
+        </div>
+    `;
+}
+
+function selectSize(btn) {
+    document.querySelectorAll('.size-btn').forEach(b => {
+        b.style.borderColor = 'rgba(0,0,0,0.1)';
+        b.style.background = 'transparent';
+        b.style.color = 'var(--text-main)';
+    });
+    btn.style.borderColor = 'var(--primary)';
+    btn.style.background = 'var(--primary)';
+    btn.style.color = 'white';
+    document.getElementById('selectedSize').value = btn.innerText;
+}
+
+function addToCartWithSize(id) {
+    const sizeInput = document.getElementById('selectedSize');
+    let size = "";
+    if (sizeInput && document.querySelector('.size-btn')) { // If there are sizes to choose from
+        size = sizeInput.value;
+        if (!size) {
+            return showToast("Please select a size first!", "error");
+        }
+    }
+    
+    // Modification of addToCart logic to include size
+    const product = currentProducts.find(p => p._id === id);
+    if (!product) return;
+    let cart = [];
+    try {
+        cart = JSON.parse(localStorage.getItem("cart")) || [];
+    } catch (e) {
+        cart = [];
+    }
+    
+    // We append size to id in the cart so different sizes of same product are separate items
+    const cartItemId = size ? `${id}_${size}` : id;
+    
+    const existingItem = cart.find(item => item.id === cartItemId);
+    if (existingItem) existingItem.quantity += 1;
+    else cart.push({ id: cartItemId, originalId: id, name: product.name + (size ? ` (${size})` : ""), price: product.price, quantity: 1, image: product.image, market: product.market });
+    
+    localStorage.setItem("cart", JSON.stringify(cart));
+    showToast(`${product.name} ${size ? `(${size})` : ''} added to cart!`, "success");
+}
+
+function buyWithSize(id) {
+    const sizeInput = document.getElementById('selectedSize');
+    if (sizeInput && document.querySelector('.size-btn') && !sizeInput.value) {
+        return showToast("Please select a size first!", "error");
+    }
+    addToCartWithSize(id);
+    setTimeout(() => { window.location.href = "cart.html"; }, 500);
 }
 
 // =======================================================

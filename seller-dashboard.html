@@ -273,6 +273,27 @@
       </div>
 
       <div class="form-group">
+        <label>Category</label>
+        <select id="category" onchange="document.getElementById('sizesGroup').style.display = this.value === 'Clothing' ? 'block' : 'none';">
+           <option value="General">General</option>
+           <option value="Electronics">Electronics</option>
+           <option value="Clothing">Clothing</option>
+           <option value="Fabric">Fabric</option>
+           <option value="Food">Food</option>
+           <option value="Hardware">Hardware</option>
+           <option value="Stationery">Stationery</option>
+           <option value="Jewellery">Jewellery</option>
+           <option value="Books">Books</option>
+           <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="sizesGroup" style="display: none;">
+        <label>Sizes (Comma separated, e.g. S, M, L, XL)</label>
+        <input type="text" id="sizes" placeholder="S, M, L, XL">
+      </div>
+
+      <div class="form-group">
         <label>Barcode / SKU (Optional)</label>
         <input type="text" id="barcode" placeholder="Scan or type barcode here">
       </div>
@@ -286,6 +307,11 @@
           <label>Initial Stock</label>
           <input type="number" id="stock" placeholder="10">
         </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="description" rows="3" placeholder="Enter complete product details..." style="width: 100%; padding: 12px 15px; border: 2px solid rgba(0,0,0,0.1); border-radius: 8px; box-sizing: border-box; background: transparent; color: var(--text-main); font-family: 'Poppins', sans-serif; resize: vertical;"></textarea>
       </div>
 
       <input type="hidden" id="market">
@@ -468,6 +494,9 @@
         const btn = document.getElementById("uploadBtn");
         
         const name = document.getElementById("name").value;
+        const category = document.getElementById("category").value;
+        const description = document.getElementById("description").value;
+        const sizes = document.getElementById("sizes").value;
         const price = document.getElementById("price").value;
         const stock = document.getElementById("stock").value;
         const barcode = document.getElementById("barcode").value;
@@ -483,6 +512,9 @@
         // Use FormData instead of JSON to send files
         const formData = new FormData();
         formData.append("name", name);
+        formData.append("category", category);
+        formData.append("description", description);
+        if (category === 'Clothing' && sizes) formData.append("sizes", sizes);
         formData.append("price", price);
         formData.append("stock", stock);
         formData.append("barcode", barcode);
@@ -503,6 +535,8 @@
             
             // Clear inputs
             document.getElementById("name").value = "";
+            document.getElementById("description").value = "";
+            document.getElementById("sizes").value = "";
             document.getElementById("price").value = "";
             document.getElementById("stock").value = "";
             document.getElementById("barcode").value = "";
