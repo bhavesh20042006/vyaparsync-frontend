@@ -103,6 +103,58 @@
     
     .btn-delete { background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: var(--transition); }
     .btn-delete:hover { background: #ff6b81; transform: scale(1.05); }
+    /* 📱 MOBILE RESPONSIVENESS */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 15px;
+        box-shadow: none;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+      }
+      .sidebar h2 { margin-bottom: 15px; font-size: 20px; text-align: center; }
+      .sidebar a {
+        padding: 10px;
+        margin-bottom: 5px;
+        font-size: 14px;
+        text-align: center;
+        justify-content: center;
+      }
+      .main-content {
+        margin-left: 0;
+        padding: 15px;
+        width: 100%;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .stat-card {
+        padding: 15px;
+      }
+      .stat-card p {
+        font-size: 20px;
+      }
+      .form-card {
+        padding: 15px;
+      }
+      h1#welcomeMessage {
+        font-size: 20px !important;
+      }
+      th, td {
+        padding: 10px 5px;
+        font-size: 12px;
+      }
+      
+      /* Make tables horizontally scrollable without breaking the container */
+      .form-card[id="inventory-section"], .form-card[id="orders-section"] {
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
