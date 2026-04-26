@@ -630,10 +630,8 @@ function showUser() {
   const btnStyle = "display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; border-radius: 8px; font-weight: bold; font-size: 14px; text-decoration: none; box-sizing: border-box; cursor: pointer; transition: 0.2s;";
   
   if (user) {
-    let dashboardLink = "";
-    if (user.role === "retailer") {
-        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Dashboard</a>`;
-    } else if (user.role === "admin") {
+    let dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Hub</a>`;
+    if (user.role === "admin") {
         dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn">CEO Cmd</a>`;
     }
       
