@@ -715,8 +715,12 @@ body.dark .auth-select {
     align-items: flex-start;
   }
   .cart-item img {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.05);
   }
   .cart-info {
     margin-left: 10px;
@@ -744,9 +748,11 @@ body.dark .auth-select {
     position: absolute;
     top: 10px;
     right: 0;
-    padding: 4px 8px;
-    font-size: 12px;
+    padding: 6px 10px !important;
+    font-size: 14px !important;
     margin: 0;
+    width: auto !important;
+    min-width: 30px !important;
   }
   .cart-summary {
     padding: 15px;
