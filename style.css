@@ -618,10 +618,30 @@ body.dark .auth-select {
     gap: 10px;
   }
   .horizontal-scroll-grid {
-    gap: 10px;
+    gap: 8px;
   }
   .horizontal-scroll-grid .product {
-    min-width: 160px;
+    min-width: 105px;
+    padding: 8px;
+  }
+  .horizontal-scroll-grid .product h3 {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .horizontal-scroll-grid .product p {
+    font-size: 9px;
+  }
+  .horizontal-scroll-grid .product .price {
+    font-size: 13px !important;
+  }
+  .horizontal-scroll-grid .product button, 
+  .horizontal-scroll-grid .product .add-to-cart-btn, 
+  .horizontal-scroll-grid .product .buy-now-btn {
+    padding: 5px;
+    font-size: 9px;
+    margin-top: 4px;
   }
   .product {
     padding: 10px;
