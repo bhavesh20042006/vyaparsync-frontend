@@ -632,7 +632,7 @@ function showUser() {
   if (user) {
     let dashboardLink = "";
     if (user.role === "retailer") {
-        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Hub</a>`;
+        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Dashboard</a>`;
     } else if (user.role === "admin") {
         dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn">CEO Cmd</a>`;
     }
