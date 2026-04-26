@@ -112,21 +112,41 @@
         width: 100%;
         height: auto;
         position: relative;
-        padding: 15px;
+        padding: 15px 10px;
         box-shadow: none;
         border-bottom: 1px solid rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 5px;
+        justify-content: center;
       }
-      .sidebar h2 { margin-bottom: 15px; font-size: 20px; text-align: center; }
-      .sidebar a {
-        padding: 10px;
-        margin-bottom: 5px;
-        font-size: 14px;
+      .sidebar h2 { 
+        width: 100%; 
+        margin-bottom: 10px; 
+        font-size: 20px; 
+        text-align: center; 
+      }
+      .sidebar > p { display: none; } /* Hide "Menu" text on mobile */
+      .sidebar a, .sidebar button {
+        flex: 1 1 auto;
+        padding: 8px 12px !important;
+        margin-bottom: 0;
+        font-size: 12px;
         text-align: center;
         justify-content: center;
+        width: auto !important;
+        border-radius: 8px;
+      }
+      .sidebar > div {
+        flex-direction: row !important;
+        width: 100%;
+        gap: 5px;
+        margin-top: 5px !important;
       }
       .main-content {
         margin-left: 0;
-        padding: 15px;
+        padding: 15px 10px;
         width: 100%;
       }
       .stats-grid {
@@ -134,10 +154,10 @@
         gap: 10px;
       }
       .stat-card {
-        padding: 15px;
+        padding: 15px 10px;
       }
       .stat-card p {
-        font-size: 20px;
+        font-size: 18px;
       }
       .form-card {
         padding: 15px;
@@ -146,13 +166,17 @@
         font-size: 20px !important;
       }
       th, td {
-        padding: 10px 5px;
-        font-size: 12px;
+        padding: 10px;
+        font-size: 13px;
+        white-space: nowrap; /* Forces table to scroll horizontally instead of squishing text */
       }
       
       /* Make tables horizontally scrollable without breaking the container */
       .form-card[id="inventory-section"], .form-card[id="orders-section"] {
-        padding: 10px;
+        padding: 15px 5px; 
+      }
+      .form-card[id="inventory-section"] h2, .form-card[id="orders-section"] h2 {
+        padding-left: 10px;
       }
     }
   </style>
