@@ -1705,13 +1705,20 @@ function showPwaInstallBanner() {
   document.body.appendChild(banner);
 
   document.getElementById('installAppBtn').addEventListener('click', async () => {
-    banner.remove();
     if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to the install prompt: ${outcome}`);
+      try {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'dismissed') {
+              showToast("Installation cancelled. You may need to clear site data to try again.", "error");
+          }
+      } catch (err) {
+          console.error(err);
+          showToast("Installation blocked by browser. Try clearing browser cache.", "error");
+      }
       deferredPrompt = null;
     }
+    banner.remove();
   });
 
   document.getElementById('closeInstallBtn').addEventListener('click', () => {
@@ -1722,7 +1729,9 @@ function showPwaInstallBanner() {
 // 2. Custom Notification Banner (Requires user gesture)
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem("token");
-    if (token && 'Notification' in window && Notification.permission === 'default') {
+    const declined = localStorage.getItem("notifPromptDeclined");
+    // Only prompt if they haven't explicitly declined it recently
+    if (token && 'Notification' in window && Notification.permission === 'default' && !declined) {
         setTimeout(() => {
             showNotificationBanner();
         }, 2000);
