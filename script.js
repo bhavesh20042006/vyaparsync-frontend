@@ -1622,69 +1622,38 @@ if ('serviceWorker' in navigator) {
 
 // Function to subscribe to push notifications
 async function subscribeToNotifications() {
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator && 'Notification' in window) {
     try {
       const register = await navigator.serviceWorker.ready;
-      const permission = await Notification.requestPermission();
-      
-      if (permission === 'granted') {
-        const token = localStorage.getItem("token");
-        if (!token) return showToast("Please login first to enable notifications.", "error");
-
-        const subscription = await register.pushManager.subscribe({
-          userVisibleOnly: true,
-          // ⚠️ IMPORTANT: Paste your actual Public VAPID Key below
-          applicationServerKey: "BFEMdN7XR9F70Rf3r0UFWlIISDl7cx1VeSsvlpUVILhTZ1V7NW_63D0Vx3VNCW7mUAb2Iq3Fdp_wKdesE4Az_uI"
-        });
-
-        // Send to backend
-        const res = await fetch(`${API_URL}/auth/save-subscription`, {
-          method: 'POST',
-          body: JSON.stringify(subscription),
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+      if (Notification.permission === 'default') {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+            const token = localStorage.getItem("token");
+            if (!token) return;
+            const subscription = await register.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: "BFEMdN7XR9F70Rf3r0UFWlIISDl7cx1VeSsvlpUVILhTZ1V7NW_63D0Vx3VNCW7mUAb2Iq3Fdp_wKdesE4Az_uI"
+            });
+            await fetch(`${API_URL}/auth/save-subscription`, {
+              method: 'POST',
+              body: JSON.stringify(subscription),
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+            });
+            showToast("Notifications enabled successfully! 🔔", "success");
           }
-        });
-
-        if (res.ok) {
-          showToast("Notifications enabled successfully! 🔔", "success");
-        } else {
-          showToast("Failed to enable notifications.", "error");
-        }
-      } else {
-          showToast("Notification permission denied.", "info");
       }
     } catch (err) {
       console.error("Subscription Error:", err);
-      showToast("Error enabling notifications.", "error");
     }
-  } else {
-      showToast("Push notifications are not supported in this browser.", "error");
   }
 }
 
-// Add a button dynamically to the user section for notifications
+// Auto-prompt notifications if user is logged in
 document.addEventListener("DOMContentLoaded", () => {
-  const originalShowUser = window.showUser;
-  if(typeof originalShowUser === 'function') {
-      window.showUser = function() {
-          originalShowUser();
-          const user = JSON.parse(localStorage.getItem("user"));
-          const userSection = document.getElementById("userSection");
-          if(user && userSection) {
-              const notifBtn = document.createElement("button");
-              notifBtn.className = "nav-btn premium-btn";
-              notifBtn.style.background = "#3498db";
-              notifBtn.style.color = "white";
-              notifBtn.innerHTML = "🔔 Enable Alerts";
-              notifBtn.onclick = subscribeToNotifications;
-              userSection.insertBefore(notifBtn, userSection.lastElementChild);
-          }
-      };
-      // re-run to inject button if already run
-      if(document.getElementById("userSection") && document.getElementById("userSection").innerHTML !== "") {
-          window.showUser();
-      }
-  }
+    const token = localStorage.getItem("token");
+    if (token) {
+        setTimeout(() => {
+            subscribeToNotifications();
+        }, 3000);
+    }
 });
