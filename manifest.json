@@ -1,8 +1,8 @@
 {
-  "name": "VyaparSync Store",
+  "name": "VyaparSync Mobile",
   "short_name": "VyaparSync",
   "description": "India's Markets, Delivered.",
-  "start_url": "/",
+  "start_url": "/?v=10",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
@@ -19,5 +19,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "vyaparsync-mobile-v10"
 }
