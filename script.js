@@ -1663,11 +1663,8 @@ async function subscribeToNotifications() {
 // Auto-prompt notifications if user is logged in
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
-    if (token) {
-        setTimeout(() => {
-            subscribeToNotifications();
-        }, 3000);
-    }
+    const declined = localStorage.getItem("notifPromptDeclined");
+    // Wait until they explicitly trigger it, or just use the banner
 });
 
 // =======================================================
