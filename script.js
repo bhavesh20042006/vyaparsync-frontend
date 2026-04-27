@@ -1657,3 +1657,93 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000);
     }
 });
+
+// =======================================================
+// 📱 PWA INSTALL & NOTIFICATION PROMPTS (User Gesture Required)
+// =======================================================
+
+let deferredPrompt;
+
+// 1. Capture the PWA Install event
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
+  // Show our custom install banner
+  showPwaInstallBanner();
+});
+
+function showPwaInstallBanner() {
+  // Only show if user is on mobile/app-like state
+  if (document.getElementById('pwa-banner')) return;
+  
+  const banner = document.createElement('div');
+  banner.id = 'pwa-banner';
+  banner.style = "position: fixed; bottom: 0; left: 0; width: 100%; background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.2);";
+  banner.innerHTML = `
+    <div style="font-size: 14px; font-weight: bold;">
+      📱 Install VyaparSync App for a faster experience!
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <button id="installAppBtn" style="background: white; color: var(--primary); border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">Install</button>
+        <button id="closeInstallBtn" style="background: transparent; color: white; border: 1px solid white; padding: 8px 10px; border-radius: 8px; cursor: pointer;">X</button>
+    </div>
+  `;
+  document.body.appendChild(banner);
+
+  document.getElementById('installAppBtn').addEventListener('click', async () => {
+    banner.remove();
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      deferredPrompt = null;
+    }
+  });
+
+  document.getElementById('closeInstallBtn').addEventListener('click', () => {
+    banner.remove();
+  });
+}
+
+// 2. Custom Notification Banner (Requires user gesture)
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem("token");
+    if (token && 'Notification' in window && Notification.permission === 'default') {
+        setTimeout(() => {
+            showNotificationBanner();
+        }, 2000);
+    }
+});
+
+function showNotificationBanner() {
+    if (document.getElementById('notif-banner')) return;
+    
+    const banner = document.createElement('div');
+    banner.id = 'notif-banner';
+    banner.style = "position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: white; color: #333; padding: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-radius: 12px; border-left: 5px solid var(--primary);";
+    banner.innerHTML = `
+      <div style="font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+        🔔 Turn on live order updates?
+      </div>
+      <div style="font-size: 12px; color: #666;">Get instantly notified when your order is dispatched.</div>
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 5px;">
+          <button id="declineNotifBtn" style="background: #f1f1f1; color: #333; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;">Not Now</button>
+          <button id="allowNotifBtn" style="background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px;">Allow</button>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    document.getElementById('allowNotifBtn').addEventListener('click', () => {
+        // This is a user gesture! The browser will allow the prompt.
+        subscribeToNotifications();
+        banner.remove();
+    });
+
+    document.getElementById('declineNotifBtn').addEventListener('click', () => {
+        banner.remove();
+        // Set a flag in localStorage so we don't bother them again today
+        localStorage.setItem("notifPromptDeclined", Date.now());
+    });
+}
