@@ -1,4 +1,4 @@
-const CACHE_NAME = "vyaparsync-cache-v1";
+const CACHE_NAME = "vyaparsync-cache-v2";
 const urlsToCache = [
   "/",
   "/index.html",
@@ -11,6 +11,7 @@ const urlsToCache = [
 
 // 1. Install Phase: Cache the core files
 self.addEventListener("install", (event) => {
+  self.skipWaiting(); // Force the waiting service worker to become the active service worker
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Opened cache");
@@ -19,15 +20,41 @@ self.addEventListener("install", (event) => {
   );
 });
 
+// Activate Phase: Clean up old caches
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+  self.clients.claim(); // Claim control immediately
+});
+
 // 2. Fetch Phase: Serve from cache if offline
 self.addEventListener("fetch", (event) => {
-  // Only cache GET requests, and avoid caching API calls for now
+  // Always serve index.html for navigation requests if offline
+  if (event.request.mode === 'navigate') {
+      event.respondWith(
+          fetch(event.request).catch(() => {
+              return caches.match('/index.html', { ignoreSearch: true }) || caches.match('/', { ignoreSearch: true });
+          })
+      );
+      return;
+  }
+
+  // Only cache GET requests, and avoid caching API calls
   if (event.request.method !== "GET" || event.request.url.includes("/api/") || event.request.url.includes("localhost:5000")) {
     return;
   }
+  
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Return cached version if found, otherwise fetch from network
+    caches.match(event.request, { ignoreSearch: true }).then((response) => {
       return response || fetch(event.request);
     })
   );
