@@ -2,7 +2,7 @@
   "name": "VyaparSync",
   "short_name": "VyaparSync",
   "description": "India's Markets, Delivered.",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
@@ -19,5 +19,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "/?source=pwa"
 }
