@@ -1,12 +1,12 @@
-const CACHE_NAME = "vyaparsync-cache-v8";
+const CACHE_NAME = "vyaparsync-cache-v9";
 const urlsToCache = [
   "/",
   "/index.html",
   "/style.css",
   "/script.js",
   "/manifest.json",
-  "/icon-192-v2.png",
-  "/icon-512-v2.png"
+  "/icon-192-v3.png",
+  "/icon-512-v3.png"
 ];
 
 // 1. Install Phase: Cache the core files
@@ -67,8 +67,8 @@ self.addEventListener("push", (event) => {
       const data = event.data.json();
       const options = {
         body: data.body,
-        icon: "/icon-192-v2.png",
-        badge: "/icon-192-v2.png",
+        icon: "/icon-192-v3.png",
+        badge: "/icon-192-v3.png",
         vibrate: [200, 100, 200],
         data: {
           url: data.url || "/"
