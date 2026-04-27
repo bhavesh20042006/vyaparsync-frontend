@@ -471,10 +471,10 @@ function addToCartWithSize(id) {
     
     const existingItem = cart.find(item => item.id === cartItemId);
     if (existingItem) {
-        if (existingItem.quantity >= product.stock) return showToast(`Only ${product.stock} units available!`, \"error\");
+        if (existingItem.quantity >= product.stock) return showToast(`Only ${product.stock} units available!`, "error");
         existingItem.quantity += 1;
     } else {
-        if (product.stock < 1) return showToast(\"Out of stock!\", \"error\");
+        if (product.stock < 1) return showToast("Out of stock!", "error");
         cart.push({ id: cartItemId, originalId: id, name: product.name + (size ? ` (${size})` : ""), price: product.price, quantity: 1, stock: product.stock, image: product.image, market: product.market });
     }
     
@@ -611,10 +611,10 @@ function addToCart(id) {
   }
   const existingItem = cart.find(item => item.id === id);
   if (existingItem) {
-        if (existingItem.quantity >= product.stock) return showToast(`Only ${product.stock} units available!`, \"error\");
+        if (existingItem.quantity >= product.stock) return showToast(`Only ${product.stock} units available!`, "error");
         existingItem.quantity += 1;
     } else {
-        if (product.stock < 1) return showToast(\"Out of stock!\", \"error\");
+        if (product.stock < 1) return showToast("Out of stock!", "error");
         cart.push({ id: product._id, name: product.name, price: product.price, quantity: 1, stock: product.stock, image: product.image, market: product.market });
     }
   localStorage.setItem("cart", JSON.stringify(cart));
@@ -1045,7 +1045,7 @@ window.updateCartQuantity = function(id, change) {
     const index = cart.findIndex(i => i.id === id);
     if (index !== -1) {
         let newQty = (cart[index].quantity || 1) + change;
-    if (change > 0 && cart[index].stock !== undefined && newQty > cart[index].stock) { showToast(\"Maximum available stock reached\", \"error\"); return; }
+    if (change > 0 && cart[index].stock !== undefined && newQty > cart[index].stock) { showToast("Maximum available stock reached", "error"); return; }
     cart[index].quantity = newQty;
         if (cart[index].quantity <= 0) {
             cart.splice(index, 1);
