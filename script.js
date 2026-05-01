@@ -744,15 +744,21 @@ async function requestOTP() {
     
     if (!email || !email.includes("@")) return showToast("Please enter a valid email.", "error");
 
-    btn.innerText = "Sending... ✉️";
+    btn.innerText = "Sending... ✉️ (May take 50s)";
     btn.disabled = true;
 
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 seconds timeout
+
         const res = await fetch(`${API_URL}/auth/send-otp`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ email }),
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
+        
         const data = await res.json();
         
         if (!res.ok) throw new Error(data.message);
@@ -764,7 +770,11 @@ async function requestOTP() {
         showToast("Code sent! Check your inbox.", "success");
 
     } catch (err) {
-        showToast(err.message, "error");
+        if (err.name === 'AbortError') {
+            showToast("Server took too long to respond. Please try again.", "error");
+        } else {
+            showToast(err.message || "Failed to connect to server.", "error");
+        }
         btn.innerText = "Send Secure Code";
         btn.disabled = false;
     }
