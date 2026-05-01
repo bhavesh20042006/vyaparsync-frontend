@@ -66,7 +66,7 @@ header h2 {
 .nav-buttons {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 8px;
 }
 
 .search-bar {
@@ -267,9 +267,9 @@ body.dark .buy-now-btn:hover {
   gap: 5px;
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white !important;
-  min-width: 130px !important; /* Ensures short buttons are perfectly uniform */
+  min-width: auto !important; /* Fixed short buttons min-width */
   width: auto !important; /* Allows long buttons to expand safely */
-  padding: 0 15px !important;
+  padding: 0 10px !important;
   margin: 0 !important; /* Fixes vertical alignment between button and a tags */
   height: 42px !important; /* Exact uniform height */
   box-sizing: border-box !important;
@@ -788,4 +788,6 @@ body.dark .auth-select {
   .stats-grid {
     grid-template-columns: 1fr;
   }
-}
+}
+
+.hidden-btn { display: none !important; }
