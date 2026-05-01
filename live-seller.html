@@ -3,122 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Live Studio - Vyaparsync</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Live Control Room - Vyaparsync</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.0.js"></script>
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <style>
+        /* Custom Scrollbar for dark theme */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #18181b; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+
         .video-container {
             width: 100%;
-            height: 400px;
-            background-color: #111;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
             border-radius: 12px;
             overflow: hidden;
             position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+        
+        .agora_video_player {
+            object-fit: cover !important;
+        }
+
         .chat-box {
-            height: 300px;
+            height: calc(100vh - 280px);
             overflow-y: auto;
+        }
+
+        .tab-btn.active {
+            border-bottom: 2px solid #ff6a00;
+            color: #ff6a00;
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans h-screen flex flex-col">
+<body class="bg-[#0f0f11] text-gray-200 font-sans h-screen flex flex-col overflow-hidden">
 
-    <!-- Header -->
-    <header class="bg-white shadow-sm p-4 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <h1 class="text-xl font-bold text-blue-600">Vyaparsync</h1>
-            <span class="bg-red-100 text-red-600 px-2 py-1 text-xs font-bold rounded">LIVE STUDIO</span>
+    <!-- Top Navigation Bar -->
+    <header class="bg-[#18181b] border-b border-gray-800 px-6 py-3 flex justify-between items-center z-10">
+        <div class="flex items-center gap-4">
+            <h1 class="text-xl font-bold text-white tracking-tight">🛍 Vyaparsync</h1>
+            <div class="h-6 w-[1px] bg-gray-700"></div>
+            <span class="text-sm font-semibold text-gray-400">Live Control Room</span>
         </div>
-        <button onclick="window.location.href='seller-dashboard.html'" class="text-sm text-gray-500 hover:text-gray-800">
-            Exit Studio
-        </button>
+        
+        <div class="flex items-center gap-4">
+            <div id="stream-status" class="bg-gray-800 text-gray-300 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-2 border border-gray-700">
+                <span class="w-2 h-2 bg-gray-500 rounded-full"></span> OFFLINE
+            </div>
+            <button onclick="window.location.href='seller-dashboard.html'" class="text-sm text-gray-400 hover:text-white transition-colors">
+                Exit Studio
+            </button>
+        </div>
     </header>
 
-    <main class="flex-grow p-4 md:p-6 max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-6">
+    <main class="flex-grow flex flex-col lg:flex-row p-4 gap-4 h-full">
         
-        <!-- Left Column: Video & Controls -->
-        <div class="flex-grow flex flex-col gap-4">
-            <!-- Video Area -->
-            <div id="video-wrapper" class="video-container shadow-lg">
-                <div id="local-player" class="w-full h-full"></div>
-                <div class="absolute top-4 left-4 bg-red-600 text-white px-2 py-1 rounded text-sm font-bold flex items-center gap-2">
-                    <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                    LIVE
+        <!-- Left Column: Broadcast Area (approx 70%) -->
+        <div class="flex-grow flex flex-col gap-4 h-full overflow-y-auto pr-2">
+            
+            <!-- Main Video Feed -->
+            <div class="w-full max-w-5xl mx-auto">
+                <div id="video-wrapper" class="video-container border border-gray-800">
+                    <div id="local-player" class="w-full h-full"></div>
+                    
+                    <!-- Overlay Elements -->
+                    <div class="absolute top-4 left-4 flex gap-2 z-10">
+                        <div id="live-indicator" class="hidden bg-red-600 text-white px-2 py-1 rounded text-xs font-bold items-center gap-2 shadow-lg">
+                            <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
+                        </div>
+                        <div class="bg-black/60 text-white px-2 py-1 rounded text-xs backdrop-blur-sm shadow-lg border border-white/10">
+                            👁️ <span id="viewer-count">0</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="absolute top-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-sm backdrop-blur-sm">
-                    👁️ <span id="viewer-count">0</span>
-                </div>
-            </div>
 
-            <!-- Controls -->
-            <div class="bg-white p-4 rounded-xl shadow-sm flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div class="flex gap-2">
-                    <button id="start-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                        Start Broadcast
-                    </button>
-                    <button id="stop-btn" class="bg-red-50 hover:bg-red-100 text-red-600 px-6 py-2 rounded-lg font-medium transition-colors hidden">
-                        End Stream
-                    </button>
-                </div>
-                
-                <div class="flex gap-2">
-                    <button id="pin-btn" class="bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200 px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 hidden">
-                        📌 Pin "Kurta Pajama"
-                    </button>
+                <!-- Stream Controls Deck -->
+                <div class="bg-[#18181b] border border-gray-800 rounded-xl p-4 mt-4 flex justify-between items-center">
+                    
+                    <div class="flex gap-3">
+                        <button id="toggle-mic-btn" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-colors border border-gray-700 disabled:opacity-50" title="Mute Microphone" disabled>
+                            🎤
+                        </button>
+                        <button id="toggle-cam-btn" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-colors border border-gray-700 disabled:opacity-50" title="Turn off Camera" disabled>
+                            📹
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="hidden md:block text-xs text-gray-500 text-right">
+                            <div>Stream Health</div>
+                            <div id="health-stats" class="text-[#2ecc71] font-mono mt-0.5">Excellent</div>
+                        </div>
+                        
+                        <button id="start-btn" class="bg-[#ff6a00] hover:bg-[#e65c00] text-white px-8 py-3 rounded-lg font-bold shadow-lg transition-transform active:scale-95 flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.5 8.5C5.5 8.5 7.5 5 12 5c4.5 0 6.5 3.5 6.5 3.5m-13 7C5.5 15.5 7.5 19 12 19c4.5 0 6.5-3.5 6.5-3.5m-9-3.5a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+                            GO LIVE
+                        </button>
+                        
+                        <button id="stop-btn" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg transition-transform active:scale-95 hidden">
+                            END STREAM
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Column: Live Chat -->
-        <div class="w-full md:w-80 bg-white rounded-xl shadow-sm flex flex-col h-[500px]">
-            <div class="p-4 border-b">
-                <h2 class="font-bold">Live Chat</h2>
+        <!-- Right Column: Interactive Sidebar (approx 30%) -->
+        <div class="w-full lg:w-96 bg-[#18181b] border border-gray-800 rounded-xl flex flex-col h-full flex-shrink-0">
+            
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-800">
+                <button onclick="switchTab('chat')" id="tab-chat" class="flex-1 py-4 text-sm font-bold text-gray-400 hover:text-white tab-btn active transition-colors">
+                    Live Chat
+                </button>
+                <button onclick="switchTab('products')" id="tab-products" class="flex-1 py-4 text-sm font-bold text-gray-400 hover:text-white tab-btn transition-colors">
+                    Products
+                </button>
             </div>
-            <div id="chat-messages" class="flex-grow p-4 chat-box flex flex-col gap-3">
-                <!-- Chat messages will appear here -->
-                <div class="text-center text-sm text-gray-400 my-4">Welcome to Live Studio chat</div>
+
+            <!-- Chat Tab Content -->
+            <div id="content-chat" class="flex flex-col h-full">
+                <div id="chat-messages" class="flex-grow p-4 chat-box flex flex-col gap-3">
+                    <div class="text-center text-xs text-gray-600 my-4 bg-gray-900/50 py-2 rounded">Welcome to Live Studio Control Room. Messages will appear here when you go live.</div>
+                </div>
+                <div class="p-4 border-t border-gray-800 bg-[#121214] rounded-b-xl">
+                    <div class="flex gap-2">
+                        <input type="text" id="chat-input" class="flex-grow bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:border-[#ff6a00] outline-none text-sm transition-colors" placeholder="Type a message...">
+                        <button id="send-btn" class="bg-[#ff6a00] text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#e65c00] transition-colors">Send</button>
+                    </div>
+                </div>
             </div>
-            <div class="p-4 border-t flex gap-2">
-                <input type="text" id="chat-input" class="flex-grow bg-gray-100 border-none rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Type a message...">
-                <button id="send-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Send</button>
+
+            <!-- Products Tab Content (Hidden by default) -->
+            <div id="content-products" class="hidden flex-col h-full p-4 overflow-y-auto">
+                <div class="text-xs text-gray-400 mb-4 bg-gray-800 p-3 rounded-lg border border-gray-700">
+                    Click "Pin" to instantly show a product on the viewers' screens. They will see a "Buy Now" button.
+                </div>
+                
+                <!-- Mock Product List -->
+                <div class="flex flex-col gap-3">
+                    <!-- Product Item 1 -->
+                    <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-3 flex gap-3 items-center hover:bg-gray-800 transition-colors">
+                        <div class="w-12 h-12 bg-blue-900 rounded flex-shrink-0 flex items-center justify-center text-xl">👔</div>
+                        <div class="flex-grow min-w-0">
+                            <div class="text-sm font-bold text-white truncate">Premium Kurta Pajama</div>
+                            <div class="text-xs text-[#2ecc71] font-bold">₹1,780</div>
+                        </div>
+                        <button onclick="pinProduct('kurta_001', 'Premium Kurta Pajama', 1780, 'https://via.placeholder.com/150/1e3a8a/ffffff?text=Kurta')" class="bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold px-3 py-1.5 rounded transition-colors pin-action-btn whitespace-nowrap">
+                            📌 Pin
+                        </button>
+                    </div>
+
+                    <!-- Product Item 2 -->
+                    <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-3 flex gap-3 items-center hover:bg-gray-800 transition-colors">
+                        <div class="w-12 h-12 bg-red-900 rounded flex-shrink-0 flex items-center justify-center text-xl">👗</div>
+                        <div class="flex-grow min-w-0">
+                            <div class="text-sm font-bold text-white truncate">Silk Saree Red</div>
+                            <div class="text-xs text-[#2ecc71] font-bold">₹3,450</div>
+                        </div>
+                        <button onclick="pinProduct('saree_002', 'Silk Saree Red', 3450, 'https://via.placeholder.com/150/7f1d1d/ffffff?text=Saree')" class="bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold px-3 py-1.5 rounded transition-colors pin-action-btn whitespace-nowrap">
+                            📌 Pin
+                        </button>
+                    </div>
+                </div>
             </div>
+
         </div>
 
     </main>
 
     <script>
+        // Setup proper dynamic URL handling for API and Sockets
+        const hostname = window.location.hostname;
+        const SERVER_URL = (hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("192.168.") || window.location.protocol === "file:")
+            ? `http://${hostname}:5000` 
+            : "https://vyaparsync.onrender.com";
+
         // Configuration
         const APP_ID = "f62fb65919dd45019a3ce50d2dcce0c0";
-        // Using a fixed stream ID for demo purposes, in production this comes from DB/URL params
         const STREAM_ID = "vyaparsync_live_demo"; 
-        const SERVER_URL = "http://localhost:5000"; // Update for production
 
         // State
         let client = null;
-        let localTracks = {
-            videoTrack: null,
-            audioTrack: null
-        };
+        let localTracks = { videoTrack: null, audioTrack: null };
         let socket = null;
         let isBroadcasting = false;
+        let isMicMuted = false;
+        let isCamOff = false;
 
         // DOM Elements
         const startBtn = document.getElementById("start-btn");
         const stopBtn = document.getElementById("stop-btn");
-        const pinBtn = document.getElementById("pin-btn");
+        const micBtn = document.getElementById("toggle-mic-btn");
+        const camBtn = document.getElementById("toggle-cam-btn");
         const viewerCountEl = document.getElementById("viewer-count");
         const chatMessages = document.getElementById("chat-messages");
         const chatInput = document.getElementById("chat-input");
         const sendBtn = document.getElementById("send-btn");
+        const streamStatus = document.getElementById("stream-status");
+        const liveIndicator = document.getElementById("live-indicator");
+
+        // UI Tabs
+        function switchTab(tab) {
+            document.getElementById('tab-chat').classList.remove('active');
+            document.getElementById('tab-products').classList.remove('active');
+            document.getElementById('content-chat').classList.add('hidden');
+            document.getElementById('content-products').classList.add('hidden');
+            document.getElementById('content-products').classList.remove('flex');
+            
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            if(tab === 'chat') {
+                document.getElementById('content-chat').classList.remove('hidden');
+            } else {
+                document.getElementById('content-products').classList.remove('hidden');
+                document.getElementById('content-products').classList.add('flex');
+            }
+        }
 
         // Initialize Socket.io
         function initSocket() {
+            if(socket) return; // Prevent double connection
+            
             socket = io(SERVER_URL);
             
             socket.on("connect", () => {
-                console.log("Connected to server");
+                console.log("Connected to Real-time Hub");
                 socket.emit('join_stream', STREAM_ID);
             });
 
@@ -129,26 +241,33 @@
             socket.on('receive_chat_message', (data) => {
                 addChatMessage(data.username, data.message, data.isSeller);
             });
+            
+            socket.on('connect_error', (err) => {
+                console.error("Socket error:", err.message);
+            });
         }
 
         // Initialize Agora
         async function startBroadcast() {
+            startBtn.disabled = true;
+            startBtn.innerHTML = '<span class="animate-spin mr-2">⏳</span> Connecting...';
+
             try {
                 // 1. Create client
                 client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
                 await client.setClientRole("host");
 
-                // 2. Join Channel
-                // Token is null for testing if app allows it, otherwise need token server
-                await client.join(APP_ID, STREAM_ID, null, null); 
-
-                // 3. Create local tracks
+                // 2. Create local tracks FIRST (so user grants permission before joining)
                 const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
                 localTracks.audioTrack = audioTrack;
                 localTracks.videoTrack = videoTrack;
 
-                // 4. Play local video
+                // 3. Play local video
                 videoTrack.play("local-player");
+
+                // 4. Join Channel
+                // Note: If App Certificate is enabled on Agora dashboard, null token will fail.
+                await client.join(APP_ID, STREAM_ID, null, null); 
 
                 // 5. Publish tracks
                 await client.publish(Object.values(localTracks));
@@ -156,11 +275,18 @@
                 
                 isBroadcasting = true;
                 updateUI();
-                initSocket(); // Connect to real-time events when going live
+                initSocket(); // Connect data pipeline
 
             } catch (error) {
                 console.error("Failed to start broadcast:", error);
-                alert("Failed to access camera/mic or connect to Agora. Check permissions.");
+                alert("Stream Error: " + error.message + "\n\nIf error is CAN_NOT_GET_GATEWAY_SERVER, your App ID might require a Token. Disable App Certificate in Agora console for testing.");
+                
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.5 8.5C5.5 8.5 7.5 5 12 5c4.5 0 6.5 3.5 6.5 3.5m-13 7C5.5 15.5 7.5 19 12 19c4.5 0 6.5-3.5 6.5-3.5m-9-3.5a2 2 0 100-4 2 2 0 000 4z"></path></svg> GO LIVE';
+                
+                // Cleanup tracks if they were created but joining failed
+                if (localTracks.videoTrack) { localTracks.videoTrack.close(); localTracks.videoTrack = null; }
+                if (localTracks.audioTrack) { localTracks.audioTrack.close(); localTracks.audioTrack = null; }
             }
         }
 
@@ -168,16 +294,16 @@
             if (localTracks.videoTrack) {
                 localTracks.videoTrack.stop();
                 localTracks.videoTrack.close();
+                localTracks.videoTrack = null;
             }
             if (localTracks.audioTrack) {
                 localTracks.audioTrack.stop();
                 localTracks.audioTrack.close();
+                localTracks.audioTrack = null;
             }
             if (client) {
+                await client.unpublish();
                 await client.leave();
-            }
-            if (socket) {
-                socket.disconnect();
             }
             
             document.getElementById("local-player").innerHTML = "";
@@ -189,23 +315,66 @@
             if (isBroadcasting) {
                 startBtn.classList.add("hidden");
                 stopBtn.classList.remove("hidden");
-                pinBtn.classList.remove("hidden");
+                liveIndicator.classList.remove("hidden");
+                liveIndicator.classList.add("flex");
+                
+                micBtn.disabled = false;
+                camBtn.disabled = false;
+                
+                streamStatus.innerHTML = '<span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> LIVE NOW';
+                streamStatus.classList.replace("bg-gray-800", "bg-red-900/40");
+                streamStatus.classList.replace("border-gray-700", "border-red-900/50");
+                streamStatus.classList.replace("text-gray-300", "text-red-400");
+                
+                addChatMessage("System", "Stream started. You are live!", true);
             } else {
+                startBtn.disabled = false;
                 startBtn.classList.remove("hidden");
+                startBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.5 8.5C5.5 8.5 7.5 5 12 5c4.5 0 6.5 3.5 6.5 3.5m-13 7C5.5 15.5 7.5 19 12 19c4.5 0 6.5-3.5 6.5-3.5m-9-3.5a2 2 0 100-4 2 2 0 000 4z"></path></svg> GO LIVE';
                 stopBtn.classList.add("hidden");
-                pinBtn.classList.add("hidden");
+                liveIndicator.classList.add("hidden");
+                liveIndicator.classList.remove("flex");
+                
+                micBtn.disabled = true;
+                camBtn.disabled = true;
+                
+                streamStatus.innerHTML = '<span class="w-2 h-2 bg-gray-500 rounded-full"></span> OFFLINE';
+                streamStatus.className = 'bg-gray-800 text-gray-300 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-2 border border-gray-700';
                 viewerCountEl.innerText = "0";
             }
         }
 
-        function pinProduct() {
-            if (!socket) return;
+        // Toggles
+        micBtn.addEventListener("click", () => {
+            if(!localTracks.audioTrack) return;
+            isMicMuted = !isMicMuted;
+            localTracks.audioTrack.setMuted(isMicMuted);
+            micBtn.innerHTML = isMicMuted ? '🔇' : '🎤';
+            micBtn.classList.toggle('bg-red-900/50', isMicMuted);
+            micBtn.classList.toggle('border-red-800', isMicMuted);
+        });
+
+        camBtn.addEventListener("click", () => {
+            if(!localTracks.videoTrack) return;
+            isCamOff = !isCamOff;
+            localTracks.videoTrack.setMuted(isCamOff);
+            camBtn.innerHTML = isCamOff ? '🚫' : '📹';
+            camBtn.classList.toggle('bg-red-900/50', isCamOff);
+            camBtn.classList.toggle('border-red-800', isCamOff);
+        });
+
+        // Pinning functionality
+        function pinProduct(id, name, price, img) {
+            if (!socket || !isBroadcasting) {
+                alert("You must be live to pin a product!");
+                return;
+            }
             
             const productDetails = {
-                id: "item_kurta_001",
-                name: "Premium Kurta Pajama Set",
-                price: 1780.00,
-                image: "https://via.placeholder.com/150/f0f9ff/0369a1?text=Kurta" // Placeholder image
+                id: id,
+                name: name,
+                price: price,
+                image: img
             };
             
             socket.emit('seller_pin_product', { 
@@ -214,34 +383,43 @@
                 productDetails: productDetails
             });
             
-            // Visual feedback
-            pinBtn.innerHTML = "✅ Pinned!";
-            setTimeout(() => {
-                pinBtn.innerHTML = "📌 Pin \"Kurta Pajama\"";
-            }, 2000);
+            addChatMessage("System", `Pinned product: ${name}`, true);
         }
 
+        // Chat functionality
         function sendChat() {
             const msg = chatInput.value.trim();
-            if (!msg || !socket) return;
+            if (!msg) return;
             
-            socket.emit('send_chat_message', {
-                streamId: STREAM_ID,
-                username: "Seller (Host)",
-                message: msg,
-                isSeller: true
-            });
+            if (!socket || !isBroadcasting) {
+                // Fake local echo if offline
+                addChatMessage("Seller (Host)", msg, true);
+            } else {
+                socket.emit('send_chat_message', {
+                    streamId: STREAM_ID,
+                    username: "Seller (Host)",
+                    message: msg,
+                    isSeller: true
+                });
+            }
             
             chatInput.value = "";
         }
 
         function addChatMessage(username, message, isSeller) {
             const msgEl = document.createElement("div");
-            msgEl.className = `p-3 rounded-lg text-sm ${isSeller ? 'bg-blue-50 border border-blue-100' : 'bg-gray-50 border border-gray-100'}`;
-            msgEl.innerHTML = `
-                <div class="font-bold ${isSeller ? 'text-blue-600' : 'text-gray-700'}">${username}</div>
-                <div class="text-gray-800 mt-1">${message}</div>
-            `;
+            
+            if (username === "System") {
+                msgEl.className = "text-xs text-center text-gray-500 my-1";
+                msgEl.innerHTML = `* ${message} *`;
+            } else {
+                msgEl.className = `p-3 rounded-lg text-sm ${isSeller ? 'bg-[#ff6a00]/10 border border-[#ff6a00]/20' : 'bg-gray-800/80 border border-gray-700'}`;
+                msgEl.innerHTML = `
+                    <div class="font-bold ${isSeller ? 'text-[#ff6a00]' : 'text-gray-300'} text-xs uppercase tracking-wide mb-1">${username} ${isSeller ? '<span class="bg-[#ff6a00] text-white text-[10px] px-1 rounded ml-1">HOST</span>' : ''}</div>
+                    <div class="text-gray-200 leading-snug">${message}</div>
+                `;
+            }
+            
             chatMessages.appendChild(msgEl);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -249,7 +427,6 @@
         // Event Listeners
         startBtn.addEventListener("click", startBroadcast);
         stopBtn.addEventListener("click", stopBroadcast);
-        pinBtn.addEventListener("click", pinProduct);
         sendBtn.addEventListener("click", sendChat);
         chatInput.addEventListener("keypress", (e) => {
             if (e.key === "Enter") sendChat();

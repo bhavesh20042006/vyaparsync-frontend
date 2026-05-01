@@ -121,7 +121,10 @@
         // Configuration
         const APP_ID = "f62fb65919dd45019a3ce50d2dcce0c0";
         const STREAM_ID = "vyaparsync_live_demo"; 
-        const SERVER_URL = "http://localhost:5000"; // Update for production
+        const hostname = window.location.hostname;
+        const SERVER_URL = (hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("192.168.") || window.location.protocol === "file:")
+            ? `http://${hostname}:5000` 
+            : "https://vyaparsync.onrender.com";
         const USERNAME = "Buyer_" + Math.floor(Math.random() * 1000); // Dummy username
 
         // State

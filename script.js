@@ -1,5 +1,6 @@
-const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
-  ? "http://localhost:5000"
+const hostname = window.location.hostname;
+const API_URL = (hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("192.168.") || window.location.protocol === "file:")
+  ? `http://${hostname}:5000`
   : "https://vyaparsync.onrender.com";  
 
 // =======================================================
@@ -635,6 +636,14 @@ function showUser() {
       localStorage.removeItem("user");
   }
   const userSection = document.getElementById("userSection");
+  const liveBtn = document.getElementById("live-stream-btn");
+  
+  if (user && user.role === "retailer") {
+      if(liveBtn) liveBtn.style.display = "none";
+  } else {
+      if(liveBtn) liveBtn.style.display = "inline-flex";
+  }
+
   if (!userSection) return;
   
   const btnStyle = "display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; border-radius: 8px; font-weight: bold; font-size: 14px; text-decoration: none; box-sizing: border-box; cursor: pointer; transition: 0.2s;";
