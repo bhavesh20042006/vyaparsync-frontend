@@ -61,7 +61,7 @@
                 <p style="color: var(--text-muted); margin-bottom: 20px;">We sent a 6-digit secure code to <br><b id="displayEmail" style="color: var(--text-main);"></b></p>
                 
                 <div class="input-group" style="margin-bottom: 30px;">
-                    <input type="text" id="sellerOTP" placeholder="• • • • • •" maxlength="6" style="letter-spacing: 8px; font-size: 24px; font-weight: bold; text-align: center;" required>
+                    <input type="text" id="sellerOTP" placeholder="• • • • • •" maxlength="6" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" style="letter-spacing: 8px; font-size: 24px; font-weight: bold; text-align: center;" required>
                 </div>
 
                 <button onclick="verifySellerOTP()" class="auth-submit-btn" id="verifyBtn">Verify & Open Dashboard 🚀</button>

@@ -49,7 +49,7 @@
 
     <div id="otpStep">
         <p style="font-size: 14px; color: var(--text-muted);">We sent a 6-digit code to <br><b id="displayEmail" style="color: var(--text-main);"></b></p>
-        <input type="text" id="authOTP" placeholder="• • • • • •" maxlength="6" style="letter-spacing: 8px; font-size: 24px; font-weight: bold;">
+        <input type="text" id="authOTP" placeholder="• • • • • •" maxlength="6" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" style="letter-spacing: 8px; font-size: 24px; font-weight: bold;">
         <button onclick="verifyOTP()" class="btn-auth" id="verifyBtn">Verify & Login</button>
         <button onclick="window.location.reload()" style="background: none; border: none; color: var(--primary); margin-top: 15px; cursor: pointer; text-decoration: underline;">Use a different email</button>
     </div>
