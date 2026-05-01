@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Live Stream - Vyaparsync</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.20.0.js"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <style>
+        .video-container {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            position: relative;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .chat-overlay {
+            height: 250px;
+            overflow-y: auto;
+            mask-image: linear-gradient(to bottom, transparent, black 20%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%);
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-sans h-screen overflow-hidden flex flex-col md:flex-row">
+
+    <!-- Mobile-first full screen view -->
+    <main class="relative w-full h-full flex flex-col md:flex-row max-w-6xl mx-auto">
+        
+        <!-- Video Area -->
+        <div id="video-wrapper" class="video-container flex-grow relative">
+            <div id="remote-player" class="w-full h-full">
+                <!-- Placeholder before stream loads -->
+                <div id="stream-placeholder" class="absolute inset-0 flex items-center justify-center bg-gray-900 flex-col gap-4 z-10">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                    <p class="text-gray-400">Connecting to stream...</p>
+                </div>
+            </div>
+            
+            <!-- Top Controls Overlay -->
+            <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-start z-20 bg-gradient-to-b from-black/70 to-transparent pointer-events-none">
+                <div class="flex items-center gap-2 pointer-events-auto">
+                    <button onclick="window.location.href='index.html'" class="bg-black/40 hover:bg-black/60 text-white rounded-full p-2 backdrop-blur-sm transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </button>
+                    <div>
+                        <div class="font-bold">Kurta Emporium</div>
+                        <div class="text-xs text-gray-300">Live Sale</div>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end gap-2 pointer-events-auto">
+                    <div class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold flex items-center gap-1 shadow-lg">
+                        <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>LIVE
+                    </div>
+                    <div class="bg-black/40 text-white px-2 py-1 rounded text-xs backdrop-blur-sm shadow-lg">
+                        👁️ <span id="viewer-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Overlay (Visible on mobile, hides on desktop if side chat exists) -->
+            <div class="absolute bottom-24 left-0 right-0 p-4 z-20 pointer-events-none md:hidden">
+                <div id="chat-overlay-messages" class="chat-overlay flex flex-col gap-2 justify-end pointer-events-auto">
+                    <!-- Chat messages injected here -->
+                </div>
+            </div>
+
+            <!-- Buy Now Card Overlay -->
+            <div id="buy-card-container" class="absolute bottom-24 left-4 right-4 z-30 hidden">
+                <div class="bg-white text-gray-900 p-3 rounded-xl shadow-2xl flex gap-3 items-center animate-slide-up border border-gray-100">
+                    <img id="buy-card-img" src="" alt="Product" class="w-16 h-16 rounded-lg object-cover bg-gray-100">
+                    <div class="flex-grow">
+                        <h3 id="buy-card-title" class="font-bold text-sm leading-tight line-clamp-1">Product Name</h3>
+                        <p id="buy-card-price" class="text-green-600 font-bold text-sm mt-1">₹0.00</p>
+                    </div>
+                    <button onclick="triggerCheckout()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap shadow-md transition-transform active:scale-95">
+                        Buy Now
+                    </button>
+                    <button onclick="hideBuyCard()" class="text-gray-400 hover:text-gray-600 p-1">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom Input Overlay (Mobile) -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 z-20 bg-gradient-to-t from-black/90 to-transparent md:hidden">
+                <div class="flex gap-2 relative">
+                    <input type="text" id="chat-input-mobile" class="w-full bg-white/10 border border-white/20 text-white rounded-full px-4 py-3 text-sm focus:outline-none focus:bg-white/20 backdrop-blur-md placeholder-white/50" placeholder="Ask a question...">
+                    <button id="send-btn-mobile" class="absolute right-1 top-1 bottom-1 bg-white text-black px-4 rounded-full font-medium text-sm">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Sidebar Chat -->
+        <div class="hidden md:flex w-80 bg-gray-900 flex-col h-full border-l border-gray-800">
+            <div class="p-4 border-b border-gray-800">
+                <h2 class="font-bold text-white">Live Chat</h2>
+            </div>
+            <div id="chat-messages-desktop" class="flex-grow p-4 overflow-y-auto flex flex-col gap-3">
+                <div class="text-center text-xs text-gray-500 my-4">Welcome to the Live Sale</div>
+            </div>
+            <div class="p-4 border-t border-gray-800 bg-gray-900">
+                <div class="flex gap-2">
+                    <input type="text" id="chat-input-desktop" class="flex-grow bg-gray-800 border-none text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Type a message...">
+                    <button id="send-btn-desktop" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-colors">Send</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Configuration
+        const APP_ID = "f62fb65919dd45019a3ce50d2dcce0c0";
+        const STREAM_ID = "vyaparsync_live_demo"; 
+        const SERVER_URL = "http://localhost:5000"; // Update for production
+        const USERNAME = "Buyer_" + Math.floor(Math.random() * 1000); // Dummy username
+
+        // State
+        let client = null;
+        let socket = null;
+        let pinnedProductId = null;
+
+        // DOM Elements
+        const viewerCountEl = document.getElementById("viewer-count");
+        const placeholder = document.getElementById("stream-placeholder");
+        
+        const buyCardContainer = document.getElementById("buy-card-container");
+        const buyCardTitle = document.getElementById("buy-card-title");
+        const buyCardPrice = document.getElementById("buy-card-price");
+        const buyCardImg = document.getElementById("buy-card-img");
+
+        const chatOverlay = document.getElementById("chat-overlay-messages");
+        const chatDesktop = document.getElementById("chat-messages-desktop");
+        
+        const chatInputMobile = document.getElementById("chat-input-mobile");
+        const sendBtnMobile = document.getElementById("send-btn-mobile");
+        const chatInputDesktop = document.getElementById("chat-input-desktop");
+        const sendBtnDesktop = document.getElementById("send-btn-desktop");
+
+        // Initialize App
+        async function init() {
+            initSocket();
+            await watchStream();
+        }
+
+        // Initialize Socket.io
+        function initSocket() {
+            socket = io(SERVER_URL);
+            
+            socket.on("connect", () => {
+                console.log("Connected to server");
+                socket.emit('join_stream', STREAM_ID);
+            });
+
+            socket.on('viewer_count_update', (count) => {
+                viewerCountEl.innerText = count;
+            });
+
+            socket.on('show_buy_now_card', (productDetails) => {
+                showBuyCard(productDetails);
+            });
+
+            socket.on('receive_chat_message', (data) => {
+                addChatMessage(data.username, data.message, data.isSeller);
+            });
+        }
+
+        // Initialize Agora
+        async function watchStream() {
+            try {
+                // 1. Create client
+                client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+                await client.setClientRole("audience");
+
+                // 2. Listen for host publishing tracks
+                client.on("user-published", async (user, mediaType) => {
+                    // Subscribe to the host
+                    await client.subscribe(user, mediaType);
+                    console.log("Subscribed to host:", mediaType);
+                    
+                    placeholder.style.display = "none"; // Hide placeholder when stream starts
+
+                    if (mediaType === "video") {
+                        user.videoTrack.play("remote-player");
+                    }
+                    if (mediaType === "audio") {
+                        user.audioTrack.play();
+                    }
+                });
+
+                client.on("user-unpublished", (user) => {
+                    console.log("Host unpublished");
+                    placeholder.style.display = "flex";
+                });
+
+                // 3. Join Channel
+                await client.join(APP_ID, STREAM_ID, null, null); 
+
+            } catch (error) {
+                console.error("Failed to watch stream:", error);
+                placeholder.innerHTML = `<p class="text-red-400">Error connecting to stream</p>`;
+            }
+        }
+
+        // UI Functions
+        function showBuyCard(product) {
+            pinnedProductId = product.id;
+            buyCardTitle.innerText = product.name;
+            buyCardPrice.innerText = `₹${product.price}`;
+            buyCardImg.src = product.image;
+            buyCardContainer.classList.remove("hidden");
+            
+            // Auto hide after 30 seconds to prevent screen clutter
+            setTimeout(hideBuyCard, 30000); 
+        }
+
+        function hideBuyCard() {
+            buyCardContainer.classList.add("hidden");
+        }
+
+        function triggerCheckout() {
+            if(!pinnedProductId) return;
+            alert(`ONDC /select triggered for ${buyCardTitle.innerText} (ID: ${pinnedProductId})`);
+            // Here you would integrate with your ONDC Beckn router /cart logic
+        }
+
+        function sendChat(inputEl) {
+            const msg = inputEl.value.trim();
+            if (!msg || !socket) return;
+            
+            socket.emit('send_chat_message', {
+                streamId: STREAM_ID,
+                username: USERNAME,
+                message: msg,
+                isSeller: false
+            });
+            
+            inputEl.value = "";
+        }
+
+        function addChatMessage(username, message, isSeller) {
+            // Mobile Overlay Chat
+            const msgMobile = document.createElement("div");
+            msgMobile.className = "text-white text-sm drop-shadow-md";
+            msgMobile.innerHTML = `<span class="font-bold ${isSeller ? 'text-yellow-400' : 'text-gray-300'}">${username}:</span> ${message}`;
+            chatOverlay.appendChild(msgMobile);
+            chatOverlay.scrollTop = chatOverlay.scrollHeight;
+
+            // Desktop Sidebar Chat
+            const msgDesktop = document.createElement("div");
+            msgDesktop.className = `p-2 rounded-lg text-sm ${isSeller ? 'bg-blue-900/50 border border-blue-800' : 'bg-gray-800'}`;
+            msgDesktop.innerHTML = `
+                <div class="font-bold ${isSeller ? 'text-blue-400' : 'text-gray-400'}">${username}</div>
+                <div class="text-gray-200 mt-1">${message}</div>
+            `;
+            chatDesktop.appendChild(msgDesktop);
+            chatDesktop.scrollTop = chatDesktop.scrollHeight;
+        }
+
+        // Event Listeners
+        sendBtnMobile.addEventListener("click", () => sendChat(chatInputMobile));
+        chatInputMobile.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendChat(chatInputMobile);
+        });
+
+        sendBtnDesktop.addEventListener("click", () => sendChat(chatInputDesktop));
+        chatInputDesktop.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendChat(chatInputDesktop);
+        });
+
+        // Start everything
+        init();
+
+    </script>
+</body>
+</html>
