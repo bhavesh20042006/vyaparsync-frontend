@@ -1,74 +1,30 @@
-const CACHE_NAME = "vyaparsync-cache-v11";
-const urlsToCache = [
-  "/",
-  "/index.html",
-  "/style.css",
-  "/script.js",
-  "/manifest.json",
-  "/icon-192-v3.png",
-  "/icon-512-v3.png"
-];
+// =======================================================
+// 🚀 VYAPARSYNC SERVICE WORKER (NO CACHING MODE)
+// =======================================================
+// The user explicitly requested NO fallback to cache, even if offline.
+// This Service Worker is now strictly for Web Push Notifications.
 
-// 1. Install Phase: Cache the core files
+// 1. Install Phase
 self.addEventListener("install", (event) => {
-  self.skipWaiting(); // Force the waiting service worker to become the active service worker
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log("Opened cache");
-      // Use cache busting to ensure we download the freshest files during install
-      return cache.addAll(urlsToCache.map(url => url + "?t=" + Date.now()));
-    })
-  );
+  self.skipWaiting(); // Force activation immediately
 });
 
-// Activate Phase: Clean up old caches
+// 2. Activate Phase: Nuke all existing caches from previous versions
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
+        cacheNames.map((cacheName) => caches.delete(cacheName))
       );
     })
   );
-  self.clients.claim(); // Claim control immediately
+  self.clients.claim();
 });
 
-// 2. Fetch Phase: NETWORK-FIRST STRATEGY (Solves stale UI bugs)
+// 3. Fetch Phase: Bypass completely (Browser handles requests natively)
 self.addEventListener("fetch", (event) => {
-  // Only handle GET requests
-  if (event.request.method !== "GET" || event.request.url.includes("/api/") || event.request.url.includes("localhost:5000")) {
-    return;
-  }
-  
-  event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        // If we get a valid response, update the cache
-        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            // Strip the cache-busting query string when storing in cache so match works later
-            cache.put(event.request.url.split('?')[0], responseToCache);
-          });
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        // If network fails (offline), return from cache
-        return caches.match(event.request.url.split('?')[0], { ignoreSearch: true })
-          .then((cachedResponse) => {
-             // Fallback to index.html if navigating and nothing is in cache
-             if (!cachedResponse && event.request.mode === 'navigate') {
-                 return caches.match('/index.html', { ignoreSearch: true });
-             }
-             return cachedResponse;
-          });
-      })
-  );
+  // We do not intercept fetches anymore. 
+  // 100% live network requests.
 });
 
 // 3. Push Event: Show Web Push Notification
