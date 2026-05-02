@@ -1227,9 +1227,59 @@ window.confirmAddressAndPay = function() {
         }
     };
 
-    // Remove the modal and call your original checkout function
+    // Remove the modal
     document.getElementById('addressModal').remove();
-    checkoutCart(); // Call your existing Razorpay function
+    
+    // 🚚 DYNAMIC DELIVERY CALCULATION
+    showToast("Calculating delivery options...", "success");
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    
+    try {
+        const response = await fetch(`${API_URL}/orders/delivery-options`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                cartItems: cart,
+                buyerLocation: currentShippingAddress.location
+            })
+        });
+        
+        let selectedDeliveryId = "standard_delhivery";
+        let deliveryFee = 10;
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.options && data.options.length > 0) {
+                // Auto-select the first option (Dunzo if available)
+                const selectedOption = data.options[0];
+                selectedDeliveryId = selectedOption.id;
+                deliveryFee = selectedOption.fee;
+                
+                // Update Cart DOM
+                const feeLabel = document.querySelector('.cart-summary div:nth-child(2) span:nth-child(1)');
+                const feeValue = document.querySelector('.cart-summary div:nth-child(2) span:nth-child(2)');
+                if (feeLabel && feeValue) {
+                    feeLabel.innerText = selectedOption.name;
+                    feeValue.innerText = `₹${deliveryFee}`;
+                }
+                
+                // Update Final Total text based on updated subtotal + dynamic delivery fee
+                const totalElem = document.getElementById("cartTotal");
+                if (totalElem) {
+                    let subTotal = 0;
+                    cart.forEach(item => { subTotal += (item.price * (item.quantity || 1)); });
+                    totalElem.innerText = `₹${subTotal + deliveryFee}`;
+                }
+
+                showToast(`Selected: ${selectedOption.name}`, "success");
+            }
+        }
+        
+        checkoutCart(selectedDeliveryId, deliveryFee);
+    } catch (err) {
+        console.error("Delivery Options Error:", err);
+        checkoutCart("standard_delhivery", 10);
+    }
 }
 
 // 🌍 OpenStreetMap Autocomplete Logic
@@ -1351,13 +1401,12 @@ window.selectOSMAddress = function(place) {
     showToast("Address Autofilled Successfully! 🌍", "success");
 };
 
-window.checkoutCart = async function() {
+window.checkoutCart = async function(selectedDeliveryId = "standard_delhivery", deliveryFee = 10) {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   if (cart.length === 0) return showToast("Your cart is empty!", "error");
   let subTotal = 0;
   cart.forEach(item => { subTotal += (item.price * (item.quantity || 1)); });
-  const platformFee = 10;
-  const totalAmount = subTotal + platformFee;
+  const totalAmount = subTotal + deliveryFee;
   const token = localStorage.getItem("token");
   if (!token) {
     showToast("Please login to complete your purchase.", "error");
@@ -1368,7 +1417,11 @@ window.checkoutCart = async function() {
     const response = await fetch(`${API_URL}/orders/create-payment`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify({ cartItems: cart })
+      body: JSON.stringify({ 
+          cartItems: cart, 
+          selectedDeliveryId: selectedDeliveryId, 
+          buyerLocation: currentShippingAddress.location 
+      })
     });
     if (!response.ok) {
         const errorText = await response.text();
@@ -1403,7 +1456,7 @@ window.checkoutCart = async function() {
               }
           }
       },
-      "handler": async function (response) { await verifyAndPlaceOrders(response); },
+      "handler": async function (response) { await verifyAndPlaceOrders(response, selectedDeliveryId); },
       "prefill": { 
           "name": JSON.parse(localStorage.getItem("user")).name,
           "email": JSON.parse(localStorage.getItem("user")).email || "user@example.com",
@@ -1416,7 +1469,7 @@ window.checkoutCart = async function() {
   } catch (err) { showToast("Checkout Error: " + err.message, "error"); }
 }
 
-async function verifyAndPlaceOrders(paymentProof) {
+async function verifyAndPlaceOrders(paymentProof, selectedDeliveryId) {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   const token = localStorage.getItem("token"); 
   try {
@@ -1428,7 +1481,8 @@ async function verifyAndPlaceOrders(paymentProof) {
         razorpay_payment_id: paymentProof.razorpay_payment_id,
         razorpay_signature: paymentProof.razorpay_signature,
         cartItems: cart, 
-        shippingAddress: currentShippingAddress // 🚚 This sends the snapshot to the database!
+        shippingAddress: currentShippingAddress,
+        selectedDeliveryId: selectedDeliveryId
       })
     });
     if (!res.ok) throw new Error("Verification failed");
