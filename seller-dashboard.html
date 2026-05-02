@@ -338,6 +338,13 @@
     </div>
   </div>
 
+  <div class="form-card" style="margin-bottom: 30px; border-left: 5px solid #e74c3c;">
+    <h2 style="margin-top: 0; color: #e74c3c;">📍 Hyperlocal Delivery Setup</h2>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">Pinpoint your exact shop coordinates so Dunzo and Porter riders can find you.</p>
+    <button id="captureLocationBtn" class="btn-primary" style="background: #e74c3c; width: max-content; padding: 12px 25px;">📍 Pinpoint My Shop Location</button>
+    <p id="locationStatus" style="font-size: 14px; margin-top: 10px; color: var(--text-muted);"></p>
+  </div>
+
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; align-items: start;">
     
     <div class="form-card">
@@ -1052,6 +1059,47 @@
         syncSidebar();
         setupScrollSpy();
     });
-</script>
+    document.getElementById('captureLocationBtn').addEventListener('click', () => {
+        const statusText = document.getElementById('locationStatus');
+        statusText.innerText = "Locating your shop...";
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                try {
+                    const token = localStorage.getItem("token");
+                    const response = await fetch(`${API_URL}/auth/update-location`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ lat, lng })
+                    });
+
+                    if (response.ok) {
+                        statusText.innerText = `✅ Shop location successfully saved! (Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)})`;
+                        statusText.style.color = "#2ecc71";
+                    } else {
+                        statusText.innerText = "❌ Failed to save location.";
+                        statusText.style.color = "#e74c3c";
+                    }
+                } catch (error) {
+                    statusText.innerText = "❌ Network Error while saving location.";
+                    statusText.style.color = "#e74c3c";
+                }
+            }, (error) => {
+                statusText.innerText = "Please allow location permissions in your browser.";
+                statusText.style.color = "#e74c3c";
+            });
+        } else {
+            statusText.innerText = "Geolocation is not supported by this browser.";
+            statusText.style.color = "#e74c3c";
+        }
+    });
+
+  </script>
 </body>
 </html>
