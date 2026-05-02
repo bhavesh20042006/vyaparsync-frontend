@@ -141,7 +141,12 @@ function loadHome() {
       const grid = document.getElementById("products-grid");
       if (!grid) return;
       grid.innerHTML = "";
-      if (products.length === 0) grid.innerHTML = "<p>No products available yet.</p>";
+      if (products.length === 0) {
+          grid.innerHTML = `<div style="text-align: center; padding: 40px 20px; width: 100%;">
+              <h3 style="color: var(--text-muted); font-size: 18px;">🛒 No products available in your area right now.</h3>
+              <p style="color: var(--text-muted); font-size: 14px;">Check back later or try exploring different markets!</p>
+          </div>`;
+      }
       else {
         products.forEach(p => {
           grid.innerHTML += createProductHTML(p);
