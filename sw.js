@@ -1,4 +1,4 @@
-const CACHE_NAME = "vyaparsync-cache-v10";
+const CACHE_NAME = "vyaparsync-cache-v11";
 const urlsToCache = [
   "/",
   "/index.html",
@@ -15,7 +15,8 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log("Opened cache");
-      return cache.addAll(urlsToCache);
+      // Use cache busting to ensure we download the freshest files during install
+      return cache.addAll(urlsToCache.map(url => url + "?t=" + Date.now()));
     })
   );
 });
@@ -36,27 +37,37 @@ self.addEventListener("activate", (event) => {
   self.clients.claim(); // Claim control immediately
 });
 
-// 2. Fetch Phase: Serve from cache if offline
+// 2. Fetch Phase: NETWORK-FIRST STRATEGY (Solves stale UI bugs)
 self.addEventListener("fetch", (event) => {
-  // Always serve index.html for navigation requests if offline
-  if (event.request.mode === 'navigate') {
-      event.respondWith(
-          fetch(event.request).catch(() => {
-              return caches.match('/index.html', { ignoreSearch: true }) || caches.match('/', { ignoreSearch: true });
-          })
-      );
-      return;
-  }
-
-  // Only cache GET requests, and avoid caching API calls
+  // Only handle GET requests
   if (event.request.method !== "GET" || event.request.url.includes("/api/") || event.request.url.includes("localhost:5000")) {
     return;
   }
   
   event.respondWith(
-    caches.match(event.request, { ignoreSearch: true }).then((response) => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        // If we get a valid response, update the cache
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            // Strip the cache-busting query string when storing in cache so match works later
+            cache.put(event.request.url.split('?')[0], responseToCache);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // If network fails (offline), return from cache
+        return caches.match(event.request.url.split('?')[0], { ignoreSearch: true })
+          .then((cachedResponse) => {
+             // Fallback to index.html if navigating and nothing is in cache
+             if (!cachedResponse && event.request.mode === 'navigate') {
+                 return caches.match('/index.html', { ignoreSearch: true });
+             }
+             return cachedResponse;
+          });
+      })
   );
 });
 
