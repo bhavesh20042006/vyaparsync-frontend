@@ -1027,8 +1027,19 @@ function loadCart() {
       
       listContainer.appendChild(groupDiv);
   }
-  const platformFee = 10;
+  const platformFee = subTotal > 0 ? 10 : 0;
   let finalTotal = subTotal + platformFee;
+  
+  const checkoutBtn = document.querySelector('.checkout-btn');
+  if (checkoutBtn) {
+      if (cart.length === 0) {
+          checkoutBtn.style.opacity = "0.5";
+          checkoutBtn.style.pointerEvents = "none";
+      } else {
+          checkoutBtn.style.opacity = "1";
+          checkoutBtn.style.pointerEvents = "auto";
+      }
+  }
   let walletUsed = 0;
 
   let user = null;
@@ -1049,6 +1060,11 @@ function loadCart() {
 
   if(subTotalContainer) subTotalContainer.innerText = `₹${subTotal}`;
   if(totalContainer) totalContainer.innerText = `₹${finalTotal}`;
+  
+  const platformFeeUI = document.querySelector('.cart-summary div:nth-child(2) span:nth-child(2)');
+  if (platformFeeUI) {
+      platformFeeUI.innerText = `₹${platformFee}`;
+  }
 }
 
 window.removeFromCart = function(index) {
@@ -1198,7 +1214,7 @@ window.startCheckoutProcess = function() {
 }
 
 // 🟢 STEP 2: Validate address, save to memory, open Razorpay
-window.confirmAddressAndPay = function() {
+window.confirmAddressAndPay = async function() {
     const line1 = document.getElementById("addressLine1").value;
     const pincode = document.getElementById("addressPincode").value;
     const city = document.getElementById("addressCity").value;
@@ -1326,7 +1342,6 @@ window.getCurrentLocation = function() {
         showToast("Geolocation is not supported by this browser.", "error");
     }
 };
-let osmTimeout;
 window.searchOSMAddress = function() {
     clearTimeout(osmTimeout);
     const query = document.getElementById('osmSearch').value;
