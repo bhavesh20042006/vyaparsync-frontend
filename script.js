@@ -639,9 +639,9 @@ function showUser() {
   const liveBtn = document.getElementById("live-stream-btn");
   
   if (user && user.role === "retailer") {
-      if(liveBtn) liveBtn.classList.add("hidden-btn");
+      if(liveBtn) liveBtn.style.display = "none";
   } else {
-      if(liveBtn) liveBtn.classList.remove("hidden-btn");
+      if(liveBtn) liveBtn.style.display = "";
   }
 
   if (!userSection) return;

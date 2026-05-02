@@ -29,8 +29,8 @@
         }
 
         .chat-box {
-            height: calc(100vh - 280px);
             overflow-y: auto;
+            flex-grow: 1;
         }
 
         .tab-btn.active {
@@ -42,27 +42,27 @@
 <body class="bg-[#0f0f11] text-gray-200 font-sans h-screen flex flex-col overflow-hidden">
 
     <!-- Top Navigation Bar -->
-    <header class="bg-[#18181b] border-b border-gray-800 px-6 py-3 flex justify-between items-center z-10">
-        <div class="flex items-center gap-4">
-            <h1 class="text-xl font-bold text-white tracking-tight">🛍 Vyaparsync</h1>
-            <div class="h-6 w-[1px] bg-gray-700"></div>
-            <span class="text-sm font-semibold text-gray-400">Live Control Room</span>
+    <header class="bg-[#18181b] border-b border-gray-800 px-4 py-3 flex justify-between items-center z-10 shrink-0">
+        <div class="flex items-center gap-3">
+            <h1 class="text-lg font-bold text-white tracking-tight">🛍 Vyaparsync</h1>
+            <div class="hidden sm:block h-6 w-[1px] bg-gray-700"></div>
+            <span class="hidden sm:inline text-sm font-semibold text-gray-400">Live Control Room</span>
         </div>
         
-        <div class="flex items-center gap-4">
-            <div id="stream-status" class="bg-gray-800 text-gray-300 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-2 border border-gray-700">
-                <span class="w-2 h-2 bg-gray-500 rounded-full"></span> OFFLINE
+        <div class="flex items-center gap-3">
+            <div id="stream-status" class="bg-gray-800 text-gray-300 px-2 py-1 rounded text-[10px] sm:text-xs font-bold flex items-center gap-1 border border-gray-700">
+                <span class="w-1.5 h-1.5 bg-gray-500 rounded-full"></span> OFFLINE
             </div>
-            <button onclick="window.location.href='seller-dashboard.html'" class="text-sm text-gray-400 hover:text-white transition-colors">
+            <button onclick="window.location.href='seller-dashboard.html'" class="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
                 Exit Studio
             </button>
         </div>
     </header>
 
-    <main class="flex-grow flex flex-col lg:flex-row p-4 gap-4 h-full">
+    <main class="flex-grow flex flex-col lg:flex-row p-2 lg:p-4 gap-2 lg:gap-4 overflow-hidden">
         
-        <!-- Left Column: Broadcast Area (approx 70%) -->
-        <div class="flex-grow flex flex-col gap-4 h-full overflow-y-auto pr-2">
+        <!-- Left Column: Broadcast Area -->
+        <div class="w-full lg:flex-grow flex flex-col gap-2 lg:gap-4 shrink-0 lg:overflow-y-auto lg:pr-2">
             
             <!-- Main Video Feed -->
             <div class="w-full max-w-5xl mx-auto">
@@ -70,40 +70,40 @@
                     <div id="local-player" class="w-full h-full"></div>
                     
                     <!-- Overlay Elements -->
-                    <div class="absolute top-4 left-4 flex gap-2 z-10">
-                        <div id="live-indicator" class="hidden bg-red-600 text-white px-2 py-1 rounded text-xs font-bold items-center gap-2 shadow-lg">
-                            <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span> LIVE
+                    <div class="absolute top-2 left-2 sm:top-4 sm:left-4 flex gap-2 z-10">
+                        <div id="live-indicator" class="hidden bg-red-600 text-white px-2 py-1 rounded text-[10px] sm:text-xs font-bold items-center gap-2 shadow-lg">
+                            <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full animate-pulse"></span> LIVE
                         </div>
-                        <div class="bg-black/60 text-white px-2 py-1 rounded text-xs backdrop-blur-sm shadow-lg border border-white/10">
+                        <div class="bg-black/60 text-white px-2 py-1 rounded text-[10px] sm:text-xs backdrop-blur-sm shadow-lg border border-white/10">
                             👁️ <span id="viewer-count">0</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Stream Controls Deck -->
-                <div class="bg-[#18181b] border border-gray-800 rounded-xl p-4 mt-4 flex justify-between items-center">
+                <div class="bg-[#18181b] border border-gray-800 rounded-xl p-3 sm:p-4 mt-2 sm:mt-4 flex justify-between items-center overflow-x-auto gap-2">
                     
-                    <div class="flex gap-3">
-                        <button id="toggle-mic-btn" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-colors border border-gray-700 disabled:opacity-50" title="Mute Microphone" disabled>
+                    <div class="flex gap-2 sm:gap-3 shrink-0">
+                        <button id="toggle-mic-btn" class="bg-gray-800 hover:bg-gray-700 text-white p-2.5 sm:p-3 rounded-full transition-colors border border-gray-700 disabled:opacity-50" title="Mute Microphone" disabled>
                             🎤
                         </button>
-                        <button id="toggle-cam-btn" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-colors border border-gray-700 disabled:opacity-50" title="Turn off Camera" disabled>
+                        <button id="toggle-cam-btn" class="bg-gray-800 hover:bg-gray-700 text-white p-2.5 sm:p-3 rounded-full transition-colors border border-gray-700 disabled:opacity-50" title="Turn off Camera" disabled>
                             📹
                         </button>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3 sm:gap-4 shrink-0">
                         <div class="hidden md:block text-xs text-gray-500 text-right">
                             <div>Stream Health</div>
                             <div id="health-stats" class="text-[#2ecc71] font-mono mt-0.5">Excellent</div>
                         </div>
                         
-                        <button id="start-btn" class="bg-[#ff6a00] hover:bg-[#e65c00] text-white px-8 py-3 rounded-lg font-bold shadow-lg transition-transform active:scale-95 flex items-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.5 8.5C5.5 8.5 7.5 5 12 5c4.5 0 6.5 3.5 6.5 3.5m-13 7C5.5 15.5 7.5 19 12 19c4.5 0 6.5-3.5 6.5-3.5m-9-3.5a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+                        <button id="start-btn" class="bg-[#ff6a00] hover:bg-[#e65c00] text-white px-4 sm:px-8 py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold shadow-lg transition-transform active:scale-95 flex items-center gap-1 sm:gap-2 whitespace-nowrap">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.5 8.5C5.5 8.5 7.5 5 12 5c4.5 0 6.5 3.5 6.5 3.5m-13 7C5.5 15.5 7.5 19 12 19c4.5 0 6.5-3.5 6.5-3.5m-9-3.5a2 2 0 100-4 2 2 0 000 4z"></path></svg>
                             GO LIVE
                         </button>
                         
-                        <button id="stop-btn" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-bold shadow-lg transition-transform active:scale-95 hidden">
+                        <button id="stop-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 sm:px-8 py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold shadow-lg transition-transform active:scale-95 hidden whitespace-nowrap">
                             END STREAM
                         </button>
                     </div>
@@ -111,34 +111,34 @@
             </div>
         </div>
 
-        <!-- Right Column: Interactive Sidebar (approx 30%) -->
-        <div class="w-full lg:w-96 bg-[#18181b] border border-gray-800 rounded-xl flex flex-col h-full flex-shrink-0">
+        <!-- Right Column: Interactive Sidebar -->
+        <div class="w-full lg:w-96 bg-[#18181b] border border-gray-800 rounded-xl flex flex-col flex-grow overflow-hidden min-h-[250px]">
             
             <!-- Tabs -->
-            <div class="flex border-b border-gray-800">
-                <button onclick="switchTab('chat')" id="tab-chat" class="flex-1 py-4 text-sm font-bold text-gray-400 hover:text-white tab-btn active transition-colors">
+            <div class="flex border-b border-gray-800 shrink-0">
+                <button onclick="switchTab('chat')" id="tab-chat" class="flex-1 py-3 text-sm font-bold text-gray-400 hover:text-white tab-btn active transition-colors">
                     Live Chat
                 </button>
-                <button onclick="switchTab('products')" id="tab-products" class="flex-1 py-4 text-sm font-bold text-gray-400 hover:text-white tab-btn transition-colors">
+                <button onclick="switchTab('products')" id="tab-products" class="flex-1 py-3 text-sm font-bold text-gray-400 hover:text-white tab-btn transition-colors">
                     Products
                 </button>
             </div>
 
             <!-- Chat Tab Content -->
-            <div id="content-chat" class="flex flex-col h-full">
-                <div id="chat-messages" class="flex-grow p-4 chat-box flex flex-col gap-3">
-                    <div class="text-center text-xs text-gray-600 my-4 bg-gray-900/50 py-2 rounded">Welcome to Live Studio Control Room. Messages will appear here when you go live.</div>
+            <div id="content-chat" class="flex flex-col h-full overflow-hidden">
+                <div id="chat-messages" class="p-3 chat-box flex flex-col gap-3">
+                    <div class="text-center text-[10px] sm:text-xs text-gray-600 my-2 bg-gray-900/50 py-2 rounded">Welcome to Live Studio. Messages will appear here when you go live.</div>
                 </div>
-                <div class="p-4 border-t border-gray-800 bg-[#121214] rounded-b-xl">
+                <div class="p-3 border-t border-gray-800 bg-[#121214] rounded-b-xl shrink-0">
                     <div class="flex gap-2">
-                        <input type="text" id="chat-input" class="flex-grow bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:border-[#ff6a00] outline-none text-sm transition-colors" placeholder="Type a message...">
+                        <input type="text" id="chat-input" class="flex-grow bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-2 focus:border-[#ff6a00] outline-none text-sm transition-colors" placeholder="Type a message...">
                         <button id="send-btn" class="bg-[#ff6a00] text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#e65c00] transition-colors">Send</button>
                     </div>
                 </div>
             </div>
 
             <!-- Products Tab Content (Hidden by default) -->
-            <div id="content-products" class="hidden flex-col h-full p-4 overflow-y-auto">
+            <div id="content-products" class="hidden flex-col h-full p-3 overflow-y-auto">
                 <div class="text-xs text-gray-400 mb-4 bg-gray-800 p-3 rounded-lg border border-gray-700">
                     Click "Pin" to instantly show a product on the viewers' screens. They will see a "Buy Now" button.
                 </div>
