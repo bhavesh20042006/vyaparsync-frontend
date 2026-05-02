@@ -1171,6 +1171,10 @@ window.startCheckoutProcess = function() {
                     <div id="osmSuggestions" style="position:absolute; top:100%; left:0; width:100%; background:var(--card-bg); border-radius:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2); max-height:200px; overflow-y:auto; z-index:10000; border:1px solid rgba(0,0,0,0.1); display:none;"></div>
                 </div>
 
+                <button type="button" onclick="getCurrentLocation()" style="width:100%; padding:10px; margin-bottom:15px; border-radius:8px; border:1px solid var(--primary); background:var(--card-bg); color:var(--primary); font-weight:bold; cursor:pointer;">
+                    📍 Use My Current Location
+                </button>
+
                 <input type="text" id="addressLine1" placeholder="House/Flat No. & Building" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; background: var(--bg-color); color: var(--text-main);" required>
                 <input type="text" id="addressLine2" placeholder="Street/Area Name (Autofills)" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc; background: var(--bg-color); color: var(--text-main);">
                 
@@ -1205,6 +1209,10 @@ window.confirmAddressAndPay = function() {
         return showToast("Please fill all required address fields correctly (and 10-digit phone).", "error");
     }
 
+    if (!selectedLat || !selectedLng) {
+        return showToast("Please select an address from the map suggestions or use 'Current Location' to enable delivery.", "error");
+    }
+
     // Save snapshot to memory
     currentShippingAddress = {
         line1,
@@ -1212,7 +1220,11 @@ window.confirmAddressAndPay = function() {
         city,
         state,
         pincode,
-        phone
+        phone,
+        location: {
+            lat: selectedLat,
+            lng: selectedLng
+        }
     };
 
     // Remove the modal and call your original checkout function
@@ -1221,6 +1233,49 @@ window.confirmAddressAndPay = function() {
 }
 
 // 🌍 OpenStreetMap Autocomplete Logic
+let osmTimeout;
+let selectedLat = null;
+let selectedLng = null;
+
+window.getCurrentLocation = function() {
+    if (navigator.geolocation) {
+        showToast("Fetching location...", "success");
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                selectedLat = position.coords.latitude;
+                selectedLng = position.coords.longitude;
+                
+                try {
+                    // Reverse Geocode
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${selectedLat}&lon=${selectedLng}`);
+                    const data = await response.json();
+                    if (data && data.address) {
+                        const addr = data.address;
+                        const area = addr.suburb || addr.neighbourhood || addr.road || addr.county || '';
+                        if(area) document.getElementById('addressLine2').value = area;
+                        
+                        const city = addr.city || addr.town || addr.state_district || addr.county || '';
+                        if(city) document.getElementById('addressCity').value = city;
+                        
+                        if(addr.state) document.getElementById('addressState').value = addr.state;
+                        if(addr.postcode) document.getElementById('addressPincode').value = addr.postcode.replace(/\s/g, '').substring(0,6);
+                        
+                        document.getElementById('osmSearch').value = "Current Location Selected";
+                        showToast("Location Captured Successfully! 📍", "success");
+                    }
+                } catch (e) {
+                    console.error("Reverse Geocoding Error:", e);
+                    showToast("Coordinates captured, but failed to fetch address text.", "error");
+                }
+            },
+            (error) => {
+                showToast("Please allow location access for Hyperlocal Delivery.", "error");
+            }
+        );
+    } else {
+        showToast("Geolocation is not supported by this browser.", "error");
+    }
+};
 let osmTimeout;
 window.searchOSMAddress = function() {
     clearTimeout(osmTimeout);
@@ -1288,6 +1343,10 @@ window.selectOSMAddress = function(place) {
     if(addr.postcode) {
         document.getElementById('addressPincode').value = addr.postcode.replace(/\s/g, '').substring(0,6);
     }
+    
+    // NEW CODE: Secretly capture the coordinates
+    selectedLat = parseFloat(place.lat);
+    selectedLng = parseFloat(place.lon);
     
     showToast("Address Autofilled Successfully! 🌍", "success");
 };
