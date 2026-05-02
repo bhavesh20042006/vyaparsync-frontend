@@ -1,4 +1,4 @@
-const CACHE_NAME = "vyaparsync-cache-v9";
+const CACHE_NAME = "vyaparsync-cache-v10";
 const urlsToCache = [
   "/",
   "/index.html",
