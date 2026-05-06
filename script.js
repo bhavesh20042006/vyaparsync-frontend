@@ -965,12 +965,15 @@ function loadCart() {
   listContainer.innerHTML = "";
   let subTotal = 0;
   if (itemCount) itemCount.innerText = `${cart.length} Items`;
+  const platformFeeRow = document.getElementById("platformFeeRow");
   if (cart.length === 0) {
     listContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding: 40px 0;">Your cart is empty! 🛒</p>`;
     if(subTotalContainer) subTotalContainer.innerText = "₹0";
     if(totalContainer) totalContainer.innerText = "₹0";
+    if(platformFeeRow) platformFeeRow.style.display = "none";
     return;
   }
+  if(platformFeeRow) platformFeeRow.style.display = "flex";
   // Group cart items by seller
   const groupedCart = cart.reduce((acc, item, index) => {
       const shopName = item.market || 'Vyaparsync';
