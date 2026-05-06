@@ -1520,7 +1520,13 @@ function loadMyOrders() {
   const listContainer = document.getElementById("customerOrdersList");
   if (!listContainer) return; 
   const token = localStorage.getItem("token");
-  if (!token) return;
+  if (!token) {
+    listContainer.innerHTML = `<div style="text-align:center;padding:60px 20px;">
+           <p style="color:var(--text-muted)">Please login to view your orders</p>
+           <a href="login.html" style="color:var(--primary);font-weight:bold">Login -></a>
+           </div>`;
+    return;
+  }
 
   fetch(`${API_URL}/orders/customer`, {
     method: "GET",
