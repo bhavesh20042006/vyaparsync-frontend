@@ -187,13 +187,17 @@ function getUserLocation() {
                 fetchNearbyMarkets(lat, lng);
             },
             (error) => {
-                showToast("Location access denied. Showing all markets.", "error");
-                document.getElementById("userLocationDisplay").innerText = "Location Denied ❌";
+                showToast("Location access denied or timed out. Showing all markets.", "error");
+                document.getElementById("userLocationDisplay").innerText = "Delhi, India (default) 📍";
+                console.warn("Geolocation denied:", error.message);
                 fetchAllMarkets();
-            }
+            },
+            { timeout: 8000 }
         );
     } else {
         showToast("Geolocation is not supported by your browser.", "error");
+        document.getElementById("userLocationDisplay").innerText = "Delhi, India (default) 📍";
+        fetchAllMarkets();
     }
 }
 
