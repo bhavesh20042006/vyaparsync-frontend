@@ -39,9 +39,13 @@
         <div id="video-wrapper" class="video-container flex-grow relative">
             <div id="remote-player" class="w-full h-full">
                 <!-- Placeholder before stream loads -->
-                <div id="stream-placeholder" class="absolute inset-0 flex items-center justify-center bg-gray-900 flex-col gap-4 z-10">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-                    <p class="text-gray-400">Connecting to stream...</p>
+                <div id="stream-placeholder" class="absolute inset-0 flex items-center justify-center bg-gray-900 flex-col gap-4 z-10 p-8 text-center">
+                    <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-2">
+                        <span class="text-2xl">😴</span>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">No live streams right now</h2>
+                    <p class="text-gray-400 max-w-sm">Our sellers are currently away. Follow us on Instagram for announcements on the next drop!</p>
+                    <button onclick="window.location.href='index.html'" class="mt-4 bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-gray-200 transition">Back to Store</button>
                 </div>
             </div>
             
