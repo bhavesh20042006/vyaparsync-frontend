@@ -115,26 +115,6 @@ nav a {
   transition: var(--transition);
 }
 
-.filter-nav select {
-  background-color: var(--card-bg);
-  color: var(--text-main);
-  border: 1px solid rgba(0,0,0,0.2);
-  padding: 8px 30px 8px 10px !important;
-  border-radius: 6px;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131921%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px top 50%;
-  background-size: 12px auto;
-  outline: none;
-}
-
-body.dark .filter-nav select {
-  border-color: rgba(255,255,255,0.2);
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-}
-
 nav a:hover {
   color: var(--primary);
 }
@@ -394,30 +374,25 @@ body.dark .buy-now-btn:hover {
   .nav-buttons {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 4px;
     padding: 10px 2%;
     width: 100%;
     box-sizing: border-box !important;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .nav-buttons::-webkit-scrollbar {
-    display: none;
+    overflow: hidden;
   }
   
   .nav-buttons .nav-btn,
   .nav-buttons button,
   .nav-buttons a {
-    flex: 0 0 auto;
-    width: auto !important; 
-    min-width: 70px !important;
+    flex: 1 1 0;
+    width: 0 !important; /* forces equal distribution */
+    min-width: 0 !important; /* CRITICAL: overrides the desktop 130px min-width */
     font-size: 11px !important;
-    padding: 6px !important;
+    padding: 4px 2px !important;
     margin: 0 !important;
     height: auto !important;
-    min-height: 45px !important;
+    min-height: 45px !important; /* Uniform height for touch */
     box-sizing: border-box !important;
     text-align: center;
     display: flex !important;
@@ -442,16 +417,9 @@ body.dark .buy-now-btn:hover {
     justify-content: center;
   }
   
-  .filter-nav > div {
-    grid-column: span 2; /* Make price range span both columns */
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  /* Make price inputs span remaining space */
+  /* Make price inputs smaller so they fit */
   .filter-nav input[type="number"] {
-    width: auto !important;
-    flex: 1;
+    width: 40% !important;
   }
   
   /* Make the Dark button span 2 columns if needed, or let it fit normally */

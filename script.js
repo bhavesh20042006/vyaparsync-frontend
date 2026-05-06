@@ -187,14 +187,10 @@ function getUserLocation() {
                 fetchNearbyMarkets(lat, lng);
             },
             (error) => {
-                let msg = "Location access denied.";
-                if (error.code === error.TIMEOUT) msg = "Location request timed out.";
-                else if (error.code === error.POSITION_UNAVAILABLE) msg = "Location unavailable.";
-                showToast(msg + " Showing all markets.", "error");
-                document.getElementById("userLocationDisplay").innerText = "Location Error ❌";
+                showToast("Location access denied. Showing all markets.", "error");
+                document.getElementById("userLocationDisplay").innerText = "Location Denied ❌";
                 fetchAllMarkets();
-            },
-            { timeout: 10000, maximumAge: 0, enableHighAccuracy: true }
+            }
         );
     } else {
         showToast("Geolocation is not supported by your browser.", "error");
