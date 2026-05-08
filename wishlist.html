@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wishlist | VyaparSync</title>
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+</head>
+<body>
+
+  <header style="max-width: 1200px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
+    <h1 style="color: var(--primary); margin: 0; font-size: 28px;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0;">🌙</button>
+        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <!-- This div is required by loadWishlist() in script.js -->
+    <div id="products">
+        <p style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading your wishlist...</p>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+  <script src="script.js?v=5"></script>
+
+  <script>
+      // Load wishlist automatically when the page is loaded
+      document.addEventListener('DOMContentLoaded', () => {
+          if (typeof loadWishlist === 'function') {
+              loadWishlist();
+          }
+      });
+  </script>
+
+</body>
+</html>
