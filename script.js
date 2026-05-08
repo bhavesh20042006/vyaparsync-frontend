@@ -682,13 +682,11 @@ function logout() {
 }
 
 // --- INITIALIZE THEME ---
-if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark");
-}
+
 
 function toggleDark() { 
-    document.body.classList.toggle("dark"); 
-    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    document.documentElement.classList.toggle("dark"); 
+    localStorage.setItem("theme", document.documentElement.classList.contains("dark") ? "dark" : "light");
 }
 
 // =======================================================

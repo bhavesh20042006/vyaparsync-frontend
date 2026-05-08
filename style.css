@@ -15,7 +15,7 @@
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-body.dark {
+html.dark {
   --bg-color: #121212;
   --card-bg: #1e1e1e;
   --text-main: #ffffff;
@@ -103,7 +103,7 @@ nav, .filter-nav {
   box-shadow: var(--shadow);
 }
 
-body.dark nav {
+html.dark nav {
   background: #1a1a1a;
 }
 
@@ -126,7 +126,7 @@ nav a:hover {
   text-align: center;
 }
 
-body.dark .hero {
+html.dark .hero {
   background: linear-gradient(135deg, rgba(255,106,0,0.1) 0%, rgba(18,18,18,0) 100%);
 }
 
@@ -157,11 +157,11 @@ body.dark .hero {
   box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
 
-body.dark .product:hover {
+html.dark .product:hover {
   box-shadow: 0 15px 30px rgba(0,0,0,0.6);
 }
 
-body.dark .product img {
+html.dark .product img {
   mix-blend-mode: normal;
   background-color: #ffffff; /* Keep white background for transparent pngs */
 }
@@ -229,7 +229,7 @@ button:active, .add-to-cart-btn:active {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-body.dark .buy-now-btn {
+html.dark .buy-now-btn {
   background: linear-gradient(135deg, #4a4a4a, #2a2a2a);
 }
 
@@ -238,7 +238,7 @@ body.dark .buy-now-btn {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
 }
 
-body.dark .buy-now-btn:hover {
+html.dark .buy-now-btn:hover {
   box-shadow: 0 8px 18px rgba(255, 255, 255, 0.1);
 }
 
@@ -445,7 +445,7 @@ body.dark .buy-now-btn:hover {
   padding: 20px;
 }
 
-body.dark .auth-wrapper {
+html.dark .auth-wrapper {
   background: linear-gradient(135deg, rgba(255,106,0,0.1) 0%, rgba(18,18,18,0) 100%);
 }
 
@@ -462,7 +462,7 @@ body.dark .auth-wrapper {
   transform: translateY(30px);
 }
 
-body.dark .auth-container {
+html.dark .auth-container {
   box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 
@@ -500,8 +500,8 @@ body.dark .auth-container {
   box-sizing: border-box;
 }
 
-body.dark .input-group input, 
-body.dark .auth-select {
+html.dark .input-group input, 
+html.dark .auth-select {
   border-color: rgba(255,255,255,0.1);
 }
 
