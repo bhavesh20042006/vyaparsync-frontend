@@ -78,6 +78,9 @@ function showToast(message, type = "success") {
 
   toast.innerHTML = `<div style="display: flex; align-items: center; gap: 10px; font-size: 15px;">${icon} ${message}</div>`;
   
+  const existing = container.querySelectorAll(".toast");
+  if (existing.length >= 3) existing[0].remove();
+  
   container.appendChild(toast);
   
   setTimeout(() => toast.classList.add("show"), 10);
