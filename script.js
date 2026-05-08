@@ -488,7 +488,7 @@ function addToCartWithSize(id) {
         cart.push({ id: cartItemId, originalId: id, name: product.name + (size ? ` (${size})` : ""), price: product.price, quantity: 1, stock: product.stock, image: product.image, market: product.market });
     }
     
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
     showToast(`${product.name} ${size ? `(${size})` : ''} added to cart!`, "success");
 }
 
@@ -627,7 +627,7 @@ function addToCart(id) {
         if (product.stock < 1) return showToast("Out of stock!", "error");
         cart.push({ id: product._id, name: product.name, price: product.price, quantity: 1, stock: product.stock, image: product.image, market: product.market });
     }
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
   showToast(`${product.name} added to cart!`, "success");
 }
 
@@ -1080,7 +1080,7 @@ function loadCart() {
 window.removeFromCart = function(index) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   cart.splice(index, 1);
-  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
   loadCart();
   showToast("Item removed from cart.", "info");
 }
@@ -1096,7 +1096,7 @@ window.updateCartQuantity = function(id, change) {
             cart.splice(index, 1);
             showToast("Item removed from cart.", "info");
         }
-        localStorage.setItem("cart", JSON.stringify(cart));
+        localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
         loadCart();
     }
 }
@@ -1928,3 +1928,26 @@ function showNotificationBanner() {
         localStorage.setItem("notifPromptDeclined", Date.now());
     });
 }
+
+// =======================================================
+// ?? CART BADGE UPDATER
+// =======================================================
+function updateCartBadge() {
+    const cartBtns = document.querySelectorAll('.nav-btn.cart');
+    if (!cartBtns || cartBtns.length === 0) return;
+    let cart = [];
+    try {
+        cart = JSON.parse(localStorage.getItem("cart")) || [];
+    } catch(e) {}
+    const totalItems = cart.reduce((s, i) => s + (i.quantity || 1), 0);
+    cartBtns.forEach(btn => {
+        if (totalItems > 0) {
+            btn.innerHTML = '🛒 Cart <span style="background:#ff6a00;color:white;border-radius:50%;padding:0 6px;font-size:11px;margin-left:5px;box-shadow:0 2px 4px rgba(0,0,0,0.2);">' + totalItems + '</span>';
+        } else {
+            btn.innerHTML = '🛒 Cart';
+        }
+    });
+}
+// Run on load
+document.addEventListener("DOMContentLoaded", updateCartBadge);
+updateCartBadge();
