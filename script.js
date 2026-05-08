@@ -99,9 +99,7 @@ function loadHome() {
   container.innerHTML = `
     <div id="current-view" data-view="home"></div>
     
-    <div style="margin-bottom: 40px; text-align: center; display: flex; justify-content: center;">
-        <input type="text" id="searchInput" placeholder="Search for products, shops, or markets... 🔍" onkeyup="delayFilter()" style="width: 100%; max-width: 600px; padding: 18px 25px; font-size: 16px; border-radius: 30px; border: 2px solid rgba(255,106,0,0.2); background: var(--card-bg); color: var(--text-main); outline: none; box-shadow: var(--shadow); transition: var(--transition);" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='rgba(255,106,0,0.2)'">
-    </div>
+    
 
     <div style="margin-bottom: 40px;">
         <h2 style="margin-bottom: 15px; font-size: 24px;">🌍 Explore Local Markets</h2>
@@ -515,20 +513,8 @@ function delayFilter() {
 }
 
 function applyFilters() {
-    // Sync main input and inner input to avoid losing query state
     const mainInput = document.getElementById("mainSearchInput");
-    const innerInput = document.getElementById("searchInput");
-    
-    let query = "";
-    if (mainInput && document.activeElement === mainInput) {
-        query = mainInput.value.trim();
-        if (innerInput) innerInput.value = query;
-    } else if (innerInput && document.activeElement === innerInput) {
-        query = innerInput.value.trim();
-        if (mainInput) mainInput.value = query;
-    } else {
-        query = mainInput ? mainInput.value.trim() : (innerInput ? innerInput.value.trim() : "");
-    }
+    let query = mainInput ? mainInput.value.trim() : "";
     
     const category = document.getElementById("filterCategory") ? document.getElementById("filterCategory").value : "All";
     const minPrice = document.getElementById("minPrice") ? document.getElementById("minPrice").value : "";
@@ -564,9 +550,7 @@ function applyFilters() {
                 container.innerHTML = `
                   <div id="current-view" data-view="search"></div>
                   
-                  <div style="margin-bottom: 30px; text-align: center; display: flex; justify-content: center;">
-                      <input type="text" id="searchInput" value="${query}" placeholder="Search for products, shops, or markets... 🔍" onkeyup="delayFilter()" autofocus style="width: 100%; max-width: 600px; padding: 18px 25px; font-size: 16px; border-radius: 30px; border: 2px solid var(--primary); background: var(--card-bg); color: var(--text-main); outline: none; box-shadow: var(--shadow);">
-                  </div>
+                  
 
                   <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
                       <button onclick="clearSearch()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Clear Filters</button>
@@ -576,12 +560,7 @@ function applyFilters() {
                   <div id="grid" class="product-grid"></div>
                 `;
                 
-                const inputElement = document.getElementById("searchInput");
-                if(inputElement && document.activeElement === innerInput) {
-                    inputElement.focus();
-                    inputElement.setSelectionRange(inputElement.value.length, inputElement.value.length);
-                }
-            } else {
+                } else {
                 const st = document.getElementById("searchTitle");
                 if (st) st.innerText = query ? `🔍 Results for "${query}"` : `🔍 Filtered Results`;
             }
