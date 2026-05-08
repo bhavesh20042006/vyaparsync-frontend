@@ -105,7 +105,7 @@ function loadHome() {
 
     <div style="margin-bottom: 40px;">
         <h2 style="margin-bottom: 15px; font-size: 24px;">🌍 Explore Local Markets</h2>
-        <div id="markets-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 15px;"></div>
+        <div id="markets-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-top: 15px; padding-bottom: 15px;"></div>
     </div>
     <div>
         <h2 style="margin-bottom: 15px; font-size: 24px; font-weight: 700; text-align: center;">Trending Today</h2>
