@@ -348,6 +348,14 @@ function createProductHTML(p) {
         <p>Stock: <b>${p.stock}</b></p>
         <p class="price">₹${p.price}</p>
         
+        ${p.reviews && p.reviews.length > 0 ? `
+            <div style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 8px; font-size: 12px; text-align: left; border-left: 3px solid #f1c40f; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                <b style="color: var(--text-main);">${sanitizeHTML(p.reviews[p.reviews.length - 1].customerName)}</b> 
+                <span style="color: #27ae60; font-weight: bold; font-size: 10px;">✅ Verified</span><br>
+                <i style="color: var(--text-muted);">"${sanitizeHTML(p.reviews[p.reviews.length - 1].comment)}"</i>
+            </div>
+        ` : ''}
+
         <div style="margin-top: auto; display: flex; flex-direction: column;">
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
                 <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p._id}')" style="margin-top: 0; background: #f1c40f; color: #333;">🛒 Add</button>
@@ -355,14 +363,6 @@ function createProductHTML(p) {
             </div>
 
             <button onclick="event.stopPropagation(); openReviewPrompt('${p._id}', '${escapedReviewName}')" style="width: 100%; margin-top: 10px; background: transparent; border: 1px dashed rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-size: 13px;">📝 Write a Review</button>
-            
-            ${p.reviews && p.reviews.length > 0 ? `
-                <div style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 8px; font-size: 12px; text-align: left; border-left: 3px solid #f1c40f;">
-                    <b style="color: var(--text-main);">${sanitizeHTML(p.reviews[p.reviews.length - 1].customerName)}</b> 
-                    <span style="color: #27ae60; font-weight: bold; font-size: 10px;">✅ Verified</span><br>
-                    <i style="color: var(--text-muted);">"${sanitizeHTML(p.reviews[p.reviews.length - 1].comment)}"</i>
-                </div>
-            ` : ''}
         </div>
       </div>
     `;
