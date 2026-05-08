@@ -819,4 +819,20 @@ html.dark .auth-select {
   }
 }
 
-.hidden-btn { display: none !important; }
+.hidden-btn { display: none !important; }
+
+/* ⏳ DISABLED / LOADING STATE FOR ALL BUTTONS */
+button:disabled, .btn-auth:disabled, .auth-submit-btn:disabled, .nav-btn:disabled, .add-to-cart-btn:disabled, .buy-now-btn:disabled {
+  opacity: 0.65 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  background: #95a5a6 !important;
+  color: #ffffff !important;
+  animation: pulse-loading 1.5s infinite alternate !important;
+}
+
+@keyframes pulse-loading {
+  0% { opacity: 0.65; }
+  100% { opacity: 0.35; }
+}
