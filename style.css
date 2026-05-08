@@ -142,6 +142,7 @@ html.dark .hero {
 
 /* 📦 RESPONSIVE PRODUCT GRID */
 .product {
+  min-width: 0;
   background: var(--card-bg);
   padding: 20px;
   border-radius: var(--border-radius);
@@ -634,6 +635,7 @@ html.dark .auth-select {
   display: none;
 }
 .horizontal-scroll-grid .product {
+  min-width: 0;
   width: 260px;
   min-width: 260px;
   max-width: 260px;
@@ -643,14 +645,17 @@ html.dark .auth-select {
 
 @media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
   .horizontal-scroll-grid {
     gap: 8px;
   }
   .horizontal-scroll-grid .product {
-    min-width: 105px;
+  min-width: 0;
+    width: 145px;
+    min-width: 145px;
+    max-width: 145px;
     padding: 8px;
     overflow: hidden;
   }
@@ -706,6 +711,7 @@ html.dark .auth-select {
     width: 100%;
   }
   .product {
+  min-width: 0;
     padding: 10px;
     border-radius: 10px;
   }
