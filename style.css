@@ -153,6 +153,8 @@ html.dark .hero {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -632,7 +634,9 @@ html.dark .auth-select {
   display: none;
 }
 .horizontal-scroll-grid .product {
-  min-width: 240px;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
   scroll-snap-align: start;
   flex-shrink: 0;
 }
