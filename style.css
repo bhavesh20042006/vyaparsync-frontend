@@ -150,6 +150,10 @@ html.dark .hero {
   transition: var(--transition);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .product:hover {
@@ -168,7 +172,7 @@ html.dark .product img {
 
 .product img {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 220px;
   object-fit: contain;
   background-color: #ffffff;
   border-radius: 10px;
