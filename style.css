@@ -153,7 +153,6 @@ html.dark .hero {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -178,7 +177,8 @@ html.dark .product img {
   height: 220px;
   object-fit: contain;
   object-position: center;
-  background-color: #ffffff;
+  background-color: #f8f9fa;
+  border: 1px solid rgba(0,0,0,0.05);
   border-radius: 10px;
   margin-bottom: 15px;
 }
@@ -577,7 +577,6 @@ html.dark .auth-select {
   top: 0;
   left: -100%;
   width: 100%;
-  height: 100%;
   background: rgba(255, 255, 255, 0.2);
   transition: all 0.4s ease;
   z-index: -1;
@@ -625,6 +624,7 @@ html.dark .auth-select {
 /* HORIZONTAL SCROLL GRID FOR TRENDING */
 .horizontal-scroll-grid {
   display: flex;
+  align-items: stretch;
   gap: 20px;
   overflow-x: auto;
   padding-bottom: 20px;
