@@ -49,6 +49,11 @@
 
     <div id="emailStep">
         <input type="email" id="authEmail" placeholder="Enter your email address" required>
+        
+        <div style="margin-bottom: 20px; display: flex; align-items: start; gap: 10px; font-size: 13px; color: var(--text-muted); text-align: left;">
+            <input type="checkbox" id="legalConsent" style="margin-top: 3px; cursor: pointer;">
+            <label for="legalConsent">I agree to the <a href="terms.html" style="color: var(--primary);">Terms of Service</a> and <a href="privacy.html" style="color: var(--primary);">Privacy Policy</a>.</label>
+        </div>
         <button onclick="requestOTP()" class="btn-auth" id="sendBtn">Send Secure Code</button>
         
         <p id="helperText" style="margin-top: 20px; font-size: 14px; color: var(--text-muted);">
