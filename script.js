@@ -360,7 +360,9 @@ function createProductHTML(p) {
     const attrName = escapeAttr(p.name);
     const safeShopName = sanitizeHTML(p.shopName);
     const safeMarket = sanitizeHTML(p.market);
-    let imageSrc = p.image || 'https://via.placeholder.com/200';
+    let imageSrc = p.image 
+        ? p.image.replace('/upload/', '/upload/w_400,q_auto,f_auto/') 
+        : 'https://via.placeholder.com/400';
     if (imageSrc && !imageSrc.startsWith('http')) {
         imageSrc = `${API_URL}/${imageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
     }
@@ -428,7 +430,9 @@ function loadProductDetails(productId) {
 
     const container = document.getElementById("products");
     
-    let imageSrc = product.image || 'https://via.placeholder.com/600';
+    let imageSrc = product.image 
+        ? product.image.replace('/upload/', '/upload/w_600,q_auto,f_auto/') 
+        : 'https://via.placeholder.com/600';
     if (imageSrc && !imageSrc.startsWith('http')) {
         imageSrc = `${API_URL}/${imageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
     }
