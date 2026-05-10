@@ -301,6 +301,8 @@ function loadShops(marketName) {
   `;
 
   fetch(`${API_URL}/products/markets/${marketName}/shops`)
+    .then(res => res.json())
+    .then(shops => {
       const grid = document.getElementById("grid");
       if (shops.length === 0) grid.innerHTML = "<p>No shops in this market yet.</p>";
       shops.forEach(shop => {
