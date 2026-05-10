@@ -16,7 +16,17 @@
 </head>
 <body>
 
-<header class="header-top">
+<div id="splash-screen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0d0d0d; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s ease;">
+    <div style="position: relative; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 50%; animation: splash-pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);">
+        <img src="/icon-192-v3.png" alt="VyaparSync Logo" style="width: 110px; height: 110px; animation: splash-float 3s ease-in-out infinite;">
+    </div>
+    <div style="margin-top: 40px; font-size: 28px; font-weight: bold; background: linear-gradient(45deg, #ff6a00, #ffc107); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        VyaparSync
+    </div>
+    <div style="margin-top: 15px; color: #888; font-size: 14px; letter-spacing: 3px; font-weight: 600; animation: splash-fade-in-out 1.5s infinite;">
+        LOADING...
+    </div>
+</div><header class="header-top">
   <div class="header-logo-search">
     <h2>🛍 VyaparSync</h2>
     <input 
