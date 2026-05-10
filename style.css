@@ -68,8 +68,15 @@ header h2 {
   display: flex;
   align-items: center;
   gap: 8px;
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex: 2 1 auto;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+  padding-bottom: 5px;
+}
+.nav-buttons::-webkit-scrollbar {
+  display: none;
 }
 
 .search-bar {
@@ -279,8 +286,9 @@ html.dark .buy-now-btn:hover {
   gap: 5px;
   background: linear-gradient(135deg, #3498db, #2980b9);
   color: white !important;
-  min-width: auto !important; /* Fixed short buttons min-width */
-  width: auto !important; /* Allows long buttons to expand safely */
+  min-width: 145px !important;
+  width: 145px !important;
+  flex-shrink: 0 !important;
   padding: 0 10px !important;
   margin: 0 !important; /* Fixes vertical alignment between button and a tags */
   height: 42px !important; /* Exact uniform height */
