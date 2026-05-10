@@ -386,7 +386,7 @@ function createProductHTML(p) {
         <button onclick="event.stopPropagation(); toggleWishlist('${p._id}', this)" style="position: absolute; top: 10px; right: 10px; background: white; border: none; border-radius: 50%; width: 35px; height: 35px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: ${heartColor}; z-index: 10; padding: 0; margin: 0; transition: transform 0.2s;">
             ♥
         </button>
-        <img src="${safeImage}" alt="${attrName}" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
+        <img src="${safeImage}" alt="${attrName}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
         <h3>${safeName}</h3>
         <p style="cursor: pointer; margin-bottom: 5px;" onclick="event.stopPropagation(); loadShops('${safeMarket}')">
             🏬 ${safeShopName} ${badgeHtml} | 🏙️ ${safeMarket}
@@ -465,7 +465,7 @@ function loadProductDetails(productId) {
         <div style="display: flex; flex-wrap: wrap; gap: 40px; background: var(--card-bg); padding: 40px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
             
             <div style="flex: 1; min-width: 300px; max-width: 500px;">
-                <img src="${safeImage}" style="width: 100%; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <img src="${safeImage}" loading="lazy" style="width: 100%; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
             </div>
             
             <div style="flex: 2; min-width: 300px;">
