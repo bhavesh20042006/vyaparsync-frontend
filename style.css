@@ -445,6 +445,16 @@ html.dark .buy-now-btn:hover {
   .hero h1 {
     font-size: 2em;
   }
+  .auth-wrapper {
+    padding: 10px !important;
+  }
+  .auth-card, .auth-container {
+    padding: 20px !important;
+  }
+  .auth-wrapper ~ footer {
+    margin-top: 10px !important;
+    padding: 10px 5% !important;
+  }
 }
 
 /* =========================================
