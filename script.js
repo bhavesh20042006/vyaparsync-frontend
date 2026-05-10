@@ -1840,14 +1840,14 @@ function showPwaInstallBanner() {
   
   const banner = document.createElement('div');
   banner.id = 'pwa-banner';
-  banner.style = "position: fixed; bottom: 0; left: 0; width: 100%; background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.2);";
+  banner.style = "position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.2);";
   banner.innerHTML = `
-    <div style="font-size: 14px; font-weight: bold;">
+    <div style="font-size: 14px; font-weight: bold; flex: 1; margin-right: 10px; line-height: 1.4;">
       📱 Install VyaparSync App for a faster experience!
     </div>
-    <div style="display: flex; gap: 10px;">
-        <button id="installAppBtn" style="background: white; color: var(--primary); border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer;">Install</button>
-        <button id="closeInstallBtn" style="background: transparent; color: white; border: 1px solid white; padding: 8px 10px; border-radius: 8px; cursor: pointer;">X</button>
+    <div style="display: flex; gap: 10px; flex-shrink: 0; align-items: center;">
+        <button id="installAppBtn" style="background: white; color: var(--primary); border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;">Install</button>
+        <button id="closeInstallBtn" style="background: transparent; color: white; border: 1px solid white; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">X</button>
     </div>
   `;
   document.body.appendChild(banner);
