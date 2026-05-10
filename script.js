@@ -95,22 +95,64 @@ function showToast(message, type = "success") {
 // 🍔 🛍️ HYBRID NAVIGATION UI (AMAZON + SWIGGY)
 // =======================================================
 
+// =======================================================
+// 💀 SKELETON LOADING HELPERS
+// =======================================================
+function getProductSkeletons(count = 6) {
+    let html = "";
+    for(let i=0; i<count; i++) {
+        html += `
+        <div class="product skeleton" style="border: 1px solid rgba(0,0,0,0.05); min-width: 0;">
+            <div class="skeleton-img shimmer"></div>
+            <div class="skeleton-text skeleton-title shimmer" style="margin-top:15px;"></div>
+            <div class="skeleton-text skeleton-subtitle shimmer" style="margin-top:5px;"></div>
+            <div class="skeleton-text skeleton-price shimmer" style="margin-top:15px; height: 20px;"></div>
+            <div class="skeleton-btn shimmer" style="margin-top:auto;"></div>
+        </div>`;
+    }
+    return html;
+}
+
+function getMarketSkeletons(count = 4) {
+    let html = "";
+    for(let i=0; i<count; i++) {
+        html += `
+        <div class="market-card skeleton" style="border: 1px solid rgba(0,0,0,0.05); height: 60px; min-width: 140px; display:flex; align-items:center; justify-content:center; border-radius: var(--border-radius);">
+            <div class="skeleton-text shimmer" style="width: 70%; height: 20px; margin:0;"></div>
+        </div>`;
+    }
+    return html;
+}
+
+function getShopSkeletons(count = 4) {
+    let html = "";
+    for(let i=0; i<count; i++) {
+        html += `
+        <div class="skeleton" style="padding: 25px; border-radius: var(--border-radius); background: var(--card-bg); text-align: center; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center;">
+            <div class="skeleton-text shimmer" style="width: 60%; height: 24px; margin-bottom: 15px;"></div>
+            <div class="skeleton-text shimmer" style="width: 40%; height: 16px;"></div>
+        </div>`;
+    }
+    return html;
+}
+
 function loadHome() {
   const container = document.getElementById("products");
   if (!container) return;
 
   container.innerHTML = `
     <div id="current-view" data-view="home"></div>
-    
-    
-
     <div style="margin-bottom: 40px;">
         <h2 style="margin-bottom: 15px; font-size: 24px;">🌍 Explore Local Markets</h2>
-        <div id="markets-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-top: 15px; padding-bottom: 15px;"></div>
+        <div id="markets-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-top: 15px; padding-bottom: 15px;">
+            ${getMarketSkeletons(4)}
+        </div>
     </div>
     <div>
         <h2 style="margin-bottom: 15px; font-size: 24px; font-weight: 700; text-align: center;">Trending Today</h2>
-        <div id="products-grid" class="horizontal-scroll-grid"></div>
+        <div id="products-grid" class="horizontal-scroll-grid">
+            ${getProductSkeletons(6)}
+        </div>
     </div>
   `;
 
@@ -246,18 +288,19 @@ function renderMarketGrid(markets, isNearby) {
 
 function loadShops(marketName) {
   currentMarketName = marketName; 
+  const container = document.getElementById("products");
+  container.innerHTML = `
+    <div id="current-view" data-view="markets"></div>
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+        <button onclick="loadHome()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Home</button>
+        <h2 style="font-size: 24px; font-weight: 700; margin: 0;">🏪 Shops in ${marketName}</h2>
+    </div>
+    <div id="grid" class="product-grid">
+        ${getShopSkeletons(6)}
+    </div>
+  `;
+
   fetch(`${API_URL}/products/markets/${marketName}/shops`)
-    .then(res => res.json())
-    .then(shops => {
-      const container = document.getElementById("products");
-      container.innerHTML = `
-        <div id="current-view" data-view="markets"></div>
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-            <button onclick="loadHome()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Home</button>
-            <h2 style="font-size: 24px; font-weight: 700; margin: 0;">🏪 Shops in ${marketName}</h2>
-        </div>
-        <div id="grid" class="product-grid"></div>
-      `;
       const grid = document.getElementById("grid");
       if (shops.length === 0) grid.innerHTML = "<p>No shops in this market yet.</p>";
       shops.forEach(shop => {
@@ -272,19 +315,22 @@ function loadShops(marketName) {
 }
 
 function loadProducts(shopName) {
+  const container = document.getElementById("products");
+  container.innerHTML = `
+    <div id="current-view" data-view="shop" data-shop="${shopName}"></div>
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+        <button onclick="loadShops('${currentMarketName}')" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Shops</button>
+        <h2 style="font-size: 24px; font-weight: 700; margin: 0;">🍔 ${shopName} Menu</h2>
+    </div>
+    <div id="grid" class="product-grid">
+        ${getProductSkeletons(8)}
+    </div>
+  `;
+
   fetch(`${API_URL}/products/shops/${shopName}`)
     .then(res => res.json())
     .then(products => {
-      currentProducts = products; 
-      const container = document.getElementById("products");
-      container.innerHTML = `
-        <div id="current-view" data-view="shop" data-shop="${shopName}"></div>
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-            <button onclick="loadShops('${currentMarketName}')" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Shops</button>
-            <h2 style="font-size: 24px; font-weight: 700; margin: 0;">🍔 ${shopName} Menu</h2>
-        </div>
-        <div id="grid" class="product-grid"></div>
-      `;
+      currentProducts = products;
       const grid = document.getElementById("grid");
       if (products.length === 0) grid.innerHTML = "<p>This shop hasn't added any products yet.</p>";
       products.forEach(p => {
@@ -545,33 +591,31 @@ function applyFilters() {
     if (inStock) fetchUrl += `inStock=true&`;
     fetchUrl += `sort=${sort}`;
 
+    const container = document.getElementById("products");
+    const isSearchActive = document.getElementById("current-view") && document.getElementById("current-view").getAttribute("data-view") === "search";
+    
+    if (!isSearchActive) {
+        container.innerHTML = `
+          <div id="current-view" data-view="search"></div>
+          <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+              <button onclick="clearSearch()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Clear Filters</button>
+              <h2 style="font-size: 24px; margin: 0;" id="searchTitle">🔍 Search Results</h2>
+          </div>
+          <div id="grid" class="product-grid">
+              ${getProductSkeletons(8)}
+          </div>
+        `;
+    } else {
+        const st = document.getElementById("searchTitle");
+        if (st) st.innerText = query ? `🔍 Results for "${query}"` : `🔍 Filtered Results`;
+        const grid = document.getElementById("grid");
+        if(grid) grid.innerHTML = getProductSkeletons(8);
+    }
+
     fetch(fetchUrl)
         .then(res => res.json())
         .then(products => {
             currentProducts = products;
-            
-            const container = document.getElementById("products");
-            const isSearchActive = document.getElementById("current-view") && document.getElementById("current-view").getAttribute("data-view") === "search";
-            
-            if (!isSearchActive) {
-                container.innerHTML = `
-                  <div id="current-view" data-view="search"></div>
-                  
-                  
-
-                  <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-                      <button onclick="clearSearch()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Clear Filters</button>
-                      <h2 style="font-size: 24px; margin: 0;" id="searchTitle">🔍 Search Results</h2>
-                  </div>
-                  
-                  <div id="grid" class="product-grid"></div>
-                `;
-                
-                } else {
-                const st = document.getElementById("searchTitle");
-                if (st) st.innerText = query ? `🔍 Results for "${query}"` : `🔍 Filtered Results`;
-            }
-            
             const grid = document.getElementById("grid");
             if(grid) grid.innerHTML = "";
             
