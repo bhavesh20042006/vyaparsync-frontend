@@ -15,7 +15,7 @@
     
     /* 🔘 The Role Toggle Switch */
     .role-toggle { display: flex; background: rgba(0,0,0,0.05); border-radius: 8px; margin-bottom: 25px; padding: 5px; }
-    .toggle-btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
+    .toggle-btn { flex: 1; min-width: 0; height: 42px; display: flex; align-items: center; justify-content: center; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; box-sizing: border-box; }
     .toggle-btn.active { background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--primary); }
     .toggle-btn.inactive { background: transparent; color: var(--text-muted); }
 
