@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support - VyaparSync</title>
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+  
+  <style>
+    .support-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+    
+    .support-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 40px 30px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      margin-bottom: 30px;
+    }
+    
+    .support-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    html.dark .support-card:hover {
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+    }
+    
+    .support-card h2 {
+      color: var(--primary);
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+    
+    .support-card p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+    
+    .contact-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    .contact-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 25px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
+      color: white;
+    }
+    
+    .whatsapp-btn {
+      background: #25D366;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    }
+    
+    .whatsapp-btn:hover {
+      background: #128C7E;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+    }
+    
+    .email-btn {
+      background: var(--primary);
+      box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+    }
+    
+    .email-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 106, 0, 0.4);
+    }
+    
+  </style>
+</head>
+<body>
+
+  <header style="max-width: 800px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
+    <h1 style="color: var(--primary); margin: 0; font-size: 28px;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0;">🌙</button>
+        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>We're here to help!</h1>
+    <p style="font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">Having an issue with an order? Need help setting up your store? Reach out to us.</p>
+  </div>
+
+  <div class="support-container">
+    
+    <div class="support-card">
+      <h2>Contact Support</h2>
+      <p>Our support team is available from 9 AM to 9 PM IST. For immediate assistance regarding orders, please use WhatsApp.</p>
+      
+      <div class="contact-methods">
+        <a href="https://wa.me/919818056665" target="_blank" class="contact-btn whatsapp-btn">
+          <span>💬</span> Chat on WhatsApp (+91 9818056665)
+        </a>
+        
+        <a href="mailto:bhaveshkhullar9810@gmail.com" class="contact-btn email-btn">
+          <span>✉️</span> Email (bhaveshkhullar9810@gmail.com)
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer style="background: var(--nav-bg); color: white; text-align: center; padding: 20px 5%; margin-top: 40px;">
+    <p style="margin: 0; font-size: 14px;">
+      &copy; 2026 VyaparSync. All rights reserved. | <a href="about.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">About / How it works</a> | <a href="terms.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Terms</a> | <a href="privacy.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Privacy</a> | <a href="support.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Support</a>
+    </p>
+  </footer>
+
+  <script src="script.js?v=5"></script>
+</body>
+</html>
