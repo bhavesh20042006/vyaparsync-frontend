@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About VyaparSync - How it Works</title>
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+  
+  <style>
+    .about-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .about-section {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .about-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    html.dark .about-section:hover {
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+    }
+    
+    .about-section h2 {
+      color: var(--primary);
+      margin-top: 0;
+      border-bottom: 2px solid rgba(255, 106, 0, 0.1);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .about-section p, .about-section li {
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    
+    .steps-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .step-card {
+      flex: 1;
+      min-width: 250px;
+      background: rgba(255, 106, 0, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border: 1px dashed rgba(255, 106, 0, 0.2);
+    }
+    
+    html.dark .step-card {
+      background: rgba(255, 106, 0, 0.1);
+    }
+    
+    .step-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    
+    .step-title {
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    
+    .cta-container {
+      text-align: center;
+      margin: 50px 0;
+    }
+    
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), #ff8c00);
+      color: white;
+      text-decoration: none;
+      padding: 15px 40px;
+      border-radius: 30px;
+      font-size: 18px;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+      transition: var(--transition);
+      animation: pulse 2s infinite;
+    }
+    
+    .cta-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(255, 106, 0, 0.5);
+      animation: none;
+    }
+    
+    .market-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .market-tag {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-main);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    html.dark .market-tag {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.1);
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 106, 0, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(255, 106, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 106, 0, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header style="max-width: 900px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
+    <h1 style="color: var(--primary); margin: 0; font-size: 28px;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0;">🌙</button>
+        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>India's Local Markets, Delivered</h1>
+    <p style="font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">Bringing the authentic bazaar experience straight to your doorstep.</p>
+  </div>
+
+  <div class="about-container">
+    
+    <!-- What is VyaparSync -->
+    <div class="about-section">
+      <h2><span>💡</span> What is VyaparSync?</h2>
+      <p>VyaparSync is a revolutionary ONDC-compliant marketplace designed to digitize India's bustling local markets. We connect you directly with authentic local shopkeepers, eliminating middlemen and empowering small businesses.</p>
+      <p>Our platform brings the vibrant experience of Indian bazaars online, offering real-time inventory and live-streaming commerce straight from the shopkeeper's hands to yours.</p>
+    </div>
+
+    <!-- Supported Markets -->
+    <div class="about-section">
+      <h2><span>🏪</span> Markets We Support</h2>
+      <p>We are rapidly expanding across major local markets to bring you the best selection of authentic goods. Currently supported markets include:</p>
+      <div class="market-tags">
+        <span class="market-tag">Chandni Chowk, Delhi</span>
+        <span class="market-tag">Lajpat Nagar, Delhi</span>
+        <span class="market-tag">Sarojini Nagar, Delhi</span>
+        <span class="market-tag">Sadar Bazaar, Delhi</span>
+        <span class="market-tag">Johari Bazaar, Jaipur</span>
+        <span class="market-tag">Commercial Street, Bangalore</span>
+        <span class="market-tag">Crawford Market, Mumbai</span>
+      </div>
+    </div>
+
+    <!-- How Ordering Works -->
+    <div class="about-section">
+      <h2><span>🛒</span> How Ordering Works</h2>
+      <p>Shopping on VyaparSync is as easy as 1-2-3:</p>
+      <div class="steps-container">
+        <div class="step-card">
+          <span class="step-icon">🔍</span>
+          <div class="step-title">Step 1: Browse & Discover</div>
+          <p>Search for your favorite products, watch live streams from local sellers, and add items to your cart.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-icon">💳</span>
+          <div class="step-title">Step 2: Secure Checkout</div>
+          <p>Pay safely using UPI (GPay, PhonePe, Paytm) or other secure payment methods via our Razorpay integration.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-icon">✅</span>
+          <div class="step-title">Step 3: Track & Receive</div>
+          <p>Track your order status in real-time as the shopkeeper packs and ships it directly to your address.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- How Delivery Works -->
+    <div class="about-section">
+      <h2><span>🚚</span> How Delivery Works</h2>
+      <p>We've partnered with reliable ONDC logistics networks like Delhivery, Dunzo, and Shadowfax to ensure your items arrive safely and swiftly.</p>
+      <ul style="padding-left: 20px;">
+        <li><strong>Local Delivery:</strong> Same-day or next-day delivery for items ordered from your city's local markets.</li>
+        <li><strong>Pan-India Shipping:</strong> 3-5 days delivery for authentic goods ordered from across the country.</li>
+        <li><strong>Live Tracking:</strong> Real-time GPS tracking from the seller's shop directly to your doorstep.</li>
+      </ul>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-container">
+      <h2 style="margin-bottom: 20px; font-size: 28px;">Are you a local shopkeeper?</h2>
+      <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 18px;">Join the digital revolution. Sell your products pan-India with zero setup cost.</p>
+      <a href="retailer-register.html" class="cta-btn">🚀 Become a Seller</a>
+    </div>
+
+  </div>
+
+  <footer style="background: var(--nav-bg); color: white; text-align: center; padding: 20px 5%; margin-top: 40px;">
+    <p style="margin: 0; font-size: 14px;">
+      &copy; 2026 VyaparSync. All rights reserved. | <a href="about.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">About / How it works</a>
+    </p>
+  </footer>
+
+  <script src="script.js?v=5"></script>
+</body>
+</html>
