@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service - VyaparSync</title>
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+  
+  <style>
+    .legal-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .legal-section {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .legal-section h2 {
+      color: var(--primary);
+      margin-top: 0;
+      border-bottom: 2px solid rgba(255, 106, 0, 0.1);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .legal-section p, .legal-section li {
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    
+    .legal-section ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header style="max-width: 900px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
+    <h1 style="color: var(--primary); margin: 0; font-size: 28px;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 15px; align-items: center;">
+        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0;">🌙</button>
+        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>Terms of Service</h1>
+    <p style="font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">Please read these terms carefully before using VyaparSync.</p>
+  </div>
+
+  <div class="legal-container">
+    
+    <div class="legal-section">
+      <h2>1. Introduction</h2>
+      <p>Welcome to VyaparSync. By accessing or using our platform, you agree to be bound by these Terms of Service. VyaparSync provides an ONDC-compliant marketplace connecting buyers with local sellers.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>2. Payment Handling</h2>
+      <p>VyaparSync utilizes third-party payment gateways (such as Razorpay) to securely process payments via UPI, Credit/Debit Cards, and Net Banking. We do not store your full payment card details. All transactions are encrypted and processed subject to the terms and conditions of our payment partners.</p>
+    </div>
+
+    <div class="legal-section">
+      <h2>3. Refund Policy</h2>
+      <p>Refunds are processed according to the following conditions:</p>
+      <ul>
+        <li>If an order is cancelled by the seller before dispatch, a full refund will be initiated automatically.</li>
+        <li>For defective or incorrect items received, buyers must initiate a return request within 48 hours of delivery. Upon seller verification, a full or partial refund will be issued.</li>
+        <li>Refunds typically reflect in the original payment method within 5-7 business days.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section">
+      <h2>4. Seller Responsibilities</h2>
+      <p>Sellers on VyaparSync agree to the following:</p>
+      <ul>
+        <li>Maintain accurate product listings, including clear images, pricing, and authentic descriptions.</li>
+        <li>Fulfill orders within the agreed timelines and ensure items are securely packaged.</li>
+        <li>Comply with all applicable laws, including taxation and consumer protection regulations.</li>
+        <li>Handle buyer queries and return requests promptly and fairly.</li>
+      </ul>
+    </div>
+
+    <div class="legal-section">
+      <h2>5. Platform Liability</h2>
+      <p>VyaparSync acts solely as a technology platform connecting buyers and sellers. While we strive to ensure a safe environment, we do not guarantee the quality, safety, or legality of items listed by sellers. VyaparSync shall not be held liable for any direct, indirect, incidental, or consequential damages arising from transactions conducted on the platform, delays in delivery, or seller misconduct.</p>
+    </div>
+
+  </div>
+
+  <footer style="background: var(--nav-bg); color: white; text-align: center; padding: 20px 5%; margin-top: 40px;">
+    <p style="margin: 0; font-size: 14px;">
+      &copy; 2026 VyaparSync. All rights reserved. | <a href="about.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">About / How it works</a> | <a href="terms.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Terms</a> | <a href="privacy.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Privacy</a>
+    </p>
+  </footer>
+
+  <script src="script.js?v=5"></script>
+</body>
+</html>
