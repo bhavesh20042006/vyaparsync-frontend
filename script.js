@@ -304,6 +304,7 @@ function loadShops(marketName) {
     .then(res => res.json())
     .then(shops => {
       const grid = document.getElementById("grid");
+      grid.innerHTML = "";
       if (shops.length === 0) grid.innerHTML = "<p>No shops in this market yet.</p>";
       shops.forEach(shop => {
         grid.innerHTML += `
@@ -334,6 +335,7 @@ function loadProducts(shopName) {
     .then(products => {
       currentProducts = products;
       const grid = document.getElementById("grid");
+      grid.innerHTML = "";
       if (products.length === 0) grid.innerHTML = "<p>This shop hasn't added any products yet.</p>";
       products.forEach(p => {
         grid.innerHTML += createProductHTML(p);
