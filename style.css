@@ -846,23 +846,3 @@ button:disabled, .btn-auth:disabled, .auth-submit-btn:disabled, .nav-btn:disable
 }
 .horizontal-scroll-grid .review-box { display: none !important; }
 
-
-
-/* ?? SPLASH SCREEN ANIMATIONS */
-@keyframes splash-pulse-ring {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 106, 0, 0.4); }
-  70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255, 106, 0, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 106, 0, 0); }
-}
-
-@keyframes splash-float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-  100% { transform: translateY(0px); }
-}
-
-@keyframes splash-fade-in-out {
-  0% { opacity: 0.2; }
-  50% { opacity: 1; }
-  100% { opacity: 0.2; }
-}

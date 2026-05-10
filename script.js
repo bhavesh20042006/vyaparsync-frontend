@@ -1939,16 +1939,3 @@ function updateCartBadge() {
 // Run on load
 document.addEventListener("DOMContentLoaded", updateCartBadge);
 updateCartBadge();
-
-// Remove custom interactive splash screen after loading
-window.addEventListener('load', () => {
-    const splash = document.getElementById('splash-screen');
-    if (splash) {
-        setTimeout(() => {
-            splash.style.opacity = '0';
-            splash.style.visibility = 'hidden';
-            setTimeout(() => splash.remove(), 600);
-        }, 1200);
-    }
-});
-
