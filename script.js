@@ -1171,8 +1171,22 @@ window.updateCartQuantity = function(id, change) {
 // =======================================================
 
 async function loadWishlist() {
+    const container = document.getElementById("products");
+    if (!container) return;
+
     const token = localStorage.getItem("token");
-    if (!token) return showToast("Please login to view your wishlist", "error");
+    if (!token) {
+        container.innerHTML = `
+            <div style="text-align:center;padding:60px 20px">
+                <p style="color:var(--text-muted);margin-bottom:16px">
+                    Please log in to view your wishlist
+                </p>
+                <a href="login.html" style="background:var(--primary);color:white;
+                    padding:12px 28px;border-radius:8px;text-decoration:none;
+                    font-weight:600">Login to View Wishlist</a>
+            </div>`;
+        return;
+    }
 
     try {
         const res = await fetch(`${API_URL}/products/my-wishlist`, {
@@ -1180,23 +1194,26 @@ async function loadWishlist() {
         });
         const products = await res.json();
         
-        const container = document.getElementById("products");
-        if (!container) return;
-        
         currentWishlist = products.map(p => p._id);
         
         container.innerHTML = `
             <div id="current-view" data-view="wishlist"></div>
             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-                <button onclick="window.location.href='index.html'" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Home</button>
-                <h2 style="font-size: 24px; font-weight: 700; margin: 0;">❤️ My Wishlist</h2>
+                <button onclick="window.location.href='index.html'" style="background: var(--card-bg); color: var(--text-main); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Home</button>
+                <h2 style="font-size: 24px; font-weight: 700; margin: 0; color: var(--text-main);">❤️ My Wishlist</h2>
             </div>
             <div id="grid" class="product-grid"></div>
         `;
         
         const grid = document.getElementById("grid");
         if (!products || products.length === 0) {
-            grid.innerHTML = "<p>Your wishlist is empty! Go browse some markets.</p>";
+            grid.innerHTML = `
+                <div style="text-align:center;padding:40px 20px;grid-column: 1 / -1;">
+                    <p style="color:var(--text-muted);margin-bottom:16px">Your wishlist is empty - browse markets to add items</p>
+                    <a href="index.html" style="background:var(--primary);color:white;
+                        padding:10px 24px;border-radius:8px;text-decoration:none;
+                        font-weight:600;display:inline-block">Browse Markets</a>
+                </div>`;
             return;
         }
         
