@@ -160,6 +160,129 @@
       color: white;
       border-color: var(--primary);
     }
+
+    /* --- NEW FLIPKART STYLE LAYOUT --- */
+    .cart-layout {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    
+    .cart-items-section {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      transition: var(--transition);
+    }
+    
+    .cart-summary-section {
+      width: 350px;
+      position: sticky;
+      top: 24px;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      transition: var(--transition);
+    }
+    
+    body.dark .cart-items-section, body.dark .cart-summary-section {
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .cart-summary {
+      margin-top: 0;
+      text-align: left;
+      padding: 0;
+      background: transparent;
+      border: none;
+    }
+
+    body.dark .cart-summary {
+      background: transparent;
+      border-color: transparent;
+    }
+    
+    /* VyaparSync Animations */
+    .cart-item {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        padding: 20px 15px;
+        border-radius: 10px;
+    }
+    
+    .cart-item:hover {
+        background: rgba(255, 106, 0, 0.03);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-color: transparent;
+    }
+    
+    body.dark .cart-item:hover {
+        background: rgba(255, 106, 0, 0.1);
+    }
+    
+    .desktop-checkout {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    /* Mobile Floating Bar */
+    .mobile-floating-checkout {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: var(--card-bg);
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+        padding: 15px 20px;
+        box-sizing: border-box;
+        z-index: 1000;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    body.dark .mobile-floating-checkout {
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .mobile-checkout-btn {
+        margin: 0;
+        padding: 12px 30px;
+        background: var(--primary);
+        color: white;
+        font-weight: 800;
+        box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+        width: auto;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+    }
+    
+    @media (max-width: 800px) {
+        .cart-layout {
+            flex-direction: column;
+            margin-bottom: 100px;
+        }
+        .cart-summary-section {
+            width: 100%;
+            position: static;
+            box-sizing: border-box;
+        }
+        .desktop-checkout {
+            display: none;
+        }
+        .mobile-floating-checkout {
+            display: flex;
+        }
+    }
   </style>
 
   <link rel="icon" type="image/png" href="/favicon.png">
@@ -181,52 +304,73 @@
     </div>
   </header>
 
-  <div class="cart-container">
-    <div class="cart-header">
-      <h2 style="margin: 0; font-size: 24px;">Your Shopping Cart 🛒</h2>
-      <span id="itemCount" style="color: var(--text-muted); font-weight: 600;">0 Items</span>
-    </div>
-    
-    <div id="cartItemsList">
-        <p style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading your cart...</p>
+  <div class="cart-layout" id="cartLayout">
+    <!-- Left Column: Cart Items -->
+    <div class="cart-items-section">
+      <div class="cart-header">
+        <h2 style="margin: 0; font-size: 24px;">Your Shopping Cart 🛒</h2>
+        <span id="itemCount" style="color: var(--text-muted); font-weight: 600;">0 Items</span>
+      </div>
+      
+      <div id="cartItemsList">
+          <p style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading your cart...</p>
+      </div>
     </div>
 
-    <div class="cart-summary">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-muted); font-size: 15px;">
-          <span>Subtotal</span>
-          <span id="cartSubtotal">₹0</span>
+    <!-- Right Column: Price Details -->
+    <div class="cart-summary-section" id="cartSummarySection">
+      <div class="cart-summary">
+        <h3 style="margin-top: 0; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 15px; margin-bottom: 20px; color: var(--text-main); font-size: 18px; text-transform: uppercase; letter-spacing: 1px;">Price Details</h3>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--text-main); font-size: 15px;">
+            <span>Price (<span id="summaryItemCount">0</span> items)</span>
+            <span id="cartSubtotal">₹0</span>
+        </div>
+        <div id="platformFeeRow" style="display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--text-main); font-size: 15px;">
+            <span>Platform Fee</span>
+            <span>₹10</span>
+        </div>
+        
+        <div id="walletDiscountRow" style="display: none; justify-content: space-between; margin-bottom: 15px; color: #2ecc71; font-size: 15px; font-weight: bold;">
+            <span>Wallet Discount</span>
+            <span id="cartWalletDiscount">-₹0</span>
+        </div>
+        
+        <div style="border-top: 1px dashed rgba(0,0,0,0.1); border-bottom: 1px dashed rgba(0,0,0,0.1); margin: 20px 0; padding: 20px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p style="margin: 0; color: var(--text-main); font-size: 18px; font-weight: bold;">Total Amount</p>
+                <h1 id="cartTotal" style="margin: 0; color: var(--primary); font-size: 28px;">₹0</h1>
+            </div>
+        </div>
+        
+        <div class="desktop-checkout">
+            <button class="checkout-btn" onclick="startCheckoutProcess()">
+                Proceed to Secure Checkout 🔒
+            </button>
+            
+            <div style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; color: #888; font-size: 12px;">
+                <span>100% Secure Payments via</span>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" style="height: 16px;">
+                <span style="font-weight: bold; color: #555;">GPay • PhonePe • Paytm</span>
+            </div>
+        </div>
+        
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 20px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;">
+          🔒 Secure 128-bit SSL Encrypted Payment
+        </p>
       </div>
-      <div id="platformFeeRow" style="display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--text-muted); font-size: 15px;">
-          <span>Platform Fee</span>
-          <span>₹10</span>
-      </div>
-      
-      <div id="walletDiscountRow" style="display: none; justify-content: space-between; margin-bottom: 15px; color: #2ecc71; font-size: 15px; font-weight: bold;">
-          <span>Wallet Discount Applied</span>
-          <span id="cartWalletDiscount">-₹0</span>
-      </div>
-      
-      <div style="border-top: 1px dashed rgba(0,0,0,0.1); margin: 15px 0; padding-top: 15px;">
-          <p style="margin: 0; color: var(--text-muted); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Total to Pay</p>
-          <h1 id="cartTotal" style="margin: 5px 0 20px 0; color: var(--primary); font-size: 36px;">₹0</h1>
-      </div>
-      
-      <div style="text-align: center; margin-top: 15px;">
-          <button class="checkout-btn" onclick="startCheckoutProcess()" style="margin-top: 0; background: #27ae60;">
-              Proceed to Secure Checkout 🔒
-          </button>
-          
-          <div style="margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; color: #888; font-size: 12px;">
-              <span>100% Secure Payments via</span>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" style="height: 16px;">
-              <span style="font-weight: bold; color: #555;">GPay • PhonePe • Paytm</span>
-          </div>
-      </div>
-      
-      <p style="font-size: 12px; color: var(--text-muted); margin-top: 15px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;">
-        🔒 Secure 128-bit SSL Encrypted Payment
-      </p>
     </div>
+  </div>
+
+  <!-- Mobile Floating Checkout Bar -->
+  <div class="mobile-floating-checkout" id="mobileFloatingCheckout">
+     <div class="mobile-checkout-price">
+         <span style="font-size: 12px; color: var(--text-muted); display: block;">Total Amount</span>
+         <span id="mobileCartTotal" style="font-size: 22px; font-weight: 800; color: var(--text-main);">₹0</span>
+     </div>
+     <button class="checkout-btn mobile-checkout-btn" onclick="startCheckoutProcess()">
+         Place Order
+     </button>
   </div>
 
   <div id="toast-container"></div>

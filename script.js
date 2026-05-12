@@ -1008,16 +1008,32 @@ function loadCart() {
   let subTotal = 0;
   if (itemCount) itemCount.innerText = `${cart.length} Items`;
   const platformFeeRow = document.getElementById("platformFeeRow");
-  const cartSummary = document.querySelector(".cart-summary");
+  const cartSummarySection = document.getElementById("cartSummarySection");
+  const mobileFloatingCheckout = document.getElementById("mobileFloatingCheckout");
+  
   if (cart.length === 0) {
-    listContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding: 40px 0;">Your cart is empty! 🛒</p>`;
+    listContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding: 40px 0; font-size: 18px;">Your cart is empty! 🛒<br><a href="index.html" style="color:var(--primary); text-decoration:none; font-weight:bold; display:inline-block; margin-top:15px; border: 1px solid var(--primary); padding: 8px 20px; border-radius: 8px;">Start Shopping</a></p>`;
     if(subTotalContainer) subTotalContainer.innerText = "₹0";
     if(totalContainer) totalContainer.innerText = "₹0";
     if(platformFeeRow) platformFeeRow.style.display = "none";
-    if(cartSummary) cartSummary.style.display = "none";
+    if(cartSummarySection) cartSummarySection.style.display = "none";
+    if(mobileFloatingCheckout) mobileFloatingCheckout.style.display = "none";
     return;
   }
-  if(cartSummary) cartSummary.style.display = "block";
+  if(cartSummarySection) cartSummarySection.style.display = "block";
+  if(window.innerWidth <= 800 && mobileFloatingCheckout) {
+      mobileFloatingCheckout.style.display = "flex";
+  } else if (mobileFloatingCheckout) {
+      mobileFloatingCheckout.style.display = "none";
+  }
+  
+  // Re-check mobile layout on resize
+  window.addEventListener('resize', () => {
+      if(cart.length > 0 && mobileFloatingCheckout) {
+          mobileFloatingCheckout.style.display = window.innerWidth <= 800 ? "flex" : "none";
+      }
+  });
+
   if(platformFeeRow) platformFeeRow.style.display = "flex";
   // Group cart items by seller
   const groupedCart = cart.reduce((acc, item, index) => {
@@ -1114,8 +1130,14 @@ function loadCart() {
   if(subTotalContainer) subTotalContainer.innerText = `₹${subTotal}`;
   if(totalContainer) totalContainer.innerText = `₹${finalTotal}`;
   
-  const platformFeeUI = document.querySelector('.cart-summary div:nth-child(2) span:nth-child(2)');
-  if (platformFeeUI) {
+  const mobileCartTotal = document.getElementById("mobileCartTotal");
+  if (mobileCartTotal) mobileCartTotal.innerText = `₹${finalTotal}`;
+  
+  const summaryItemCount = document.getElementById("summaryItemCount");
+  if (summaryItemCount) summaryItemCount.innerText = cart.length;
+  
+  const platformFeeUI = document.querySelector('.cart-summary div:nth-child(3) span:nth-child(2)');
+  if (platformFeeUI && platformFeeUI.innerText.includes('10')) {
       platformFeeUI.innerText = `₹${platformFee}`;
   }
 }
