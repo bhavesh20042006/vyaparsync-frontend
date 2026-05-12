@@ -10,11 +10,11 @@
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <style>
         .video-container {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background-color: #000;
-    position: relative;
-}
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            position: relative;
+        }
         .animate-slide-up {
             animation: slideUp 0.3s ease-out forwards;
         }
@@ -39,106 +39,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-[#0f0f11] text-gray-200 font-sans h-screen flex flex-col overflow-hidden">
-  <!-- Ensure main takes remaining space -->
-  <main class="relative w-full h-full flex flex-col md:flex-row max-w-6xl mx-auto flex-1">
-    
-    <!-- Video Area -->
-    <div id="video-wrapper" class="video-container flex-grow relative" style="height:100%;">
-      <div id="remote-player" class="w-full h-full">
-        <!-- Placeholder before stream loads -->
-        <div id="stream-placeholder" class="absolute inset-0 flex items-center justify-center bg-gray-900 flex-col gap-4 z-10 p-8 text-center">
-          <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-2">
-            <span class="text-2xl">😴</span>
-          </div>
-          <h2 class="text-xl font-bold text-white">No live streams right now</h2>
-          <p class="text-gray-400 max-w-sm">Our sellers are currently away. Follow us on Instagram for announcements on the next drop!</p>
-          <button onclick="window.location.href='index.html'" class="mt-4 bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-gray-200 transition">Back to Store</button>
-        </div>
-      </div>
-      
-      <!-- Top Controls Overlay -->
-      <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-start z-20 bg-gradient-to-b from-black/70 to-transparent pointer-events-none">
-        <div class="flex items-center gap-2 pointer-events-auto">
-          <button onclick="window.location.href='index.html'" class="bg-black/40 hover:bg-black/60 text-white rounded-full p-2 backdrop-blur-sm transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-          </button>
-          <div>
-            <div class="font-bold">Kurta Emporium</div>
-            <div class="text-xs text-gray-300">Live Sale</div>
-          </div>
-        </div>
-        <div class="flex flex-col items-end gap-2 pointer-events-auto">
-          <div class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold flex items-center gap-1 shadow-lg">
-            <span class="w-2 h-2 bg-white rounded-full animate-pulse"></span>LIVE
-          </div>
-          <div class="bg-black/40 text-white px-2 py-1 rounded text-xs backdrop-blur-sm shadow-lg">
-            👁️ <span id="viewer-count">0</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Chat Overlay (Visible on mobile, hides on desktop if side chat exists) -->
-      <div class="absolute bottom-24 left-0 right-0 p-4 z-20 pointer-events-none md:hidden">
-        <div id="chat-overlay-messages" class="chat-overlay flex flex-col gap-2 justify-end pointer-events-auto">
-          <!-- Chat messages injected here -->
-        </div>
-      </div>
-
-      <!-- Buy Now Card Overlay -->
-      <div id="buy-card-container" class="absolute bottom-24 left-4 right-4 z-30 hidden">
-        <div class="bg-white text-gray-900 p-3 rounded-xl shadow-2xl flex gap-3 items-center animate-slide-up border border-gray-100">
-          <img id="buy-card-img" src="" alt="Product" class="w-16 h-16 rounded-lg object-cover bg-gray-100">
-          <div class="flex-grow">
-            <h3 id="buy-card-title" class="font-bold text-sm leading-tight line-clamp-1">Product Name</h3>
-            <p id="buy-card-price" class="text-green-600 font-bold text-sm mt-1">₹0.00</p>
-          </div>
-          <button onclick="triggerCheckout()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold text-sm whitespace-nowrap shadow-md transition-transform active:scale-95">Buy Now</button>
-          <button onclick="hideBuyCard()" class="text-gray-400 hover:text-gray-600 p-1">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Bottom Input Overlay (Mobile) -->
-      <div class="absolute bottom-0 left-0 right-0 p-4 z-20 bg-gradient-to-t from-black/90 to-transparent md:hidden">
-        <div class="flex gap-2 relative">
-          <input type="text" id="chat-input-mobile" class="w-full bg-white/10 border border-white/20 text-white rounded-full px-4 py-3 text-sm focus:outline-none focus:bg-white/20 backdrop-blur-md placeholder-white/50" placeholder="Ask a question...">
-          <button id="send-btn-mobile" class="absolute right-1 top-1 bottom-1 bg-white text-black px-4 rounded-full font-medium text-sm">Send</button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Desktop Sidebar Chat -->
-    <div class="hidden md:flex w-80 bg-gray-900 flex-col h-full border-l border-gray-800">
-      <div class="p-4 border-b border-gray-800">
-        <h2 class="font-bold text-white">Live Chat</h2>
-      </div>
-      <div id="chat-messages-desktop" class="flex-grow p-4 overflow-y-auto flex flex-col gap-3">
-        <div class="text-center text-xs text-gray-500 my-4">Welcome to the Live Sale</div>
-      </div>
-      <div class="p-4 border-t border-gray-800 bg-gray-900">
-        <div class="flex gap-2">
-          <input type="text" id="chat-input-desktop" class="flex-grow bg-gray-800 border-none text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Type a message...">
-          <button id="send-btn-desktop" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm transition-colors">Send</button>
-        </div>
-      </div>
-    </div>
-  </main>
-  
-  <!-- Footer added back -->
-  <footer class="bg-[#131921] text-white text-center py-4 mt-auto">
-    <p class="m-0 text-sm">&copy; 2026 Vyaparsync. All rights reserved. | <a href="about.html" class="text-[#ff6a00] underline">About / How it works</a> | <a href="terms.html" class="text-[#ff6a00] underline">Terms</a> | <a href="privacy.html" class="text-[#ff6a00] underline">Privacy</a> | <a href="support.html" class="text-[#ff6a00] underline">Support</a></p>
-  </footer>
-
-  <script>
-    // Existing script content unchanged – kept for brevity
-  </script>
-</body>
-
+<body class="bg-[#0f0f11] text-gray-200 font-sans min-h-screen flex flex-col">
 
     <!-- Mobile-first full screen view -->
-    <main class="relative w-full h-full flex flex-col md:flex-row max-w-6xl mx-auto">
+    <main class="relative w-full flex flex-col md:flex-row max-w-6xl mx-auto flex-1">
         
         <!-- Video Area -->
         <div id="video-wrapper" class="video-container flex-grow relative">
@@ -209,7 +113,7 @@
         </div>
 
         <!-- Desktop Sidebar Chat -->
-        <div class="hidden md:flex w-80 bg-gray-900 flex-col h-full border-l border-gray-800">
+        <div class="hidden md:flex w-80 bg-gray-900 flex-col border-l border-gray-800">
             <div class="p-4 border-b border-gray-800">
                 <h2 class="font-bold text-white">Live Chat</h2>
             </div>
@@ -225,6 +129,13 @@
         </div>
 
     </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--nav-bg); color: white; text-align: center; padding: 20px 5%; margin-top: auto;">
+      <p style="margin: 0; font-size: 14px;">
+        &copy; 2026 VyaparSync. All rights reserved. | <a href="about.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">About / How it works</a> | <a href="terms.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Terms</a> | <a href="privacy.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Privacy</a> | <a href="support.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Support</a>
+      </p>
+    </footer>
 
     <script>
         // Configuration
@@ -393,8 +304,6 @@
         init();
 
     </script>
-
-
 
 </body>
 </html>
