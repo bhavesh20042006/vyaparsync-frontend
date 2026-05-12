@@ -1,4 +1,13 @@
-/* 🌟 IMPORT MODERN FONT */
+/* 📐 GLOBAL FLEX LAYOUT FOR FOOTER CONSISTENCY */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh; /* dynamic viewport height for mobile */
+}
+footer {
+  margin-top: auto !important;
+}
+
 
 
 /* 🎨 CSS VARIABLES (The Original Orange UI) */
