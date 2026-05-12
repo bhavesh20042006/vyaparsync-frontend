@@ -278,7 +278,7 @@ function renderMarketGrid(markets, isNearby) {
         let badge = isNearby ? `<span style="position:absolute; top:-10px; right:-10px; background:#2ecc71; color:white; padding:4px 8px; font-size:10px; border-radius:10px; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);">Nearby 📍</span>` : "";
         
         grid.innerHTML += `
-            <div class="market-card" style="position: relative; padding: 20px 30px; background: var(--card-bg); color: var(--text-main); border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); transition: var(--transition); border: 2px solid transparent; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.color='var(--text-main)'" onclick="loadShops('${market.name}')">
+            <div class="market-card" style="position: relative; padding: 20px 30px; background: var(--card-bg); color: var(--text-main); border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); transition: var(--transition); border: 2px solid transparent; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.color='var(--text-main)'" onclick="loadShops('${escapeAttr(market.name)}')">
               ${badge}
               <h3 style="margin: 0; font-size: 18px; font-weight: 700;">${sanitizeHTML(market.name)}</h3>
             </div>
@@ -308,7 +308,7 @@ function loadShops(marketName) {
       if (shops.length === 0) grid.innerHTML = "<p>No shops in this market yet.</p>";
       shops.forEach(shop => {
         grid.innerHTML += `
-          <div style="border: 1px solid transparent; padding: 25px; border-radius: var(--border-radius); cursor: pointer; background: var(--card-bg); text-align: center; box-shadow: var(--shadow); transition: var(--transition);" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'" onclick="loadProducts('${shop}')">
+          <div style="border: 1px solid transparent; padding: 25px; border-radius: var(--border-radius); cursor: pointer; background: var(--card-bg); text-align: center; box-shadow: var(--shadow); transition: var(--transition);" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'" onclick="loadProducts('${escapeAttr(shop)}')">
             <h3 style="margin-bottom: 10px; font-size: 20px; font-weight: 700;">🏬 ${sanitizeHTML(shop)}</h3>
             <span style="color: var(--primary); font-weight: bold;">View Menu ➔</span>
           </div>
@@ -332,15 +332,19 @@ function loadProducts(shopName) {
 
   fetch(`${API_URL}/products/shops/${shopName}`)
     .then(res => res.json())
-    .then(products => {
+    .then(productsData => {
+      const products = Array.isArray(productsData) ? productsData : (productsData.products || []);
       currentProducts = products;
       const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      if (products.length === 0) grid.innerHTML = "<p>This shop hasn't added any products yet.</p>";
-      products.forEach(p => {
-        grid.innerHTML += createProductHTML(p);
-      });
-    });
+      if (grid) {
+          grid.innerHTML = "";
+          if (products.length === 0) grid.innerHTML = "<p>This shop hasn't added any products yet.</p>";
+          products.forEach(p => {
+            grid.innerHTML += createProductHTML(p);
+          });
+      }
+    })
+    .catch(err => console.error("Fetch Error:", err));
 }
 
 // ⭐ UPGRADED PRODUCT HTML WITH REVIEWS & RATING
@@ -773,7 +777,7 @@ async function openReviewPrompt(productId, productName) {
         const viewType = document.getElementById("current-view")?.getAttribute("data-view");
         if (viewType === "home") loadHome();
         else if (viewType === "shop") loadProducts(document.getElementById("current-view").getAttribute("data-shop"));
-        else if (viewType === "search") handleSearch();
+        else if (viewType === "search") applyFilters();
 
     } catch (err) {
         showToast(err.message, "error");
@@ -1028,11 +1032,17 @@ function loadCart() {
   }
   
   // Re-check mobile layout on resize
-  window.addEventListener('resize', () => {
-      if(cart.length > 0 && mobileFloatingCheckout) {
-          mobileFloatingCheckout.style.display = window.innerWidth <= 800 ? "flex" : "none";
-      }
-  });
+  if (!window._resizeListenerAdded) {
+      window.addEventListener('resize', () => {
+          const mfc = document.getElementById("mobileFloatingCheckout");
+          let currentCart = [];
+          try { currentCart = JSON.parse(localStorage.getItem("cart")) || []; } catch(e) {}
+          if(currentCart.length > 0 && mfc) {
+              mfc.style.display = window.innerWidth <= 800 ? "flex" : "none";
+          }
+      });
+      window._resizeListenerAdded = true;
+  }
 
   if(platformFeeRow) platformFeeRow.style.display = "flex";
   // Group cart items by seller
@@ -1136,8 +1146,8 @@ function loadCart() {
   const summaryItemCount = document.getElementById("summaryItemCount");
   if (summaryItemCount) summaryItemCount.innerText = cart.length;
   
-  const platformFeeUI = document.querySelector('.cart-summary div:nth-child(3) span:nth-child(2)');
-  if (platformFeeUI && platformFeeUI.innerText.includes('10')) {
+  const platformFeeUI = document.getElementById("platformFeeDisplay");
+  if (platformFeeUI) {
       platformFeeUI.innerText = `₹${platformFee}`;
   }
 }
@@ -1525,7 +1535,7 @@ window.checkoutCart = async function(selectedDeliveryId = "standard_delhivery", 
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
       body: JSON.stringify({ 
-          cartItems: cart, 
+          cartItems: cart.map(item => ({ ...item, id: item.originalId || item.id })), 
           selectedDeliveryId: selectedDeliveryId, 
           buyerLocation: currentShippingAddress.location 
       })
@@ -1536,7 +1546,7 @@ window.checkoutCart = async function(selectedDeliveryId = "standard_delhivery", 
     }
     const rzpOrder = await response.json();
     const options = {
-      "key": "rzp_test_SZtBFCjNICbNoE",
+      "key": rzpOrder.keyId || "rzp_test_SZtBFCjNICbNoE",
       "amount": rzpOrder.amount,
       "currency": "INR",
       "name": "Vyaparsync",
@@ -1712,6 +1722,18 @@ document.addEventListener("DOMContentLoaded", () => {
     loadCart();
     loadMyOrders();
     showUser(); // The newly upgraded VIP button function runs here
+    fetchUserWishlist();
+
+    const token = localStorage.getItem("token");
+    const declined = localStorage.getItem("notifPromptDeclined");
+    // Only prompt if they haven't explicitly declined it recently
+    if (token && 'Notification' in window && Notification.permission === 'default' && !declined) {
+        setTimeout(() => {
+            showNotificationBanner();
+        }, 2000);
+    }
+
+    updateCartBadge();
 });
 
 // =======================================================
@@ -1813,10 +1835,11 @@ function initLiveTrackingMap(mapContainerId) {
         marker.setLatLng([currentLat, currentLng]);
 
         // Request the next frame (approx 60fps)
-        requestAnimationFrame(animateMarker);
+        window.liveMapAnimationId = requestAnimationFrame(animateMarker);
     }
 
     // Start the engine
+    if (window.liveMapAnimationId) cancelAnimationFrame(window.liveMapAnimationId);
     animateMarker();
 }
 
@@ -1874,10 +1897,7 @@ async function fetchUserWishlist() {
     }
 }
 
-// Automatically fetch wishlist if token exists on load
-document.addEventListener('DOMContentLoaded', () => {
-    fetchUserWishlist();
-});
+// Automatically fetch wishlist if token exists on load (merged into main listener)
 
 // =======================================================
 // 📱 PWA & WEB PUSH NOTIFICATIONS
@@ -1923,11 +1943,7 @@ async function subscribeToNotifications() {
 }
 
 // Auto-prompt notifications if user is logged in
-document.addEventListener("DOMContentLoaded", () => {
-    const token = localStorage.getItem("token");
-    const declined = localStorage.getItem("notifPromptDeclined");
-    // Wait until they explicitly trigger it, or just use the banner
-});
+// (merged into main listener)
 
 // =======================================================
 // 📱 PWA INSTALL & NOTIFICATION PROMPTS (User Gesture Required)
@@ -1986,16 +2002,7 @@ function showPwaInstallBanner() {
 }
 
 // 2. Custom Notification Banner (Requires user gesture)
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem("token");
-    const declined = localStorage.getItem("notifPromptDeclined");
-    // Only prompt if they haven't explicitly declined it recently
-    if (token && 'Notification' in window && Notification.permission === 'default' && !declined) {
-        setTimeout(() => {
-            showNotificationBanner();
-        }, 2000);
-    }
-});
+// (merged into main listener)
 
 function showNotificationBanner() {
     if (document.getElementById('notif-banner')) return;
@@ -2047,6 +2054,5 @@ function updateCartBadge() {
         }
     });
 }
-// Run on load
-document.addEventListener("DOMContentLoaded", updateCartBadge);
+// Run on load (merged into main listener)
 updateCartBadge();
