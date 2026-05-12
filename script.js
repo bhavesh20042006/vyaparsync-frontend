@@ -1591,12 +1591,18 @@ function loadMyOrders() {
   if (!listContainer) return; 
   const token = localStorage.getItem("token");
   if (!token) {
-    listContainer.innerHTML = `<div style="text-align:center;padding:60px 20px;">
-           <p style="color:var(--text-muted)">Please login to view your orders</p>
-           <a href="login.html" style="color:var(--primary);font-weight:bold">Login -></a>
-           </div>`;
+    listContainer.innerHTML = `
+      <div style="text-align:center;padding:60px 20px">
+        <p style="color:var(--text-muted);margin-bottom:16px">
+          Please log in to view your orders
+        </p>
+        <a href="login.html" style="background:var(--primary);color:white;
+          padding:12px 28px;border-radius:8px;text-decoration:none;
+          font-weight:600">Login to View Orders</a>
+      </div>`;
     return;
   }
+
 
   fetch(`${API_URL}/orders/customer`, {
     method: "GET",
@@ -1667,7 +1673,18 @@ function loadMyOrders() {
         }
       });
     })
-    .catch(err => { console.error(err); });
+    .catch(err => { 
+        console.error(err);
+        listContainer.innerHTML = `
+          <div style="text-align:center;padding:60px 20px">
+            <p style="color:var(--text-muted);margin-bottom:16px">
+              Session expired or failed to load orders. Please log in again.
+            </p>
+            <a href="login.html" style="background:var(--primary);color:white;
+              padding:12px 28px;border-radius:8px;text-decoration:none;
+              font-weight:600">Login</a>
+          </div>`;
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
