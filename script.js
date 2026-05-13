@@ -144,8 +144,8 @@ function loadHome() {
     <div id="current-view" data-view="home"></div>
     <div style="margin-bottom: 40px;">
         <h2 style="margin-bottom: 15px; font-size: 24px;">🌍 Explore Local Markets</h2>
-        <div id="markets-grid" style="display: flex; gap: 15px; overflow-x: auto; padding-top: 15px; padding-bottom: 15px;">
-            ${getMarketSkeletons(4)}
+        <div id="markets-grid" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; padding-top: 15px; padding-bottom: 15px;">
+            ${getMarketSkeletons(8)}
         </div>
     </div>
     <div>
