@@ -366,9 +366,10 @@ function createProductHTML(p) {
     const attrName = escapeAttr(p.name);
     const safeShopName = sanitizeHTML(p.shopName);
     const safeMarket = sanitizeHTML(p.market);
+    const NO_IMG_SVG = `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='42%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='48px'%3E📷%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16px' fill='%23999'%3ENo Photo Yet%3C/text%3E%3C/svg%3E`;
     let imageSrc = p.image 
         ? p.image.replace('/upload/', '/upload/w_400,q_auto,f_auto/') 
-        : 'https://via.placeholder.com/400';
+        : NO_IMG_SVG;
     if (imageSrc && !imageSrc.startsWith('http')) {
         imageSrc = `${API_URL}/${imageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
     }
@@ -436,9 +437,10 @@ function loadProductDetails(productId) {
 
     const container = document.getElementById("products");
     
+    const NO_IMG_SVG_LARGE = `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='600' height='600' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='42%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='72px'%3E📷%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20px' fill='%23999'%3ENo Photo Yet%3C/text%3E%3C/svg%3E`;
     let imageSrc = product.image 
         ? product.image.replace('/upload/', '/upload/w_600,q_auto,f_auto/') 
-        : 'https://via.placeholder.com/600';
+        : NO_IMG_SVG_LARGE;
     if (imageSrc && !imageSrc.startsWith('http')) {
         imageSrc = `${API_URL}/${imageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
     }
@@ -747,44 +749,71 @@ async function openReviewPrompt(productId, productName) {
         return;
     }
 
-    const ratingStr = prompt(`Rate "${productName}" from 1 to 5 stars:\n(1 = Poor, 5 = Excellent)`);
-    if (!ratingStr) return; // User cancelled
-    
-    const rating = parseInt(ratingStr);
-    if (isNaN(rating) || rating < 1 || rating > 5) {
-        return showToast("Rating must be a number between 1 and 5.", "error");
-    }
+    // Remove existing modal if any
+    const existing = document.getElementById('reviewModal');
+    if (existing) existing.remove();
 
-    const comment = prompt(`Write your review for "${productName}":`);
-    if (!comment || comment.trim() === "") {
-        return showToast("Review comment cannot be empty.", "error");
-    }
+    const modalHTML = `
+        <div id="reviewModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;display:flex;justify-content:center;align-items:center;padding:20px;box-sizing:border-box;">
+            <div style="background:var(--card-bg);padding:30px;border-radius:16px;width:100%;max-width:420px;color:var(--text-main);box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+                <h2 style="margin:0 0 5px 0;font-size:20px;">⭐ Write a Review</h2>
+                <p style="margin:0 0 20px 0;color:var(--text-muted);font-size:14px;">for <b>${sanitizeHTML(productName)}</b></p>
+                
+                <p style="margin:0 0 10px 0;font-weight:600;">Your Rating:</p>
+                <div id="starRow" style="display:flex;gap:10px;margin-bottom:20px;">
+                    ${[1,2,3,4,5].map(n => `<span data-star="${n}" onclick="selectStar(${n})" style="font-size:36px;cursor:pointer;transition:transform 0.15s;" title="${n} star${n>1?'s':''}">☆</span>`).join('')}
+                </div>
+                <input type="hidden" id="reviewRating" value="0">
+
+                <p style="margin:0 0 8px 0;font-weight:600;">Your Comment:</p>
+                <textarea id="reviewComment" placeholder="Tell others about your experience..." style="width:100%;box-sizing:border-box;padding:12px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.15);background:var(--bg-color);color:var(--text-main);font-family:inherit;font-size:14px;resize:vertical;min-height:90px;"></textarea>
+
+                <div style="display:flex;gap:10px;margin-top:20px;">
+                    <button onclick="document.getElementById('reviewModal').remove()" style="flex:1;padding:12px;background:transparent;border:1.5px solid rgba(0,0,0,0.15);color:var(--text-muted);border-radius:8px;cursor:pointer;">Cancel</button>
+                    <button onclick="submitReview('${escapeAttr(productId)}')" style="flex:2;padding:12px;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">Submit Review ⭐</button>
+                </div>
+            </div>
+        </div>`;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+window.selectStar = function(n) {
+    document.getElementById('reviewRating').value = n;
+    document.querySelectorAll('#starRow span').forEach((s, i) => {
+        s.textContent = i < n ? '★' : '☆';
+        s.style.color = i < n ? '#f1c40f' : 'var(--text-muted)';
+        s.style.transform = i < n ? 'scale(1.2)' : 'scale(1)';
+    });
+};
+
+window.submitReview = async function(productId) {
+    const token = localStorage.getItem("token");
+    const rating = parseInt(document.getElementById('reviewRating').value);
+    const comment = document.getElementById('reviewComment').value.trim();
+
+    if (!rating || rating < 1) return showToast("Please select a star rating!", "error");
+    if (!comment) return showToast("Please write a comment.", "error");
 
     try {
         const res = await fetch(`${API_URL}/products/${productId}/reviews`, {
             method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}` 
-            },
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify({ rating, comment })
         });
-        
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
+        document.getElementById('reviewModal')?.remove();
         showToast("Review published! ⭐", "success");
-        
-        // Refresh UI
+
         const viewType = document.getElementById("current-view")?.getAttribute("data-view");
         if (viewType === "home") loadHome();
         else if (viewType === "shop") loadProducts(document.getElementById("current-view").getAttribute("data-shop"));
         else if (viewType === "search") applyFilters();
-
     } catch (err) {
         showToast(err.message, "error");
     }
-}
+};
 
 // =======================================================
 // 🔐 PASSWORDLESS OTP LOGIC
@@ -1264,11 +1293,16 @@ async function autofillPincode() {
                 stateInput.value = data[0].PostOffice[0].State;
                 showToast("📍 Location found automatically!", "success");
             } else {
-                showToast("Invalid Pincode. Please enter manually.", "error");
+                showToast("Invalid Pincode — please enter city & state manually.", "error");
                 cityInput.value = ""; stateInput.value = "";
+                cityInput.placeholder = "City";
+                stateInput.placeholder = "State";
             }
         } catch (err) {
             console.error("Pincode API Error:", err);
+            showToast("Pincode lookup failed — please enter city & state manually.", "error");
+            cityInput.placeholder = "City";
+            stateInput.placeholder = "State";
         }
     }
 }
@@ -1329,8 +1363,30 @@ window.confirmAddressAndPay = async function() {
         return showToast("Please fill all required address fields correctly (and 10-digit phone).", "error");
     }
 
+    // If GPS not selected, try to geocode from pincode/city
     if (!selectedLat || !selectedLng) {
-        return showToast("Please select an address from the map suggestions or use 'Current Location' to enable delivery.", "error");
+        if (pincode.length === 6 && city) {
+            try {
+                const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=in&q=${encodeURIComponent(city + ' ' + pincode)}`);
+                const geoData = await geoRes.json();
+                if (geoData && geoData.length > 0) {
+                    selectedLat = parseFloat(geoData[0].lat);
+                    selectedLng = parseFloat(geoData[0].lon);
+                } else {
+                    // Use a generic India centre as fallback — delivery can still proceed
+                    selectedLat = 20.5937;
+                    selectedLng = 78.9629;
+                }
+            } catch(e) {
+                selectedLat = 20.5937;
+                selectedLng = 78.9629;
+            }
+        } else {
+            // Minimal fallback — don't block the user
+            selectedLat = 20.5937;
+            selectedLng = 78.9629;
+        }
+        showToast("Tip: Use 'Current Location' for more accurate delivery estimates.", "info");
     }
 
     // Save snapshot to memory
@@ -1578,11 +1634,11 @@ window.checkoutCart = async function(selectedDeliveryId = "standard_delhivery", 
       },
       "handler": async function (response) { await verifyAndPlaceOrders(response, selectedDeliveryId); },
       "prefill": { 
-          "name": JSON.parse(localStorage.getItem("user")).name,
-          "email": JSON.parse(localStorage.getItem("user")).email || "user@example.com",
-          "contact": "9999999999"  // Fallback for seamless UPI testing
+          "name": JSON.parse(localStorage.getItem("user")).name || "",
+          "email": JSON.parse(localStorage.getItem("user")).email || "",
+          "contact": (currentShippingAddress && currentShippingAddress.phone) ? "91" + currentShippingAddress.phone : ""
       },
-      "theme": { "color": "#2ecc71" } // Custom green color
+      "theme": { "color": "#ff6a00" } // VyaparSync brand orange
     };
     const rzp1 = new Razorpay(options);
     rzp1.open();
@@ -1633,6 +1689,16 @@ function loadMyOrders() {
     return;
   }
 
+  // Show skeleton while loading
+  listContainer.innerHTML = [1,2,3].map(() => `
+    <div class="order-card" style="opacity:0.45;pointer-events:none;">
+      <div class="order-info" style="flex:1;width:100%;">
+        <div style="height:18px;background:rgba(128,128,128,0.2);border-radius:4px;width:60%;margin-bottom:10px;"></div>
+        <div style="height:14px;background:rgba(128,128,128,0.15);border-radius:4px;width:40%;margin-bottom:8px;"></div>
+        <div style="height:20px;background:rgba(255,106,0,0.15);border-radius:4px;width:20%;"></div>
+      </div>
+      <div style="width:80px;height:24px;background:rgba(128,128,128,0.2);border-radius:12px;"></div>
+    </div>`).join('');
 
   fetch(`${API_URL}/orders/customer`, {
     method: "GET",
@@ -1653,10 +1719,30 @@ function loadMyOrders() {
       orders.forEach(order => {
         const orderDate = new Date(order.date).toLocaleDateString();
         order.status = order.status || "Pending";
-        const orderStatus = order.status || "Pending ðŸ•’";
-        const isShipped = orderStatus.includes("Shipped");
-        let badgeClass = isShipped ? "status-shipped" : "status-pending";
-        let statusText = order.status.includes("Shipped") ? "Shipped 🚚" : "Pending 🕒";
+
+        // Determine badge class and text based on all possible statuses
+        let badgeClass, statusText;
+        if (order.status.includes("Delivered")) {
+          badgeClass = "status-delivered"; statusText = "Delivered ✅";
+        } else if (order.status.includes("Shipped")) {
+          badgeClass = "status-shipped"; statusText = "Shipped 🚚";
+        } else if (order.status.includes("Cancelled")) {
+          badgeClass = "status-cancelled"; statusText = "Cancelled ❌";
+        } else if (order.status.includes("Rejected")) {
+          badgeClass = "status-cancelled"; statusText = "Rejected ❌";
+        } else {
+          badgeClass = "status-pending"; statusText = "Pending 🕒";
+        }
+
+        // Build itemized product list
+        let itemsHTML = "";
+        if (order.items && order.items.length > 0) {
+          itemsHTML = `<ul style="margin:8px 0;padding-left:18px;font-size:13px;color:var(--text-muted);">` +
+            order.items.map(it => `<li>${sanitizeHTML(it.name)} &times; ${it.quantity || 1}</li>`).join('') +
+            `</ul>`;
+        } else {
+          itemsHTML = `<h3>${sanitizeHTML(order.productName)}</h3>`;
+        }
 
         // 🗺️ DYNAMIC LOGISTICS TICKET & LIVE MAP SIMULATION
         let trackingHTML = "";
@@ -1664,7 +1750,7 @@ function loadMyOrders() {
             trackingHTML = `
                 <div style="margin-top: 15px; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px dashed rgba(0,0,0,0.1);">
                     <div style="text-align: center; margin-bottom: 10px; font-size: 13px;">
-                        <span style="color: var(--text-main); font-weight: bold;">🚚 Dispatched from ${order.market || 'seller'}. Arriving soon via local courier.</span>
+                        <span style="color: var(--text-main); font-weight: bold;">🚚 Dispatched from ${sanitizeHTML(order.market || 'seller')}. Arriving soon via local courier.</span>
                     </div>
                     <div id="map-${order._id}" style="height: 180px; width: 100%; border-radius: 8px; z-index: 1;"></div>
                     <div style="text-align: center; margin-top: 8px; font-size: 11px; color: #2ecc71; font-weight: bold;">
@@ -1683,8 +1769,8 @@ function loadMyOrders() {
         div.className = "order-card";
         div.innerHTML = `
           <div class="order-info" style="flex: 1; width: 100%;">
-            <h3>${order.productName}</h3>
-            <p><b>Date:</b> ${orderDate} | <b>Market:</b> ${order.market}</p>
+            ${itemsHTML}
+            <p><b>Date:</b> ${orderDate} | <b>Market:</b> ${sanitizeHTML(order.market || 'N/A')}</p>
             <p style="color: var(--primary); font-weight: bold; font-size: 16px; margin-top: 5px;">₹${order.price}</p>
             ${trackingHTML}
             ${actionHTML}
@@ -1726,6 +1812,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadMyOrders();
     showUser(); // The newly upgraded VIP button function runs here
     fetchUserWishlist();
+    checkLiveStreams(); // Show 🔴 button only if streams are active
 
     const token = localStorage.getItem("token");
     const declined = localStorage.getItem("notifPromptDeclined");
@@ -1738,6 +1825,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateCartBadge();
 });
+
+// =======================================================
+// 🔴 LIVE STREAM VISIBILITY CHECK
+// =======================================================
+async function checkLiveStreams() {
+    const btn = document.getElementById('live-stream-btn');
+    if (!btn) return;
+    try {
+        const res = await fetch(`${API_URL}/auth/active-streams`, { signal: AbortSignal.timeout(3000) });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.count > 0) {
+                btn.style.display = '';
+                btn.textContent = `\ud83d\udd34 Live (${data.count})`;
+            }
+        }
+    } catch (e) {
+        // If the endpoint doesn't exist yet, keep button hidden
+    }
+}
 
 // =======================================================
 // 🛑 REFUND & CANCELLATION LOGIC

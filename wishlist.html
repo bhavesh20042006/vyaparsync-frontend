@@ -19,11 +19,15 @@
 </head>
 <body style="margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
 
-  <header style="max-width: 1200px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
-    <h1 style="color: var(--primary); margin: 0; font-size: 28px;">🛍 VyaparSync</h1>
-    <div style="display: flex; gap: 15px; align-items: center;">
-        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0;">🌙</button>
-        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+  <header class="header-top">
+    <div class="header-logo-search">
+      <h2>🛍 VyaparSync</h2>
+    </div>
+    <div class="nav-buttons">
+      <a href="index.html" class="nav-btn">🏠 Home</a>
+      <a href="orders.html" class="nav-btn orders">📦 Orders</a>
+      <a href="cart.html" class="nav-btn cart">🛒 Cart</a>
+      <button onclick="toggleDark()" class="nav-btn" style="background:#2d3436;">🌙 Dark</button>
     </div>
   </header>
 
