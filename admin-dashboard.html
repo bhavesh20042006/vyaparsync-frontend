@@ -10,9 +10,9 @@
     body { display: flex; min-height: 100vh; margin: 0; background: #0a0a0a; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .sidebar { width: 260px; background: #111; padding: 30px 20px; display: flex; flex-direction: column; border-right: 1px solid #333; }
     .sidebar h2 { color: #f1c40f; margin-bottom: 40px; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
-    .main-content { flex: 1; padding: 40px; background: radial-gradient(circle at top, #1a1a1a, #0a0a0a); }
+    .main-content { flex: 1; padding: 40px; background: radial-gradient(circle at top, #1a1a1a, #0a0a0a); overflow-x: hidden; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-    .section-card { background: #1a1a1a; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); margin-bottom: 30px; border-top: 4px solid #f1c40f; border: 1px solid #333; border-top: 4px solid #f1c40f; }
+    .section-card { background: #1a1a1a; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); margin-bottom: 30px; border: 1px solid #333; border-top: 4px solid #f1c40f; }
     table { width: 100%; border-collapse: collapse; text-align: left; }
     th { color: #888; font-weight: 600; font-size: 14px; text-transform: uppercase; padding: 15px; border-bottom: 1px solid #333; }
     td { padding: 15px; border-bottom: 1px solid #222; }
@@ -21,6 +21,84 @@
     .btn-approve:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
     .btn-reject { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: transform 0.2s, box-shadow 0.2s; }
     .btn-reject:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+
+    /* 📱 MOBILE RESPONSIVENESS */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 12px 15px;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        border-right: none;
+        border-bottom: 1px solid #333;
+        box-sizing: border-box;
+      }
+      .sidebar h2 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 5px;
+        font-size: 18px;
+      }
+      .sidebar a {
+        flex: 1;
+        text-align: center;
+        padding: 10px !important;
+        font-size: 13px;
+        min-width: 0;
+      }
+      .sidebar button {
+        flex: 1;
+        margin-top: 0 !important;
+        padding: 10px !important;
+        font-size: 12px;
+      }
+      .main-content {
+        padding: 15px;
+      }
+      .header {
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 22px !important;
+      }
+      .section-card {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+      }
+      .section-card h2 {
+        font-size: 18px;
+      }
+      /* Make tables horizontally scrollable */
+      .section-card table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+      }
+      th, td {
+        padding: 10px;
+        font-size: 13px;
+      }
+      .btn-approve, .btn-reject {
+        padding: 6px 10px;
+        font-size: 12px;
+        display: block;
+        width: 100%;
+        margin-bottom: 6px;
+        margin-right: 0;
+        text-align: center;
+      }
+    }
   </style>
 
   <link rel="icon" type="image/png" href="/favicon.png">

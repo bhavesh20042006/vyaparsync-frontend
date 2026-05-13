@@ -1,7 +1,7 @@
 const hostname = window.location.hostname;
 const API_URL = (hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("192.168.") || window.location.protocol === "file:")
-  ? `http://${hostname}:5000`
-  : "https://vyaparsync.onrender.com";  
+    ? `http://${hostname}:5000`
+    : "https://vyaparsync.onrender.com";
 
 // =======================================================
 // 🛡️ SECURITY HELPERS (XSS PREVENTION)
@@ -31,8 +31,8 @@ try {
 } catch (e) {
     cart = [];
 }
-let currentProducts = [];  
-let currentMarketName = ""; 
+let currentProducts = [];
+let currentMarketName = "";
 let currentWishlist = [];
 
 // 🤝 CAPTURE REFERRAL CODE FROM URL
@@ -46,49 +46,49 @@ if (refCode) {
 // 🔴 SOCKET.IO REAL-TIME CONNECTION (CRASH-PROOFED)
 let socket;
 if (typeof io !== "undefined") {
-  socket = io(API_URL);
+    socket = io(API_URL);
 
-  socket.on("connect", () => {
-    console.log("Connected to server 🔥");
-  });
+    socket.on("connect", () => {
+        console.log("Connected to server 🔥");
+    });
 
-  socket.on("stockUpdated", (product) => {
-    console.log("Stock updated 🔴", product);
-    const viewType = document.getElementById("current-view")?.getAttribute("data-view");
-    if (viewType === "home") loadHome();
-    if (viewType === "shop") loadProducts(document.getElementById("current-view").getAttribute("data-shop"));
-  });
+    socket.on("stockUpdated", (product) => {
+        console.log("Stock updated 🔴", product);
+        const viewType = document.getElementById("current-view")?.getAttribute("data-view");
+        if (viewType === "home") loadHome();
+        if (viewType === "shop") loadProducts(document.getElementById("current-view").getAttribute("data-shop"));
+    });
 } else {
-  console.log("Socket.io not loaded on this page, skipping real-time connection.");
+    console.log("Socket.io not loaded on this page, skipping real-time connection.");
 }
 
 // =======================================================
 // 🍞 CUSTOM TOAST NOTIFICATION SYSTEM
 // =======================================================
 function showToast(message, type = "success") {
-  const container = document.getElementById("toast-container");
-  if (!container) return alert(message); 
+    const container = document.getElementById("toast-container");
+    if (!container) return alert(message);
 
-  const toast = document.createElement("div");
-  toast.className = `toast ${type}`;
-  
-  let icon = '✅';
-  if (type === "error") icon = '❌';
-  if (type === "info") icon = 'ℹ️';
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
 
-  toast.innerHTML = `<div style="display: flex; align-items: center; gap: 10px; font-size: 15px;">${icon} ${message}</div>`;
-  
-  const existing = container.querySelectorAll(".toast");
-  if (existing.length >= 3) existing[0].remove();
-  
-  container.appendChild(toast);
-  
-  setTimeout(() => toast.classList.add("show"), 10);
-  
-  setTimeout(() => {
-    toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 400);
-  }, 3500);
+    let icon = '✅';
+    if (type === "error") icon = '❌';
+    if (type === "info") icon = 'ℹ️';
+
+    toast.innerHTML = `<div style="display: flex; align-items: center; gap: 10px; font-size: 15px;">${icon} ${message}</div>`;
+
+    const existing = container.querySelectorAll(".toast");
+    if (existing.length >= 3) existing[0].remove();
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("show"), 10);
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 400);
+    }, 3500);
 }
 
 // =======================================================
@@ -100,7 +100,7 @@ function showToast(message, type = "success") {
 // =======================================================
 function getProductSkeletons(count = 6) {
     let html = "";
-    for(let i=0; i<count; i++) {
+    for (let i = 0; i < count; i++) {
         html += `
         <div class="product skeleton" style="border: 1px solid rgba(0,0,0,0.05); min-width: 0;">
             <div class="skeleton-img shimmer"></div>
@@ -115,7 +115,7 @@ function getProductSkeletons(count = 6) {
 
 function getMarketSkeletons(count = 4) {
     let html = "";
-    for(let i=0; i<count; i++) {
+    for (let i = 0; i < count; i++) {
         html += `
         <div class="market-card skeleton" style="border: 1px solid rgba(0,0,0,0.05); height: 60px; min-width: 140px; display:flex; align-items:center; justify-content:center; border-radius: var(--border-radius);">
             <div class="skeleton-text shimmer" style="width: 70%; height: 20px; margin:0;"></div>
@@ -126,7 +126,7 @@ function getMarketSkeletons(count = 4) {
 
 function getShopSkeletons(count = 4) {
     let html = "";
-    for(let i=0; i<count; i++) {
+    for (let i = 0; i < count; i++) {
         html += `
         <div class="skeleton" style="padding: 25px; border-radius: var(--border-radius); background: var(--card-bg); text-align: center; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center;">
             <div class="skeleton-text shimmer" style="width: 60%; height: 24px; margin-bottom: 15px;"></div>
@@ -137,10 +137,10 @@ function getShopSkeletons(count = 4) {
 }
 
 function loadHome() {
-  const container = document.getElementById("products");
-  if (!container) return;
+    const container = document.getElementById("products");
+    if (!container) return;
 
-  container.innerHTML = `
+    container.innerHTML = `
     <div id="current-view" data-view="home"></div>
     <div style="margin-bottom: 40px;">
         <h2 style="margin-bottom: 15px; font-size: 24px;">🌍 Explore Local Markets</h2>
@@ -156,46 +156,46 @@ function loadHome() {
     </div>
   `;
 
-  // 🗺️ GPS OR DEFAULT ROUTING
-  const savedLat = localStorage.getItem("userLat");
-  const savedLng = localStorage.getItem("userLng");
+    // 🗺️ GPS OR DEFAULT ROUTING
+    const savedLat = localStorage.getItem("userLat");
+    const savedLng = localStorage.getItem("userLng");
 
-  if (savedLat && savedLng) {
-      fetchNearbyMarkets(savedLat, savedLng);
-      // Auto-update location text if available
-      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${savedLat}&lon=${savedLng}`)
+    if (savedLat && savedLng) {
+        fetchNearbyMarkets(savedLat, savedLng);
+        // Auto-update location text if available
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${savedLat}&lon=${savedLng}`)
+            .then(res => res.json())
+            .then(data => {
+                const area = data.address.suburb || data.address.city_district || data.address.city || "Current Location";
+                const disp = document.getElementById("userLocationDisplay");
+                if (disp) disp.innerText = `${area} 🟢`;
+            }).catch(() => {
+                const disp = document.getElementById("userLocationDisplay");
+                if (disp) disp.innerText = "GPS Active 🟢";
+            });
+    } else {
+        getUserLocation(); // Auto-detect on load
+    }
+
+    fetch(`${API_URL}/products`)
         .then(res => res.json())
-        .then(data => {
-            const area = data.address.suburb || data.address.city_district || data.address.city || "Current Location";
-            const disp = document.getElementById("userLocationDisplay");
-            if(disp) disp.innerText = `${area} 🟢`;
-        }).catch(() => {
-            const disp = document.getElementById("userLocationDisplay");
-            if(disp) disp.innerText = "GPS Active 🟢";
-        });
-  } else {
-      getUserLocation(); // Auto-detect on load
-  }
-
-  fetch(`${API_URL}/products`)
-    .then(res => res.json())
-    .then(products => {
-      currentProducts = products; 
-      const grid = document.getElementById("products-grid");
-      if (!grid) return;
-      grid.innerHTML = "";
-      if (products.length === 0) {
-          grid.innerHTML = `<div style="text-align: center; padding: 40px 20px; width: 100%;">
+        .then(products => {
+            currentProducts = products;
+            const grid = document.getElementById("products-grid");
+            if (!grid) return;
+            grid.innerHTML = "";
+            if (products.length === 0) {
+                grid.innerHTML = `<div style="text-align: center; padding: 40px 20px; width: 100%;">
               <h3 style="color: var(--text-muted); font-size: 18px;">🛒 No products available in your area right now.</h3>
               <p style="color: var(--text-muted); font-size: 14px;">Check back later or try exploring different markets!</p>
           </div>`;
-      }
-      else {
-        products.forEach(p => {
-          grid.innerHTML += createProductHTML(p);
+            }
+            else {
+                products.forEach(p => {
+                    grid.innerHTML += createProductHTML(p);
+                });
+            }
         });
-      }
-    });
 }
 
 
@@ -206,12 +206,12 @@ function loadHome() {
 function getUserLocation() {
     if (navigator.geolocation) {
         document.getElementById("userLocationDisplay").innerText = "Locating satellite... 🛰️";
-        
+
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
-                
+
                 // Save to local storage so we don't ask every time
                 localStorage.setItem("userLat", lat);
                 localStorage.setItem("userLng", lng);
@@ -259,7 +259,7 @@ function fetchAllMarkets() {
         .then(res => res.json())
         .then(markets => {
             // Convert simple strings to object format so the renderer works for both
-            const formatted = markets.map(m => typeof m === 'string' ? {name: m} : m);
+            const formatted = markets.map(m => typeof m === 'string' ? { name: m } : m);
             renderMarketGrid(formatted, false);
         });
 }
@@ -268,16 +268,16 @@ function renderMarketGrid(markets, isNearby) {
     const grid = document.getElementById("markets-grid");
     if (!grid) return;
     grid.innerHTML = "";
-    
+
     if (markets.length === 0) {
         grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">No markets found within 50km. Try exploring other areas!</p>`;
         return;
     }
-    
+
     markets.forEach(market => {
         let distanceText = market.distance ? `<p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-muted); font-weight: 600;">${market.distance.toFixed(1)} km away</p>` : "";
         let badge = isNearby ? `<span style="position:absolute; top:-10px; right:-10px; background:#2ecc71; color:white; padding:4px 8px; font-size:10px; border-radius:10px; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);">Nearby 📍</span>` : "";
-        
+
         grid.innerHTML += `
             <div class="market-card" style="position: relative; padding: 20px 30px; background: var(--card-bg); color: var(--text-main); border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); transition: var(--transition); border: 2px solid transparent; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.color='var(--text-main)'" onclick="loadShops('${escapeAttr(market.name)}')">
               ${badge}
@@ -289,9 +289,9 @@ function renderMarketGrid(markets, isNearby) {
 }
 
 function loadShops(marketName) {
-  currentMarketName = marketName; 
-  const container = document.getElementById("products");
-  container.innerHTML = `
+    currentMarketName = marketName;
+    const container = document.getElementById("products");
+    container.innerHTML = `
     <div id="current-view" data-view="markets"></div>
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
         <button onclick="loadHome()" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Home</button>
@@ -302,26 +302,26 @@ function loadShops(marketName) {
     </div>
   `;
 
-  fetch(`${API_URL}/products/markets/${marketName}/shops`)
-    .then(res => res.json())
-    .then(shops => {
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      if (shops.length === 0) grid.innerHTML = "<p>No shops in this market yet.</p>";
-      shops.forEach(shop => {
-        grid.innerHTML += `
+    fetch(`${API_URL}/products/markets/${marketName}/shops`)
+        .then(res => res.json())
+        .then(shops => {
+            const grid = document.getElementById("grid");
+            grid.innerHTML = "";
+            if (shops.length === 0) grid.innerHTML = "<p>No shops in this market yet.</p>";
+            shops.forEach(shop => {
+                grid.innerHTML += `
           <div style="border: 1px solid transparent; padding: 25px; border-radius: var(--border-radius); cursor: pointer; background: var(--card-bg); text-align: center; box-shadow: var(--shadow); transition: var(--transition);" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'" onclick="loadProducts('${escapeAttr(shop)}')">
             <h3 style="margin-bottom: 10px; font-size: 20px; font-weight: 700;">🏬 ${sanitizeHTML(shop)}</h3>
             <span style="color: var(--primary); font-weight: bold;">View Menu ➔</span>
           </div>
         `;
-      });
-    });
+            });
+        });
 }
 
 function loadProducts(shopName) {
-  const container = document.getElementById("products");
-  container.innerHTML = `
+    const container = document.getElementById("products");
+    container.innerHTML = `
     <div id="current-view" data-view="shop" data-shop="${shopName}"></div>
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
         <button onclick="loadShops('${currentMarketName}')" style="background: var(--card-bg); color: var(--text-main); border: 1px solid #ddd; border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Shops</button>
@@ -332,21 +332,21 @@ function loadProducts(shopName) {
     </div>
   `;
 
-  fetch(`${API_URL}/products/shops/${shopName}`)
-    .then(res => res.json())
-    .then(productsData => {
-      const products = Array.isArray(productsData) ? productsData : (productsData.products || []);
-      currentProducts = products;
-      const grid = document.getElementById("grid");
-      if (grid) {
-          grid.innerHTML = "";
-          if (products.length === 0) grid.innerHTML = "<p>This shop hasn't added any products yet.</p>";
-          products.forEach(p => {
-            grid.innerHTML += createProductHTML(p);
-          });
-      }
-    })
-    .catch(err => console.error("Fetch Error:", err));
+    fetch(`${API_URL}/products/shops/${shopName}`)
+        .then(res => res.json())
+        .then(productsData => {
+            const products = Array.isArray(productsData) ? productsData : (productsData.products || []);
+            currentProducts = products;
+            const grid = document.getElementById("grid");
+            if (grid) {
+                grid.innerHTML = "";
+                if (products.length === 0) grid.innerHTML = "<p>This shop hasn't added any products yet.</p>";
+                products.forEach(p => {
+                    grid.innerHTML += createProductHTML(p);
+                });
+            }
+        })
+        .catch(err => console.error("Fetch Error:", err));
 }
 
 // ⭐ UPGRADED PRODUCT HTML WITH REVIEWS & RATING
@@ -360,15 +360,15 @@ function createProductHTML(p) {
     // Add this inside the relative container of the product card HTML
     // In a full implementation, you'd check this against the user's saved wishlist array 
     // Usually retrieved during login/session check. For now visual default.
-    const isWishlisted = currentWishlist && currentWishlist.includes(p._id); 
+    const isWishlisted = currentWishlist && currentWishlist.includes(p._id);
     const heartColor = isWishlisted ? "#e74c3c" : "rgba(0,0,0,0.2)";
     const safeName = sanitizeHTML(p.name);
     const attrName = escapeAttr(p.name);
     const safeShopName = sanitizeHTML(p.shopName);
     const safeMarket = sanitizeHTML(p.market);
     const NO_IMG_SVG = `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='42%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='48px'%3E📷%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16px' fill='%23999'%3ENo Photo Yet%3C/text%3E%3C/svg%3E`;
-    let imageSrc = p.image 
-        ? p.image.replace('/upload/', '/upload/w_400,q_auto,f_auto/') 
+    let imageSrc = p.image
+        ? p.image.replace('/upload/', '/upload/w_400,q_auto,f_auto/')
         : NO_IMG_SVG;
     if (imageSrc && !imageSrc.startsWith('http')) {
         imageSrc = `${API_URL}/${imageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
@@ -436,16 +436,16 @@ function loadProductDetails(productId) {
     if (!product) return;
 
     const container = document.getElementById("products");
-    
+
     const NO_IMG_SVG_LARGE = `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='600' height='600' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='42%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='72px'%3E📷%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20px' fill='%23999'%3ENo Photo Yet%3C/text%3E%3C/svg%3E`;
-    let imageSrc = product.image 
-        ? product.image.replace('/upload/', '/upload/w_600,q_auto,f_auto/') 
+    let imageSrc = product.image
+        ? product.image.replace('/upload/', '/upload/w_600,q_auto,f_auto/')
         : NO_IMG_SVG_LARGE;
     if (imageSrc && !imageSrc.startsWith('http')) {
         imageSrc = `${API_URL}/${imageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
     }
     const safeImage = escapeAttr(imageSrc);
-    
+
     let sizesHtml = "";
     if (product.sizes && product.sizes.length > 0) {
         sizesHtml = `
@@ -534,7 +534,7 @@ function addToCartWithSize(id) {
             return showToast("Please select a size first!", "error");
         }
     }
-    
+
     // Modification of addToCart logic to include size
     const product = currentProducts.find(p => p._id === id);
     if (!product) return;
@@ -544,10 +544,10 @@ function addToCartWithSize(id) {
     } catch (e) {
         cart = [];
     }
-    
+
     // We append size to id in the cart so different sizes of same product are separate items
     const cartItemId = size ? `${id}_${size}` : id;
-    
+
     const existingItem = cart.find(item => item.id === cartItemId);
     if (existingItem) {
         if (existingItem.quantity >= product.stock) return showToast(`Only ${product.stock} units available!`, "error");
@@ -556,7 +556,7 @@ function addToCartWithSize(id) {
         if (product.stock < 1) return showToast("Out of stock!", "error");
         cart.push({ id: cartItemId, originalId: id, name: product.name + (size ? ` (${size})` : ""), price: product.price, quantity: 1, stock: product.stock, image: product.image, market: product.market });
     }
-    
+
     localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
     showToast(`${product.name} ${size ? `(${size})` : ''} added to cart!`, "success");
 }
@@ -578,13 +578,13 @@ let filterTimeout;
 
 function delayFilter() {
     clearTimeout(filterTimeout);
-    filterTimeout = setTimeout(applyFilters, 500); 
+    filterTimeout = setTimeout(applyFilters, 500);
 }
 
 function applyFilters() {
     const mainInput = document.getElementById("mainSearchInput");
     let query = mainInput ? mainInput.value.trim() : "";
-    
+
     const category = document.getElementById("filterCategory") ? document.getElementById("filterCategory").value : "All";
     const minPrice = document.getElementById("minPrice") ? document.getElementById("minPrice").value : "";
     const maxPrice = document.getElementById("maxPrice") ? document.getElementById("maxPrice").value : "";
@@ -609,7 +609,7 @@ function applyFilters() {
 
     const container = document.getElementById("products");
     const isSearchActive = document.getElementById("current-view") && document.getElementById("current-view").getAttribute("data-view") === "search";
-    
+
     if (!isSearchActive) {
         container.innerHTML = `
           <div id="current-view" data-view="search"></div>
@@ -625,7 +625,7 @@ function applyFilters() {
         const st = document.getElementById("searchTitle");
         if (st) st.innerText = query ? `🔍 Results for "${query}"` : `🔍 Filtered Results`;
         const grid = document.getElementById("grid");
-        if(grid) grid.innerHTML = getProductSkeletons(8);
+        if (grid) grid.innerHTML = getProductSkeletons(8);
     }
 
     fetch(fetchUrl)
@@ -633,8 +633,8 @@ function applyFilters() {
         .then(products => {
             currentProducts = products;
             const grid = document.getElementById("grid");
-            if(grid) grid.innerHTML = "";
-            
+            if (grid) grid.innerHTML = "";
+
             if (products.length === 0) {
                 grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted); font-size: 18px;">No products match your exact filters. Try adjusting them!</div>`;
             } else {
@@ -659,81 +659,81 @@ function clearSearch() {
 // =======================================================
 
 function addToCart(id) {
-  const product = currentProducts.find(p => p._id === id);
-  if (!product) return;
-  let cart = [];
-  try {
-      cart = JSON.parse(localStorage.getItem("cart")) || [];
-  } catch (e) {
-      cart = [];
-  }
-  const existingItem = cart.find(item => item.id === id);
-  if (existingItem) {
+    const product = currentProducts.find(p => p._id === id);
+    if (!product) return;
+    let cart = [];
+    try {
+        cart = JSON.parse(localStorage.getItem("cart")) || [];
+    } catch (e) {
+        cart = [];
+    }
+    const existingItem = cart.find(item => item.id === id);
+    if (existingItem) {
         if (existingItem.quantity >= product.stock) return showToast(`Only ${product.stock} units available!`, "error");
         existingItem.quantity += 1;
     } else {
         if (product.stock < 1) return showToast("Out of stock!", "error");
         cart.push({ id: product._id, name: product.name, price: product.price, quantity: 1, stock: product.stock, image: product.image, market: product.market });
     }
-  localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
-  showToast(`${product.name} added to cart!`, "success");
+    localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
+    showToast(`${product.name} added to cart!`, "success");
 }
 
 function buy(id) {
-  addToCart(id);
-  setTimeout(() => { window.location.href = "cart.html"; }, 500);
+    addToCart(id);
+    setTimeout(() => { window.location.href = "cart.html"; }, 500);
 }
 
 function showUser() {
-  let user = null;
-  try {
-      user = JSON.parse(localStorage.getItem("user"));
-  } catch (e) {
-      console.error("Failed to parse user from local storage");
-      localStorage.removeItem("user");
-  }
-  const userSection = document.getElementById("userSection");
-  const liveBtn = document.getElementById("live-stream-btn");
-  
-  if (user && user.role === "retailer") {
-      if(liveBtn) liveBtn.style.setProperty("display", "none", "important");
-  } else {
-      if(liveBtn) liveBtn.style.setProperty("display", "inline-flex", "important");
-  }
-
-  if (!userSection) return;
-  
-  const btnStyle = "display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; border-radius: 8px; font-weight: bold; font-size: 14px; text-decoration: none; box-sizing: border-box; cursor: pointer; transition: 0.2s;";
-  
-  if (user) {
-    let dashboardLink = "";
-    if (user.role === "retailer") {
-        dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Hub</a>`;
-    } else if (user.role === "admin") {
-        dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn">CEO Cmd</a>`;
+    let user = null;
+    try {
+        user = JSON.parse(localStorage.getItem("user"));
+    } catch (e) {
+        console.error("Failed to parse user from local storage");
+        localStorage.removeItem("user");
     }
-      
-    userSection.innerHTML = `
+    const userSection = document.getElementById("userSection");
+    const liveBtn = document.getElementById("live-stream-btn");
+
+    if (user && user.role === "retailer") {
+        if (liveBtn) liveBtn.style.setProperty("display", "none", "important");
+    } else {
+        if (liveBtn) liveBtn.style.setProperty("display", "inline-flex", "important");
+    }
+
+    if (!userSection) return;
+
+    const btnStyle = "display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; border-radius: 8px; font-weight: bold; font-size: 14px; text-decoration: none; box-sizing: border-box; cursor: pointer; transition: 0.2s;";
+
+    if (user) {
+        let dashboardLink = "";
+        if (user.role === "retailer") {
+            dashboardLink = `<a href="seller-dashboard.html" class="nav-btn premium-btn">Seller Hub</a>`;
+        } else if (user.role === "admin") {
+            dashboardLink = `<a href="admin-dashboard.html" class="nav-btn premium-btn">CEO Cmd</a>`;
+        }
+
+        userSection.innerHTML = `
         ${dashboardLink}
         <button onclick="logout()" class="nav-btn logout-btn">Logout</button>
     `;
-  } else {
-    userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn">Login</a>`;
-  }
+    } else {
+        userSection.innerHTML = `<a href="login.html" class="nav-btn premium-btn">Login</a>`;
+    }
 }
 
 function logout() {
-  localStorage.removeItem("user");
-  localStorage.removeItem("token");
-  showToast("Logged out successfully.", "info");
-  setTimeout(() => { location.reload(); }, 1000);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    showToast("Logged out successfully.", "info");
+    setTimeout(() => { location.reload(); }, 1000);
 }
 
 // --- INITIALIZE THEME ---
 
 
-function toggleDark() { 
-    document.documentElement.classList.toggle("dark"); 
+function toggleDark() {
+    document.documentElement.classList.toggle("dark");
     localStorage.setItem("theme", document.documentElement.classList.contains("dark") ? "dark" : "light");
 }
 
@@ -761,7 +761,7 @@ async function openReviewPrompt(productId, productName) {
                 
                 <p style="margin:0 0 10px 0;font-weight:600;">Your Rating:</p>
                 <div id="starRow" style="display:flex;gap:10px;margin-bottom:20px;">
-                    ${[1,2,3,4,5].map(n => `<span data-star="${n}" onclick="selectStar(${n})" style="font-size:36px;cursor:pointer;transition:transform 0.15s;" title="${n} star${n>1?'s':''}">☆</span>`).join('')}
+                    ${[1, 2, 3, 4, 5].map(n => `<span data-star="${n}" onclick="selectStar(${n})" style="font-size:36px;cursor:pointer;transition:transform 0.15s;" title="${n} star${n > 1 ? 's' : ''}">☆</span>`).join('')}
                 </div>
                 <input type="hidden" id="reviewRating" value="0">
 
@@ -777,7 +777,7 @@ async function openReviewPrompt(productId, productName) {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
-window.selectStar = function(n) {
+window.selectStar = function (n) {
     document.getElementById('reviewRating').value = n;
     document.querySelectorAll('#starRow span').forEach((s, i) => {
         s.textContent = i < n ? '★' : '☆';
@@ -786,7 +786,7 @@ window.selectStar = function(n) {
     });
 };
 
-window.submitReview = async function(productId) {
+window.submitReview = async function (productId) {
     const token = localStorage.getItem("token");
     const rating = parseInt(document.getElementById('reviewRating').value);
     const comment = document.getElementById('reviewComment').value.trim();
@@ -823,7 +823,7 @@ window.submitReview = async function(productId) {
 async function requestOTP() {
     const email = document.getElementById("authEmail").value.trim();
     const btn = document.getElementById("sendBtn");
-    
+
     if (!email || !email.includes("@")) return showToast("Please enter a valid email.", "error");
 
     btn.innerText = "Sending... 📩 Check your inbox in a moment";
@@ -840,9 +840,9 @@ async function requestOTP() {
             signal: controller.signal
         });
         clearTimeout(timeoutId);
-        
+
         const data = await res.json();
-        
+
         if (!res.ok) throw new Error(data.message);
 
         // UI Transition
@@ -880,19 +880,19 @@ async function verifyOTP() {
             body: JSON.stringify({ email, otp, loginRole: document.getElementById("btnRetailer")?.classList.contains("active") ? "retailer" : "customer", referralCode: storedRefCode })
         });
         const data = await res.json();
-        
+
         if (!res.ok) throw new Error(data.message);
 
         // Success! Log them in.
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        
+
         showToast("Verified! Logging you in... 🚀", "success");
-        
+
         // Route them based on role
-        setTimeout(() => { 
+        setTimeout(() => {
             if (data.user.role === "retailer") window.location.href = "seller-dashboard.html";
-            else window.location.href = "index.html"; 
+            else window.location.href = "index.html";
         }, 1500);
 
     } catch (err) {
@@ -909,7 +909,7 @@ async function requestSellerOTP() {
     const market = document.getElementById("sellerMarket").value.trim();
     const email = document.getElementById("sellerEmail").value.trim();
     const btn = document.getElementById("sendBtn");
-    
+
     if (!name || !shop || !market || !email) {
         return showToast("Please fill in all business details.", "error");
     }
@@ -960,13 +960,13 @@ async function verifySellerOTP() {
             body: JSON.stringify({ email, otp, role: "retailer", name, shopName, marketLocation, referralCode: storedRefCode })
         });
         const data = await res.json();
-        
+
         if (!res.ok) throw new Error(data.message);
 
         // Success! Log them in.
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        
+
         showToast("Welcome Partner! Setting up your dashboard... 🚀", "success");
         setTimeout(() => { window.location.href = "seller-dashboard.html"; }, 1500);
 
@@ -997,18 +997,18 @@ async function connectBankAccount() {
     try {
         const res = await fetch(`${API_URL}/auth/connect-bank`, {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({ accountName, ifsc, accountNumber })
         });
         const data = await res.json();
-        
+
         if (!res.ok) throw new Error(data.message);
 
         showToast('Bank account successfully linked! 💸', 'success');
-        
+
         document.getElementById('bankFormArea').innerHTML = `
             <div style="background: rgba(46, 204, 113, 0.1); padding: 20px; border-radius: 8px; border: 1px solid #2ecc71; text-align: center;">
                 <h3 style="color: #2ecc71; margin: 0 0 10px 0;">✅ Account Connected Automatically</h3>
@@ -1028,90 +1028,90 @@ async function connectBankAccount() {
 // =======================================================
 
 function loadCart() {
-  const listContainer = document.getElementById("cartItemsList");
-  if (!listContainer) return; 
-  let cart = [];
-  try {
-      cart = JSON.parse(localStorage.getItem("cart")) || [];
-  } catch (e) {
-      cart = [];
-  }
-  const subTotalContainer = document.getElementById("cartSubtotal");
-  const totalContainer = document.getElementById("cartTotal");
-  const itemCount = document.getElementById("itemCount");
-  listContainer.innerHTML = "";
-  let subTotal = 0;
-  if (itemCount) itemCount.innerText = `${cart.length} Items`;
-  const platformFeeRow = document.getElementById("platformFeeRow");
-  const cartSummarySection = document.getElementById("cartSummarySection");
-  const mobileFloatingCheckout = document.getElementById("mobileFloatingCheckout");
-  
-  if (cart.length === 0) {
-    listContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding: 40px 0; font-size: 18px;">Your cart is empty! 🛒<br><a href="index.html" style="color:var(--primary); text-decoration:none; font-weight:bold; display:inline-block; margin-top:15px; border: 1px solid var(--primary); padding: 8px 20px; border-radius: 8px;">Start Shopping</a></p>`;
-    if(subTotalContainer) subTotalContainer.innerText = "₹0";
-    if(totalContainer) totalContainer.innerText = "₹0";
-    if(platformFeeRow) platformFeeRow.style.display = "none";
-    if(cartSummarySection) cartSummarySection.style.display = "none";
-    if(mobileFloatingCheckout) mobileFloatingCheckout.style.display = "none";
-    return;
-  }
-  if(cartSummarySection) cartSummarySection.style.display = "block";
-  if(window.innerWidth <= 800 && mobileFloatingCheckout) {
-      mobileFloatingCheckout.style.display = "flex";
-  } else if (mobileFloatingCheckout) {
-      mobileFloatingCheckout.style.display = "none";
-  }
-  
-  // Re-check mobile layout on resize
-  if (!window._resizeListenerAdded) {
-      window.addEventListener('resize', () => {
-          const mfc = document.getElementById("mobileFloatingCheckout");
-          let currentCart = [];
-          try { currentCart = JSON.parse(localStorage.getItem("cart")) || []; } catch(e) {}
-          if(currentCart.length > 0 && mfc) {
-              mfc.style.display = window.innerWidth <= 800 ? "flex" : "none";
-          }
-      });
-      window._resizeListenerAdded = true;
-  }
+    const listContainer = document.getElementById("cartItemsList");
+    if (!listContainer) return;
+    let cart = [];
+    try {
+        cart = JSON.parse(localStorage.getItem("cart")) || [];
+    } catch (e) {
+        cart = [];
+    }
+    const subTotalContainer = document.getElementById("cartSubtotal");
+    const totalContainer = document.getElementById("cartTotal");
+    const itemCount = document.getElementById("itemCount");
+    listContainer.innerHTML = "";
+    let subTotal = 0;
+    if (itemCount) itemCount.innerText = `${cart.length} Items`;
+    const platformFeeRow = document.getElementById("platformFeeRow");
+    const cartSummarySection = document.getElementById("cartSummarySection");
+    const mobileFloatingCheckout = document.getElementById("mobileFloatingCheckout");
 
-  if(platformFeeRow) platformFeeRow.style.display = "flex";
-  // Group cart items by seller
-  const groupedCart = cart.reduce((acc, item, index) => {
-      const shopName = item.market || 'Vyaparsync';
-      if (!acc[shopName]) acc[shopName] = [];
-      acc[shopName].push({ ...item, originalIndex: index });
-      return acc;
-  }, {});
+    if (cart.length === 0) {
+        listContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding: 40px 0; font-size: 18px;">Your cart is empty! 🛒<br><a href="index.html" style="color:var(--primary); text-decoration:none; font-weight:bold; display:inline-block; margin-top:15px; border: 1px solid var(--primary); padding: 8px 20px; border-radius: 8px;">Start Shopping</a></p>`;
+        if (subTotalContainer) subTotalContainer.innerText = "₹0";
+        if (totalContainer) totalContainer.innerText = "₹0";
+        if (platformFeeRow) platformFeeRow.style.display = "none";
+        if (cartSummarySection) cartSummarySection.style.display = "none";
+        if (mobileFloatingCheckout) mobileFloatingCheckout.style.display = "none";
+        return;
+    }
+    if (cartSummarySection) cartSummarySection.style.display = "block";
+    if (window.innerWidth <= 800 && mobileFloatingCheckout) {
+        mobileFloatingCheckout.style.display = "flex";
+    } else if (mobileFloatingCheckout) {
+        mobileFloatingCheckout.style.display = "none";
+    }
 
-  for (const [shopName, items] of Object.entries(groupedCart)) {
-      const groupDiv = document.createElement("div");
-      groupDiv.className = "shop-group-card";
-      groupDiv.style.marginBottom = "20px";
-      groupDiv.style.padding = "15px";
-      groupDiv.style.border = "1px solid rgba(0,0,0,0.1)";
-      groupDiv.style.borderRadius = "10px";
-      groupDiv.style.background = "var(--bg-color)";
+    // Re-check mobile layout on resize
+    if (!window._resizeListenerAdded) {
+        window.addEventListener('resize', () => {
+            const mfc = document.getElementById("mobileFloatingCheckout");
+            let currentCart = [];
+            try { currentCart = JSON.parse(localStorage.getItem("cart")) || []; } catch (e) { }
+            if (currentCart.length > 0 && mfc) {
+                mfc.style.display = window.innerWidth <= 800 ? "flex" : "none";
+            }
+        });
+        window._resizeListenerAdded = true;
+    }
 
-      groupDiv.innerHTML = `<h3 style="margin-top:0; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 10px; color: var(--primary);">🏬 Sold by: ${sanitizeHTML(shopName)}</h3>`;
-      
-      let shopTotal = 0;
-      
-      items.forEach((item) => {
-          let itemQty = item.quantity || 1;
-          let itemPriceTotal = item.price * itemQty;
-          shopTotal += itemPriceTotal;
-          subTotal += itemPriceTotal;
-          
-          let itemImageSrc = item.image || 'https://via.placeholder.com/60';
-          if (itemImageSrc && !itemImageSrc.startsWith('http')) {
-              itemImageSrc = `${API_URL}/${itemImageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
-          }
-          const safeItemImage = escapeAttr(itemImageSrc);
-          
-          const div = document.createElement("div");
-          div.className = "cart-item";
-          div.innerHTML = `
+    if (platformFeeRow) platformFeeRow.style.display = "flex";
+    // Group cart items by seller
+    const groupedCart = cart.reduce((acc, item, index) => {
+        const shopName = item.market || 'Vyaparsync';
+        if (!acc[shopName]) acc[shopName] = [];
+        acc[shopName].push({ ...item, originalIndex: index });
+        return acc;
+    }, {});
+
+    for (const [shopName, items] of Object.entries(groupedCart)) {
+        const groupDiv = document.createElement("div");
+        groupDiv.className = "shop-group-card";
+        groupDiv.style.marginBottom = "20px";
+        groupDiv.style.padding = "15px";
+        groupDiv.style.border = "1px solid rgba(0,0,0,0.1)";
+        groupDiv.style.borderRadius = "10px";
+        groupDiv.style.background = "var(--bg-color)";
+
+        groupDiv.innerHTML = `<h3 style="margin-top:0; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 10px; color: var(--primary);">🏬 Sold by: ${sanitizeHTML(shopName)}</h3>`;
+
+        let shopTotal = 0;
+
+        items.forEach((item) => {
+            let itemQty = item.quantity || 1;
+            let itemPriceTotal = item.price * itemQty;
+            shopTotal += itemPriceTotal;
+            subTotal += itemPriceTotal;
+
+            let itemImageSrc = item.image || 'https://via.placeholder.com/60';
+            if (itemImageSrc && !itemImageSrc.startsWith('http')) {
+                itemImageSrc = `${API_URL}/${itemImageSrc.replace(/^\\+|^\/+/g, '').replace(/\\/g, '/')}`;
+            }
+            const safeItemImage = escapeAttr(itemImageSrc);
+
+            const div = document.createElement("div");
+            div.className = "cart-item";
+            div.innerHTML = `
             <img src="${safeItemImage}" alt="Product" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect width=%2260%22 height=%2260%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2210px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
             <div class="cart-info">
               <h3>${sanitizeHTML(item.name)}</h3>
@@ -1124,80 +1124,80 @@ function loadCart() {
             <div class="cart-price">₹${itemPriceTotal}</div>
             <button class="btn-remove" onclick="removeFromCart(${item.originalIndex})">X</button>
           `;
-          groupDiv.appendChild(div);
-      });
-      
-      const shopTotalDiv = document.createElement("div");
-      shopTotalDiv.style.textAlign = "right";
-      shopTotalDiv.style.fontWeight = "bold";
-      shopTotalDiv.style.marginTop = "10px";
-      shopTotalDiv.style.color = "var(--text-muted)";
-      shopTotalDiv.innerHTML = `Subtotal: ₹${shopTotal}`;
-      groupDiv.appendChild(shopTotalDiv);
-      
-      listContainer.appendChild(groupDiv);
-  }
-  const platformFee = 0; // Calculated dynamically during checkout
-  let finalTotal = subTotal + platformFee;
-  
-  const checkoutBtn = document.querySelector('.checkout-btn');
-  if (checkoutBtn) {
-      if (cart.length === 0) {
-          checkoutBtn.style.opacity = "0.5";
-          checkoutBtn.style.pointerEvents = "none";
-      } else {
-          checkoutBtn.style.opacity = "1";
-          checkoutBtn.style.pointerEvents = "auto";
-      }
-  }
-  let walletUsed = 0;
+            groupDiv.appendChild(div);
+        });
 
-  let user = null;
-  try {
-      user = JSON.parse(localStorage.getItem("user"));
-  } catch (e) {}
-  const walletRow = document.getElementById("walletDiscountRow");
+        const shopTotalDiv = document.createElement("div");
+        shopTotalDiv.style.textAlign = "right";
+        shopTotalDiv.style.fontWeight = "bold";
+        shopTotalDiv.style.marginTop = "10px";
+        shopTotalDiv.style.color = "var(--text-muted)";
+        shopTotalDiv.innerHTML = `Subtotal: ₹${shopTotal}`;
+        groupDiv.appendChild(shopTotalDiv);
 
-  if (user && user.walletBalance > 0 && subTotal > 0) {
-      if(walletRow) walletRow.style.display = "flex";
-      walletUsed = Math.min(user.walletBalance, finalTotal - 1);
-      const cartWalletDiscount = document.getElementById("cartWalletDiscount");
-      if(cartWalletDiscount) cartWalletDiscount.innerText = `-₹${walletUsed}`;
-      finalTotal -= walletUsed;
-  } else {
-      if(walletRow) walletRow.style.display = "none";
-  }
+        listContainer.appendChild(groupDiv);
+    }
+    const platformFee = 0; // Calculated dynamically during checkout
+    let finalTotal = subTotal + platformFee;
 
-  if(subTotalContainer) subTotalContainer.innerText = `₹${subTotal}`;
-  if(totalContainer) totalContainer.innerText = `₹${finalTotal}`;
-  
-  const mobileCartTotal = document.getElementById("mobileCartTotal");
-  if (mobileCartTotal) mobileCartTotal.innerText = `₹${finalTotal}`;
-  
-  const summaryItemCount = document.getElementById("summaryItemCount");
-  if (summaryItemCount) summaryItemCount.innerText = cart.length;
-  
-  const platformFeeUI = document.getElementById("platformFeeDisplay");
-  if (platformFeeUI) {
-      platformFeeUI.innerText = subTotal > 0 ? "Calculated at checkout" : "₹0";
-  }
+    const checkoutBtn = document.querySelector('.checkout-btn');
+    if (checkoutBtn) {
+        if (cart.length === 0) {
+            checkoutBtn.style.opacity = "0.5";
+            checkoutBtn.style.pointerEvents = "none";
+        } else {
+            checkoutBtn.style.opacity = "1";
+            checkoutBtn.style.pointerEvents = "auto";
+        }
+    }
+    let walletUsed = 0;
+
+    let user = null;
+    try {
+        user = JSON.parse(localStorage.getItem("user"));
+    } catch (e) { }
+    const walletRow = document.getElementById("walletDiscountRow");
+
+    if (user && user.walletBalance > 0 && subTotal > 0) {
+        if (walletRow) walletRow.style.display = "flex";
+        walletUsed = Math.min(user.walletBalance, finalTotal - 1);
+        const cartWalletDiscount = document.getElementById("cartWalletDiscount");
+        if (cartWalletDiscount) cartWalletDiscount.innerText = `-₹${walletUsed}`;
+        finalTotal -= walletUsed;
+    } else {
+        if (walletRow) walletRow.style.display = "none";
+    }
+
+    if (subTotalContainer) subTotalContainer.innerText = `₹${subTotal}`;
+    if (totalContainer) totalContainer.innerText = `₹${finalTotal}`;
+
+    const mobileCartTotal = document.getElementById("mobileCartTotal");
+    if (mobileCartTotal) mobileCartTotal.innerText = `₹${finalTotal}`;
+
+    const summaryItemCount = document.getElementById("summaryItemCount");
+    if (summaryItemCount) summaryItemCount.innerText = cart.length;
+
+    const platformFeeUI = document.getElementById("platformFeeDisplay");
+    if (platformFeeUI) {
+        platformFeeUI.innerText = subTotal > 0 ? "Calculated at checkout" : "₹0";
+    }
 }
 
-window.removeFromCart = function(index) {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  cart.splice(index, 1);
-  localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
-  loadCart();
-  showToast("Item removed from cart.", "info");
+window.removeFromCart = function (index) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart)); updateCartBadge();
+    loadCart();
+    showToast("Item removed from cart.", "info");
 }
 
-window.updateCartQuantity = function(id, change) {
+window.updateCartQuantity = function (id, change) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const index = cart.findIndex(i => i.id === id);
     if (index !== -1) {
         let newQty = (cart[index].quantity || 1) + change;
-    if (change > 0 && cart[index].stock !== undefined && newQty > cart[index].stock) { showToast("Maximum available stock reached", "error"); return; }
-    cart[index].quantity = newQty;
+        if (change > 0 && cart[index].stock !== undefined && newQty > cart[index].stock) { showToast("Maximum available stock reached", "error"); return; }
+        cart[index].quantity = newQty;
         if (cart[index].quantity <= 0) {
             cart.splice(index, 1);
             showToast("Item removed from cart.", "info");
@@ -1234,9 +1234,9 @@ async function loadWishlist() {
             headers: { "Authorization": `Bearer ${token}` }
         });
         const products = await res.json();
-        
+
         currentWishlist = products.map(p => p._id);
-        
+
         container.innerHTML = `
             <div id="current-view" data-view="wishlist"></div>
             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
@@ -1245,7 +1245,7 @@ async function loadWishlist() {
             </div>
             <div id="grid" class="product-grid"></div>
         `;
-        
+
         const grid = document.getElementById("grid");
         if (!products || products.length === 0) {
             grid.innerHTML = `
@@ -1257,11 +1257,11 @@ async function loadWishlist() {
                 </div>`;
             return;
         }
-        
+
         products.forEach(p => {
             grid.innerHTML += createProductHTML(p);
         });
-        
+
     } catch (err) {
         showToast("Failed to load wishlist", "error");
     }
@@ -1284,7 +1284,7 @@ async function autofillPincode() {
         try {
             cityInput.placeholder = "Locating...";
             stateInput.placeholder = "Locating...";
-            
+
             const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
             const data = await res.json();
 
@@ -1308,10 +1308,10 @@ async function autofillPincode() {
 }
 
 // 🛑 INTERCEPT THE CHECKOUT BUTTON
-window.startCheckoutProcess = function() {
+window.startCheckoutProcess = function () {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     if (cart.length === 0) return showToast("Your cart is empty!", "error");
-    
+
     const token = localStorage.getItem("token");
     if (!token) return window.location.href = "login.html";
 
@@ -1352,7 +1352,7 @@ window.startCheckoutProcess = function() {
 }
 
 // 🟢 STEP 2: Validate address, save to memory, open Razorpay
-window.confirmAddressAndPay = async function() {
+window.confirmAddressAndPay = async function () {
     const line1 = document.getElementById("addressLine1").value;
     const pincode = document.getElementById("addressPincode").value;
     const city = document.getElementById("addressCity").value;
@@ -1377,7 +1377,7 @@ window.confirmAddressAndPay = async function() {
                     selectedLat = 20.5937;
                     selectedLng = 78.9629;
                 }
-            } catch(e) {
+            } catch (e) {
                 selectedLat = 20.5937;
                 selectedLng = 78.9629;
             }
@@ -1405,11 +1405,11 @@ window.confirmAddressAndPay = async function() {
 
     // Remove the modal
     document.getElementById('addressModal').remove();
-    
+
     // 🚚 DYNAMIC DELIVERY CALCULATION
     showToast("Calculating delivery options...", "success");
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    
+
     try {
         const response = await fetch(`${API_URL}/orders/delivery-options`, {
             method: 'POST',
@@ -1419,10 +1419,10 @@ window.confirmAddressAndPay = async function() {
                 buyerLocation: currentShippingAddress.location
             })
         });
-        
+
         let selectedDeliveryId = "standard_delhivery";
         let deliveryFee = 10;
-        
+
         if (response.ok) {
             const data = await response.json();
             if (data.options && data.options.length > 0) {
@@ -1430,7 +1430,7 @@ window.confirmAddressAndPay = async function() {
                 const selectedOption = data.options[0];
                 selectedDeliveryId = selectedOption.id;
                 deliveryFee = selectedOption.fee;
-                
+
                 // Update Cart DOM
                 const feeLabel = document.querySelector('.cart-summary div:nth-child(2) span:nth-child(1)');
                 const feeValue = document.querySelector('.cart-summary div:nth-child(2) span:nth-child(2)');
@@ -1438,7 +1438,7 @@ window.confirmAddressAndPay = async function() {
                     feeLabel.innerText = selectedOption.name;
                     feeValue.innerText = `₹${deliveryFee}`;
                 }
-                
+
                 // Update Final Total text based on updated subtotal + dynamic delivery fee
                 const totalElem = document.getElementById("cartTotal");
                 if (totalElem) {
@@ -1450,7 +1450,7 @@ window.confirmAddressAndPay = async function() {
                 showToast(`Selected: ${selectedOption.name}`, "success");
             }
         }
-        
+
         checkoutCart(selectedDeliveryId, deliveryFee);
     } catch (err) {
         console.error("Delivery Options Error:", err);
@@ -1463,14 +1463,14 @@ let osmTimeout;
 let selectedLat = null;
 let selectedLng = null;
 
-window.getCurrentLocation = function() {
+window.getCurrentLocation = function () {
     if (navigator.geolocation) {
         showToast("Fetching location...", "success");
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 selectedLat = position.coords.latitude;
                 selectedLng = position.coords.longitude;
-                
+
                 try {
                     // Reverse Geocode
                     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${selectedLat}&lon=${selectedLng}`);
@@ -1478,14 +1478,14 @@ window.getCurrentLocation = function() {
                     if (data && data.address) {
                         const addr = data.address;
                         const area = addr.suburb || addr.neighbourhood || addr.road || addr.county || '';
-                        if(area) document.getElementById('addressLine2').value = area;
-                        
+                        if (area) document.getElementById('addressLine2').value = area;
+
                         const city = addr.city || addr.town || addr.state_district || addr.county || '';
-                        if(city) document.getElementById('addressCity').value = city;
-                        
-                        if(addr.state) document.getElementById('addressState').value = addr.state;
-                        if(addr.postcode) document.getElementById('addressPincode').value = addr.postcode.replace(/\s/g, '').substring(0,6);
-                        
+                        if (city) document.getElementById('addressCity').value = city;
+
+                        if (addr.state) document.getElementById('addressState').value = addr.state;
+                        if (addr.postcode) document.getElementById('addressPincode').value = addr.postcode.replace(/\s/g, '').substring(0, 6);
+
                         document.getElementById('osmSearch').value = "Current Location Selected";
                         showToast("Location Captured Successfully! 📍", "success");
                     }
@@ -1502,11 +1502,11 @@ window.getCurrentLocation = function() {
         showToast("Geolocation is not supported by this browser.", "error");
     }
 };
-window.searchOSMAddress = function() {
+window.searchOSMAddress = function () {
     clearTimeout(osmTimeout);
     const query = document.getElementById('osmSearch').value;
     const suggestionBox = document.getElementById('osmSuggestions');
-    
+
     if (query.length < 4) {
         suggestionBox.style.display = 'none';
         return;
@@ -1518,7 +1518,7 @@ window.searchOSMAddress = function() {
             // Nominatim API: Free open-source maps. Locked to India for faster, accurate results.
             const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=in&q=${encodeURIComponent(query)}`);
             const data = await response.json();
-            
+
             suggestionBox.innerHTML = '';
             if (data.length > 0) {
                 suggestionBox.style.display = 'block';
@@ -1530,10 +1530,10 @@ window.searchOSMAddress = function() {
                     item.style.cursor = 'pointer';
                     item.style.fontSize = '12px';
                     item.style.color = 'var(--text-main)';
-                    
+
                     item.onmouseover = () => item.style.background = 'rgba(255, 106, 0, 0.1)';
                     item.onmouseout = () => item.style.background = 'transparent';
-                    
+
                     item.onclick = () => selectOSMAddress(place);
                     suggestionBox.appendChild(item);
                 });
@@ -1546,126 +1546,126 @@ window.searchOSMAddress = function() {
     }, 500);
 };
 
-window.selectOSMAddress = function(place) {
+window.selectOSMAddress = function (place) {
     document.getElementById('osmSearch').value = place.display_name;
     document.getElementById('osmSuggestions').style.display = 'none';
-    
+
     // Smart Autofill
     const addr = place.address;
-    
+
     // Line 2 (Area/Road/Suburb)
     const area = addr.suburb || addr.neighbourhood || addr.road || addr.county || '';
-    if(area) document.getElementById('addressLine2').value = area;
-    
+    if (area) document.getElementById('addressLine2').value = area;
+
     // City
     const city = addr.city || addr.town || addr.state_district || addr.county || '';
-    if(city) document.getElementById('addressCity').value = city;
-    
+    if (city) document.getElementById('addressCity').value = city;
+
     // State
-    if(addr.state) document.getElementById('addressState').value = addr.state;
-    
+    if (addr.state) document.getElementById('addressState').value = addr.state;
+
     // Pincode
-    if(addr.postcode) {
-        document.getElementById('addressPincode').value = addr.postcode.replace(/\s/g, '').substring(0,6);
+    if (addr.postcode) {
+        document.getElementById('addressPincode').value = addr.postcode.replace(/\s/g, '').substring(0, 6);
     }
-    
+
     // NEW CODE: Secretly capture the coordinates
     selectedLat = parseFloat(place.lat);
     selectedLng = parseFloat(place.lon);
-    
+
     showToast("Address Autofilled Successfully! 🌍", "success");
 };
 
-window.checkoutCart = async function(selectedDeliveryId = "standard_delhivery", deliveryFee = 10) {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  if (cart.length === 0) return showToast("Your cart is empty!", "error");
-  let subTotal = 0;
-  cart.forEach(item => { subTotal += (item.price * (item.quantity || 1)); });
-  const totalAmount = subTotal + deliveryFee;
-  const token = localStorage.getItem("token");
-  if (!token) {
-    showToast("Please login to complete your purchase.", "error");
-    setTimeout(() => { window.location.href = "login.html"; }, 1500);
-    return;
-  }
-  try {
-    const response = await fetch(`${API_URL}/orders/create-payment`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify({ 
-          cartItems: cart.map(item => ({ ...item, id: item.originalId || item.id })), 
-          selectedDeliveryId: selectedDeliveryId, 
-          buyerLocation: currentShippingAddress.location 
-      })
-    });
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Server returned ${response.status}: ${errorText}`);
+window.checkoutCart = async function (selectedDeliveryId = "standard_delhivery", deliveryFee = 10) {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cart.length === 0) return showToast("Your cart is empty!", "error");
+    let subTotal = 0;
+    cart.forEach(item => { subTotal += (item.price * (item.quantity || 1)); });
+    const totalAmount = subTotal + deliveryFee;
+    const token = localStorage.getItem("token");
+    if (!token) {
+        showToast("Please login to complete your purchase.", "error");
+        setTimeout(() => { window.location.href = "login.html"; }, 1500);
+        return;
     }
-    const rzpOrder = await response.json();
-    if (!rzpOrder.keyId) throw new Error("Payment Gateway not configured properly.");
-    const options = {
-      "key": rzpOrder.keyId,
-      "amount": rzpOrder.amount,
-      "currency": "INR",
-      "name": "Vyaparsync",
-      "description": "Purchase from Local Markets",
-      "order_id": rzpOrder.id,
-      "config": {
-          "display": {
-              "blocks": {
-                  "custom_upi": {
-                      "name": "Pay via UPI",
-                      "instruments": [
-                          {
-                              "method": "upi"
-                          }
-                      ]
-                  }
-              },
-              "hide": [
-                  { "method": "upi" }
-              ],
-              "sequence": ["block.custom_upi"],
-              "preferences": {
-                  "show_default_blocks": true
-              }
-          }
-      },
-      "handler": async function (response) { await verifyAndPlaceOrders(response, selectedDeliveryId); },
-      "prefill": { 
-          "name": JSON.parse(localStorage.getItem("user")).name || "",
-          "email": JSON.parse(localStorage.getItem("user")).email || "",
-          "contact": (currentShippingAddress && currentShippingAddress.phone) ? "91" + currentShippingAddress.phone : ""
-      },
-      "theme": { "color": "#ff6a00" } // VyaparSync brand orange
-    };
-    const rzp1 = new Razorpay(options);
-    rzp1.open();
-  } catch (err) { showToast("Checkout Error: " + err.message, "error"); }
+    try {
+        const response = await fetch(`${API_URL}/orders/create-payment`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({
+                cartItems: cart.map(item => ({ ...item, id: item.originalId || item.id })),
+                selectedDeliveryId: selectedDeliveryId,
+                buyerLocation: currentShippingAddress.location
+            })
+        });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server returned ${response.status}: ${errorText}`);
+        }
+        const rzpOrder = await response.json();
+        if (!rzpOrder.keyId) throw new Error("Payment Gateway not configured properly.");
+        const options = {
+            "key": rzpOrder.keyId,
+            "amount": rzpOrder.amount,
+            "currency": "INR",
+            "name": "Vyaparsync",
+            "description": "Purchase from Local Markets",
+            "order_id": rzpOrder.id,
+            "config": {
+                "display": {
+                    "blocks": {
+                        "custom_upi": {
+                            "name": "Pay via UPI",
+                            "instruments": [
+                                {
+                                    "method": "upi"
+                                }
+                            ]
+                        }
+                    },
+                    "hide": [
+                        { "method": "upi" }
+                    ],
+                    "sequence": ["block.custom_upi"],
+                    "preferences": {
+                        "show_default_blocks": true
+                    }
+                }
+            },
+            "handler": async function (response) { await verifyAndPlaceOrders(response, selectedDeliveryId); },
+            "prefill": {
+                "name": JSON.parse(localStorage.getItem("user")).name || "",
+                "email": JSON.parse(localStorage.getItem("user")).email || "",
+                "contact": (currentShippingAddress && currentShippingAddress.phone) ? "91" + currentShippingAddress.phone : ""
+            },
+            "theme": { "color": "#ff6a00" } // VyaparSync brand orange
+        };
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+    } catch (err) { showToast("Checkout Error: " + err.message, "error"); }
 }
 
 async function verifyAndPlaceOrders(paymentProof, selectedDeliveryId) {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const token = localStorage.getItem("token"); 
-  try {
-    const res = await fetch(`${API_URL}/orders/verify-and-place`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify({ 
-        razorpay_order_id: paymentProof.razorpay_order_id,
-        razorpay_payment_id: paymentProof.razorpay_payment_id,
-        razorpay_signature: paymentProof.razorpay_signature,
-        cartItems: cart, 
-        shippingAddress: currentShippingAddress,
-        selectedDeliveryId: selectedDeliveryId
-      })
-    });
-    if (!res.ok) throw new Error("Verification failed");
-    localStorage.removeItem("cart");
-    showToast("Payment Verified! 🛡️🎉", "success");
-    setTimeout(() => { window.location.href = "orders.html"; }, 2000);
-  } catch (err) { showToast("Verification Error: " + err.message, "error"); }
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const token = localStorage.getItem("token");
+    try {
+        const res = await fetch(`${API_URL}/orders/verify-and-place`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({
+                razorpay_order_id: paymentProof.razorpay_order_id,
+                razorpay_payment_id: paymentProof.razorpay_payment_id,
+                razorpay_signature: paymentProof.razorpay_signature,
+                cartItems: cart,
+                shippingAddress: currentShippingAddress,
+                selectedDeliveryId: selectedDeliveryId
+            })
+        });
+        if (!res.ok) throw new Error("Verification failed");
+        localStorage.removeItem("cart");
+        showToast("Payment Verified! 🛡️🎉", "success");
+        setTimeout(() => { window.location.href = "orders.html"; }, 2000);
+    } catch (err) { showToast("Verification Error: " + err.message, "error"); }
 }
 
 // =======================================================
@@ -1673,11 +1673,11 @@ async function verifyAndPlaceOrders(paymentProof, selectedDeliveryId) {
 // =======================================================
 
 function loadMyOrders() {
-  const listContainer = document.getElementById("customerOrdersList");
-  if (!listContainer) return; 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    listContainer.innerHTML = `
+    const listContainer = document.getElementById("customerOrdersList");
+    if (!listContainer) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+        listContainer.innerHTML = `
       <div style="text-align:center;padding:60px 20px">
         <p style="color:var(--text-muted);margin-bottom:16px">
           Please log in to view your orders
@@ -1686,11 +1686,11 @@ function loadMyOrders() {
           padding:12px 28px;border-radius:8px;text-decoration:none;
           font-weight:600">Login to View Orders</a>
       </div>`;
-    return;
-  }
+        return;
+    }
 
-  // Show skeleton while loading
-  listContainer.innerHTML = [1,2,3].map(() => `
+    // Show skeleton while loading
+    listContainer.innerHTML = [1, 2, 3].map(() => `
     <div class="order-card" style="opacity:0.45;pointer-events:none;">
       <div class="order-info" style="flex:1;width:100%;">
         <div style="height:18px;background:rgba(128,128,128,0.2);border-radius:4px;width:60%;margin-bottom:10px;"></div>
@@ -1700,54 +1700,54 @@ function loadMyOrders() {
       <div style="width:80px;height:24px;background:rgba(128,128,128,0.2);border-radius:12px;"></div>
     </div>`).join('');
 
-  fetch(`${API_URL}/orders/customer`, {
-    method: "GET",
-    headers: { "Authorization": `Bearer ${token}` }
-  })
-    .then(async res => {
-      if (!res.ok) throw new Error("Failed to load orders");
-      return res.json();
+    fetch(`${API_URL}/orders/customer`, {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` }
     })
-    .then(orders => {
-      listContainer.innerHTML = "";
-      if (orders.length === 0) {
-        listContainer.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 40px 0;">No orders yet! 🛒</p>`;
-        return;
-      }
-      orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+        .then(async res => {
+            if (!res.ok) throw new Error("Failed to load orders");
+            return res.json();
+        })
+        .then(orders => {
+            listContainer.innerHTML = "";
+            if (orders.length === 0) {
+                listContainer.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 40px 0;">No orders yet! 🛒</p>`;
+                return;
+            }
+            orders.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-      orders.forEach(order => {
-        const orderDate = new Date(order.date).toLocaleDateString();
-        order.status = order.status || "Pending";
+            orders.forEach(order => {
+                const orderDate = new Date(order.date).toLocaleDateString();
+                order.status = order.status || "Pending";
 
-        // Determine badge class and text based on all possible statuses
-        let badgeClass, statusText;
-        if (order.status.includes("Delivered")) {
-          badgeClass = "status-delivered"; statusText = "Delivered ✅";
-        } else if (order.status.includes("Shipped")) {
-          badgeClass = "status-shipped"; statusText = "Shipped 🚚";
-        } else if (order.status.includes("Cancelled")) {
-          badgeClass = "status-cancelled"; statusText = "Cancelled ❌";
-        } else if (order.status.includes("Rejected")) {
-          badgeClass = "status-cancelled"; statusText = "Rejected ❌";
-        } else {
-          badgeClass = "status-pending"; statusText = "Pending 🕒";
-        }
+                // Determine badge class and text based on all possible statuses
+                let badgeClass, statusText;
+                if (order.status.includes("Delivered")) {
+                    badgeClass = "status-delivered"; statusText = "Delivered ✅";
+                } else if (order.status.includes("Shipped")) {
+                    badgeClass = "status-shipped"; statusText = "Shipped 🚚";
+                } else if (order.status.includes("Cancelled")) {
+                    badgeClass = "status-cancelled"; statusText = "Cancelled ❌";
+                } else if (order.status.includes("Rejected")) {
+                    badgeClass = "status-cancelled"; statusText = "Rejected ❌";
+                } else {
+                    badgeClass = "status-pending"; statusText = "Pending 🕒";
+                }
 
-        // Build itemized product list
-        let itemsHTML = "";
-        if (order.items && order.items.length > 0) {
-          itemsHTML = `<ul style="margin:8px 0;padding-left:18px;font-size:13px;color:var(--text-muted);">` +
-            order.items.map(it => `<li>${sanitizeHTML(it.name)} &times; ${it.quantity || 1}</li>`).join('') +
-            `</ul>`;
-        } else {
-          itemsHTML = `<h3>${sanitizeHTML(order.productName)}</h3>`;
-        }
+                // Build itemized product list
+                let itemsHTML = "";
+                if (order.items && order.items.length > 0) {
+                    itemsHTML = `<ul style="margin:8px 0;padding-left:18px;font-size:13px;color:var(--text-muted);">` +
+                        order.items.map(it => `<li>${sanitizeHTML(it.name)} &times; ${it.quantity || 1}</li>`).join('') +
+                        `</ul>`;
+                } else {
+                    itemsHTML = `<h3>${sanitizeHTML(order.productName)}</h3>`;
+                }
 
-        // 🗺️ DYNAMIC LOGISTICS TICKET & LIVE MAP SIMULATION
-        let trackingHTML = "";
-        if (order.status.includes("Shipped")) {
-            trackingHTML = `
+                // 🗺️ DYNAMIC LOGISTICS TICKET & LIVE MAP SIMULATION
+                let trackingHTML = "";
+                if (order.status.includes("Shipped")) {
+                    trackingHTML = `
                 <div style="margin-top: 15px; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px dashed rgba(0,0,0,0.1);">
                     <div style="text-align: center; margin-bottom: 10px; font-size: 13px;">
                         <span style="color: var(--text-main); font-weight: bold;">🚚 Dispatched from ${sanitizeHTML(order.market || 'seller')}. Arriving soon via local courier.</span>
@@ -1758,16 +1758,16 @@ function loadMyOrders() {
                     </div>
                 </div>
             `;
-        }
+                }
 
-        let actionHTML = "";
-        if (!order.status.includes("Shipped") && !order.status.includes("Cancelled") && !order.status.includes("Rejected") && !order.status.includes("Delivered")) {
-            actionHTML = `<button onclick="cancelOrder('${order._id}')" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Cancel Order</button>`;
-        }
+                let actionHTML = "";
+                if (!order.status.includes("Shipped") && !order.status.includes("Cancelled") && !order.status.includes("Rejected") && !order.status.includes("Delivered")) {
+                    actionHTML = `<button onclick="cancelOrder('${order._id}')" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Cancel Order</button>`;
+                }
 
-        const div = document.createElement("div");
-        div.className = "order-card";
-        div.innerHTML = `
+                const div = document.createElement("div");
+                div.className = "order-card";
+                div.innerHTML = `
           <div class="order-info" style="flex: 1; width: 100%;">
             ${itemsHTML}
             <p><b>Date:</b> ${orderDate} | <b>Market:</b> ${sanitizeHTML(order.market || 'N/A')}</p>
@@ -1779,19 +1779,19 @@ function loadMyOrders() {
             <span class="status-badge ${badgeClass}">${statusText}</span>
           </div>
         `;
-        listContainer.appendChild(div);
+                listContainer.appendChild(div);
 
-        // 🚀 Initialize the map immediately after the HTML is injected into the DOM
-        if (order.status.includes("Shipped")) {
-            setTimeout(() => {
-                initLiveTrackingMap(`map-${order._id}`);
-            }, 100);
-        }
-      });
-    })
-    .catch(err => { 
-        console.error(err);
-        listContainer.innerHTML = `
+                // 🚀 Initialize the map immediately after the HTML is injected into the DOM
+                if (order.status.includes("Shipped")) {
+                    setTimeout(() => {
+                        initLiveTrackingMap(`map-${order._id}`);
+                    }, 100);
+                }
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            listContainer.innerHTML = `
           <div style="text-align:center;padding:60px 20px">
             <p style="color:var(--text-muted);margin-bottom:16px">
               Session expired or failed to load orders. Please log in again.
@@ -1800,12 +1800,12 @@ function loadMyOrders() {
               padding:12px 28px;border-radius:8px;text-decoration:none;
               font-weight:600">Login</a>
           </div>`;
-    });
+        });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     // Only run loadHome if on a page with products container
-    if(document.getElementById("products")) {
+    if (document.getElementById("products")) {
         loadHome();
     }
     loadCart();
@@ -1850,20 +1850,20 @@ async function checkLiveStreams() {
 // 🛑 REFUND & CANCELLATION LOGIC
 // =======================================================
 async function cancelOrder(orderId) {
-    if(!confirm("Are you sure you want to cancel this order? A full refund will be processed.")) return;
-    
+    if (!confirm("Are you sure you want to cancel this order? A full refund will be processed.")) return;
+
     const token = localStorage.getItem("token");
     try {
         const res = await fetch(`${API_URL}/orders/${orderId}/cancel`, {
             method: "PUT",
             headers: { "Authorization": `Bearer ${token}` }
         });
-        
+
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
-        
+
         showToast("Refund Initiated successfully. 💸", "success");
-        
+
         // Reload whichever view they are currently on
         if (window.location.pathname.includes("seller-dashboard")) {
             if (typeof loadOrders === "function") loadOrders();
@@ -1930,7 +1930,7 @@ function initLiveTrackingMap(mapContainerId) {
     // 5. The Movement Algorithm (Interpolation)
     let progress = 0;
     const frames = 1500; // How smooth/slow it moves
-    
+
     function animateMarker() {
         progress++;
         if (progress > frames) {
@@ -1973,7 +1973,7 @@ async function toggleWishlist(productId, btnElement) {
             method: "POST",
             headers: { "Authorization": `Bearer ${token}` }
         });
-        
+
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
@@ -1983,7 +1983,7 @@ async function toggleWishlist(productId, btnElement) {
         // Visually toggle the heart color
         const isNowWishlisted = currentWishlist.includes(productId);
         btnElement.style.color = isNowWishlisted ? "#e74c3c" : "rgba(0,0,0,0.2)";
-        
+
         showToast(isNowWishlisted ? "Added to Wishlist! ❤️" : "Removed from Wishlist 💔", "success");
     } catch (err) {
         showToast(err.message, "error");
@@ -1993,16 +1993,16 @@ async function toggleWishlist(productId, btnElement) {
 // Optionally, add a function to fetch initial wishlist on load if user is logged in
 async function fetchUserWishlist() {
     const token = localStorage.getItem("token");
-    if(!token) return;
+    if (!token) return;
     try {
         const res = await fetch(`${API_URL}/products/my-wishlist`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
-        if(res.ok) {
+        if (res.ok) {
             const list = await res.json();
             currentWishlist = list.map(item => item._id || item); // Depends if populated or not
         }
-    } catch(e) {
+    } catch (e) {
         console.error("Failed to load global wishlist", e);
     }
 }
@@ -2013,43 +2013,43 @@ async function fetchUserWishlist() {
 // 📱 PWA & WEB PUSH NOTIFICATIONS
 // =======================================================
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        console.log('ServiceWorker registration successful:', registration.scope);
-      })
-      .catch((err) => {
-        console.log('ServiceWorker registration failed:', err);
-      });
-  });
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+                console.log('ServiceWorker registration successful:', registration.scope);
+            })
+            .catch((err) => {
+                console.log('ServiceWorker registration failed:', err);
+            });
+    });
 }
 
 // Function to subscribe to push notifications
 async function subscribeToNotifications() {
-  if ('serviceWorker' in navigator && 'Notification' in window) {
-    try {
-      const register = await navigator.serviceWorker.ready;
-      if (Notification.permission === 'default') {
-          const permission = await Notification.requestPermission();
-          if (permission === 'granted') {
-            const token = localStorage.getItem("token");
-            if (!token) return;
-            const subscription = await register.pushManager.subscribe({
-              userVisibleOnly: true,
-              applicationServerKey: "BFEMdN7XR9F70Rf3r0UFWlIISDl7cx1VeSsvlpUVILhTZ1V7NW_63D0Vx3VNCW7mUAb2Iq3Fdp_wKdesE4Az_uI"
-            });
-            await fetch(`${API_URL}/auth/save-subscription`, {
-              method: 'POST',
-              body: JSON.stringify(subscription),
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
-            });
-            showToast("Notifications enabled successfully! 🔔", "success");
-          }
-      }
-    } catch (err) {
-      console.error("Subscription Error:", err);
+    if ('serviceWorker' in navigator && 'Notification' in window) {
+        try {
+            const register = await navigator.serviceWorker.ready;
+            if (Notification.permission === 'default') {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    const token = localStorage.getItem("token");
+                    if (!token) return;
+                    const subscription = await register.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: "BFEMdN7XR9F70Rf3r0UFWlIISDl7cx1VeSsvlpUVILhTZ1V7NW_63D0Vx3VNCW7mUAb2Iq3Fdp_wKdesE4Az_uI"
+                    });
+                    await fetch(`${API_URL}/auth/save-subscription`, {
+                        method: 'POST',
+                        body: JSON.stringify(subscription),
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+                    });
+                    showToast("Notifications enabled successfully! 🔔", "success");
+                }
+            }
+        } catch (err) {
+            console.error("Subscription Error:", err);
+        }
     }
-  }
 }
 
 // Auto-prompt notifications if user is logged in
@@ -2063,22 +2063,22 @@ let deferredPrompt;
 
 // 1. Capture the PWA Install event
 window.addEventListener('beforeinstallprompt', (e) => {
-  // Prevent Chrome from automatically showing the prompt
-  e.preventDefault();
-  // Stash the event so it can be triggered later.
-  deferredPrompt = e;
-  // Show our custom install banner
-  showPwaInstallBanner();
+    // Prevent Chrome from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Show our custom install banner
+    showPwaInstallBanner();
 });
 
 function showPwaInstallBanner() {
-  // Only show if user is on mobile/app-like state
-  if (document.getElementById('pwa-banner')) return;
-  
-  const banner = document.createElement('div');
-  banner.id = 'pwa-banner';
-  banner.style = "position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.2);";
-  banner.innerHTML = `
+    // Only show if user is on mobile/app-like state
+    if (document.getElementById('pwa-banner')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'pwa-banner';
+    banner.style = "position: fixed; bottom: 0; left: 0; width: 100%; box-sizing: border-box; background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -4px 10px rgba(0,0,0,0.2);";
+    banner.innerHTML = `
     <div style="font-size: 14px; font-weight: bold; flex: 1; margin-right: 10px; line-height: 1.4;">
       📱 Install VyaparSync App for a faster experience!
     </div>
@@ -2087,28 +2087,28 @@ function showPwaInstallBanner() {
         <button id="closeInstallBtn" style="background: transparent; color: white; border: 1px solid white; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">X</button>
     </div>
   `;
-  document.body.appendChild(banner);
+    document.body.appendChild(banner);
 
-  document.getElementById('installAppBtn').addEventListener('click', async () => {
-    if (deferredPrompt) {
-      try {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          if (outcome === 'dismissed') {
-              showToast("Installation cancelled. You may need to clear site data to try again.", "error");
-          }
-      } catch (err) {
-          console.error(err);
-          showToast("Installation blocked by browser. Try clearing browser cache.", "error");
-      }
-      deferredPrompt = null;
-    }
-    banner.remove();
-  });
+    document.getElementById('installAppBtn').addEventListener('click', async () => {
+        if (deferredPrompt) {
+            try {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'dismissed') {
+                    showToast("Installation cancelled. You may need to clear site data to try again.", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Installation blocked by browser. Try clearing browser cache.", "error");
+            }
+            deferredPrompt = null;
+        }
+        banner.remove();
+    });
 
-  document.getElementById('closeInstallBtn').addEventListener('click', () => {
-    banner.remove();
-  });
+    document.getElementById('closeInstallBtn').addEventListener('click', () => {
+        banner.remove();
+    });
 }
 
 // 2. Custom Notification Banner (Requires user gesture)
@@ -2116,7 +2116,7 @@ function showPwaInstallBanner() {
 
 function showNotificationBanner() {
     if (document.getElementById('notif-banner')) return;
-    
+
     const banner = document.createElement('div');
     banner.id = 'notif-banner';
     banner.style = "position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: white; color: #333; padding: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-radius: 12px; border-left: 5px solid var(--primary);";
@@ -2154,7 +2154,7 @@ function updateCartBadge() {
     let cart = [];
     try {
         cart = JSON.parse(localStorage.getItem("cart")) || [];
-    } catch(e) {}
+    } catch (e) { }
     const totalItems = cart.reduce((s, i) => s + (i.quantity || 1), 0);
     cartBtns.forEach(btn => {
         if (totalItems > 0) {
