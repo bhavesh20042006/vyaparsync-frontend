@@ -424,8 +424,6 @@ function createProductHTML(p) {
                 <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p._id}')" style="margin-top: 0; background: #f1c40f; color: #333; flex: 1;">🛒 Add</button>
                 <button class="buy-now-btn" onclick="event.stopPropagation(); buy('${p._id}')" style="margin-top: 0; flex: 1;">⚡ Buy</button>
             </div>
-
-            <button class="write-review-btn" onclick="event.stopPropagation(); openReviewPrompt('${p._id}', '${escapedReviewName}')" style="width: 100%; margin-top: 10px; background: transparent; border: 1px dashed rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; cursor: pointer; color: var(--text-muted); font-size: 13px;">📝 Write a Review</button>
         </div>
       </div>
     `;
@@ -1765,6 +1763,32 @@ function loadMyOrders() {
                     actionHTML = `<button onclick="cancelOrder('${order._id}')" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Cancel Order</button>`;
                 }
 
+                // 📝 REVIEW BUTTON — only for Delivered orders
+                let reviewHTML = "";
+                if (order.status.includes("Delivered")) {
+                    if (order.items && order.items.length > 0) {
+                        // Multi-item order: review button per item
+                        reviewHTML = order.items.map(it => {
+                            const pid = it.productId || it._id;
+                            if (!pid) return "";
+                            const escapedName = sanitizeHTML(it.name).replace(/'/g, "\\'");
+                            return `<button class="order-review-btn" data-pid="${escapeAttr(pid)}"
+                                onclick="openReviewPrompt('${escapeAttr(pid)}', '${escapedName}')"
+                                style="margin-top:8px;padding:8px 14px;background:transparent;border:1px dashed #1abc9c;border-radius:8px;cursor:pointer;color:#1abc9c;font-size:12px;width:100%;">
+                                📝 Review: ${sanitizeHTML(it.name)}
+                            </button>`;
+                        }).join('');
+                    } else if (order.productId) {
+                        // Single-item order
+                        const escapedName = sanitizeHTML(order.productName || 'this product').replace(/'/g, "\\'");
+                        reviewHTML = `<button class="order-review-btn" data-pid="${escapeAttr(order.productId)}"
+                            onclick="openReviewPrompt('${escapeAttr(order.productId)}', '${escapedName}')"
+                            style="margin-top:8px;padding:8px 14px;background:transparent;border:1px dashed #1abc9c;border-radius:8px;cursor:pointer;color:#1abc9c;font-size:12px;width:100%;">
+                            📝 Write a Review
+                        </button>`;
+                    }
+                }
+
                 const div = document.createElement("div");
                 div.className = "order-card";
                 div.innerHTML = `
@@ -1774,6 +1798,7 @@ function loadMyOrders() {
             <p style="color: var(--primary); font-weight: bold; font-size: 16px; margin-top: 5px;">₹${order.price}</p>
             ${trackingHTML}
             ${actionHTML}
+            ${reviewHTML}
           </div>
           <div style="margin-left: 20px;">
             <span class="status-badge ${badgeClass}">${statusText}</span>
