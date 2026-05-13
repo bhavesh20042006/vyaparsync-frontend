@@ -47,12 +47,12 @@ body {
 header {
   background: var(--nav-bg);
   color: white;
-  padding: 15px 5%;
+  padding: 12px 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 15px;
+  flex-wrap: nowrap;       /* KEEP everything on one row */
+  gap: 12px;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -70,19 +70,22 @@ header h2 {
   display: flex;
   align-items: center;
   gap: 20px;
-  flex: 1 1 auto;
+  flex: 0 1 auto;       /* Don't grow — let nav-buttons take remaining space */
+  min-width: 0;
+  flex-shrink: 0;
 }
 
 .nav-buttons {
   display: flex;
   align-items: center;
   gap: 8px;
-  justify-content: flex-start;
-  flex: 2 1 auto;
+  justify-content: flex-end;  /* Push buttons to the right */
+  flex: 1 1 auto;
   overflow-x: auto;
   flex-wrap: nowrap;
   scrollbar-width: none;
-  padding-bottom: 5px;
+  padding-bottom: 0;
+  min-width: 0;
 }
 .nav-buttons::-webkit-scrollbar {
   display: none;
@@ -364,16 +367,16 @@ html.dark .buy-now-btn:hover {
 /* 💻 TABLET / SMALL LAPTOP RESPONSIVENESS */
 @media (max-width: 1150px) and (min-width: 769px) {
   header {
-    justify-content: center;
-    gap: 20px;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: nowrap;
   }
   .header-logo-search {
-    width: 100%;
-    justify-content: center;
+    flex-shrink: 0;
   }
   .nav-buttons {
-    width: 100%;
-    justify-content: center;
+    justify-content: flex-end;
+    overflow-x: auto;
   }
 }
 
