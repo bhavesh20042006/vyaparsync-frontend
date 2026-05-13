@@ -1106,7 +1106,7 @@ function loadCart() {
       
       listContainer.appendChild(groupDiv);
   }
-  const platformFee = subTotal > 0 ? 10 : 0;
+  const platformFee = 0; // Calculated dynamically during checkout
   let finalTotal = subTotal + platformFee;
   
   const checkoutBtn = document.querySelector('.checkout-btn');
@@ -1148,7 +1148,7 @@ function loadCart() {
   
   const platformFeeUI = document.getElementById("platformFeeDisplay");
   if (platformFeeUI) {
-      platformFeeUI.innerText = `₹${platformFee}`;
+      platformFeeUI.innerText = subTotal > 0 ? "Calculated at checkout" : "₹0";
   }
 }
 
@@ -1545,8 +1545,9 @@ window.checkoutCart = async function(selectedDeliveryId = "standard_delhivery", 
         throw new Error(`Server returned ${response.status}: ${errorText}`);
     }
     const rzpOrder = await response.json();
+    if (!rzpOrder.keyId) throw new Error("Payment Gateway not configured properly.");
     const options = {
-      "key": rzpOrder.keyId || "rzp_test_SZtBFCjNICbNoE",
+      "key": rzpOrder.keyId,
       "amount": rzpOrder.amount,
       "currency": "INR",
       "name": "Vyaparsync",
