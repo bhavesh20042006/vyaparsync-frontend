@@ -718,13 +718,19 @@ html.dark .auth-select {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 30px;
 }
-/* 🏪 MARKET GRID — flex container */
+/* 🏪 MARKET GRID — horizontal scroll strip */
 #markets-grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  padding: 10px 0;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 12px 0;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#markets-grid::-webkit-scrollbar {
+  display: none;
 }
 
 /* 🏪 MARKET CARD — chip/pill design */
@@ -744,6 +750,8 @@ html.dark .auth-select {
   align-items: center;
   gap: 4px;
   min-width: 120px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
   user-select: none;
 }
 .market-card:hover {
@@ -909,9 +917,10 @@ html.dark .auth-select {
 
   .market-card {
     min-width: 0 !important;
-    padding: 7px 14px !important;
+    padding: 8px 16px !important;
     border-radius: 30px !important;
     flex: 0 0 auto;
+    scroll-snap-align: start;
   }
 
   .market-name {
