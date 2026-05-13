@@ -587,7 +587,7 @@ function applyFilters() {
     const inStock = document.getElementById("inStockToggle") ? document.getElementById("inStockToggle").checked : false;
     const sort = document.getElementById("sortFilter") ? document.getElementById("sortFilter").value : "newest";
 
-    if (query === "" && category === "All" && minPrice === "" && maxPrice === "" && !inStock && sort === "newest") {
+    if (query === "" && category === "All" && (minPrice === "" || minPrice === "0") && (maxPrice === "" || maxPrice === "10000") && !inStock && sort === "newest") {
         const isSearchActive = document.getElementById("current-view") && document.getElementById("current-view").getAttribute("data-view") === "search";
         if (isSearchActive) {
             loadHome();
@@ -643,8 +643,8 @@ function applyFilters() {
 function clearSearch() {
     if (document.getElementById("mainSearchInput")) document.getElementById("mainSearchInput").value = "";
     if (document.getElementById("filterCategory")) document.getElementById("filterCategory").value = "All";
-    if (document.getElementById("minPrice")) document.getElementById("minPrice").value = "";
-    if (document.getElementById("maxPrice")) document.getElementById("maxPrice").value = "";
+    if (document.getElementById("minPrice")) document.getElementById("minPrice").value = "0";
+    if (document.getElementById("maxPrice")) document.getElementById("maxPrice").value = "10000";
     if (document.getElementById("inStockToggle")) document.getElementById("inStockToggle").checked = false;
     if (document.getElementById("sortFilter")) document.getElementById("sortFilter").value = "newest";
     loadHome();
