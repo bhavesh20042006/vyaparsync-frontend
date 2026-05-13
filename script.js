@@ -795,7 +795,7 @@ async function requestOTP() {
     
     if (!email || !email.includes("@")) return showToast("Please enter a valid email.", "error");
 
-    btn.innerText = "Sending... ✉️ (May take 50s)";
+    btn.innerText = "Sending... 📩 Check your inbox in a moment";
     btn.disabled = true;
 
     try {
