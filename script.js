@@ -275,12 +275,14 @@ function renderMarketGrid(markets, isNearby) {
     }
     
     markets.forEach(market => {
+        let distanceText = market.distance ? `<p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-muted); font-weight: 600;">${market.distance.toFixed(1)} km away</p>` : "";
         let badge = isNearby ? `<span style="position:absolute; top:-10px; right:-10px; background:#2ecc71; color:white; padding:4px 8px; font-size:10px; border-radius:10px; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.2);">Nearby 📍</span>` : "";
         
         grid.innerHTML += `
             <div class="market-card" style="position: relative; padding: 20px 30px; background: var(--card-bg); color: var(--text-main); border-radius: var(--border-radius); text-align: center; box-shadow: var(--shadow); transition: var(--transition); border: 2px solid transparent; cursor: pointer;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.color='var(--text-main)'" onclick="loadShops('${escapeAttr(market.name)}')">
               ${badge}
               <h3 style="margin: 0; font-size: 18px; font-weight: 700;">${sanitizeHTML(market.name)}</h3>
+              ${distanceText}
             </div>
         `;
     });
