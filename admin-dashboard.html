@@ -27,6 +27,9 @@
       body {
         flex-direction: column;
       }
+      .content-wrapper {
+        flex-direction: column !important;
+      }
       .sidebar {
         width: 100%;
         flex-direction: row;
@@ -111,6 +114,7 @@
 </head>
 <body style="margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
 
+<div class="content-wrapper" style="display: flex; flex-direction: row; flex: 1; width: 100%;">
 <div class="sidebar">
   <h2>👑 CEO Portal</h2>
   <a href="#" style="color: white; text-decoration: none; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid #333;">🛡️ Trust & Safety</a>
@@ -196,6 +200,7 @@
         </tbody>
     </table>
   </div>
+</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
