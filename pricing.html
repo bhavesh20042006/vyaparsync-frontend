@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing - VyaparSync | India's Local Markets Platform</title>
+  <meta name="description" content="VyaparSync is free during beta. Zero commission for sellers, zero subscription fees. Our planned commission model launches in 2026.">
+  <meta property="og:title" content="VyaparSync Pricing – Free During Beta">
+  <meta property="og:description" content="Zero commission for sellers during beta. See our transparent pricing model for when we scale.">
+  <meta property="og:image" content="https://vyaparsync-frontend.vercel.app/icon-512x512.png">
+  <meta property="og:url" content="https://vyaparsync-frontend.vercel.app/pricing.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .pricing-container { max-width: 960px; margin: 40px auto; padding: 0 20px; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin: 40px 0; }
+    .plan-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 35px 30px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      position: relative;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+    .plan-card:hover { transform: translateY(-8px); border-color: var(--primary); }
+    .plan-card.featured { border-color: var(--primary); }
+    .plan-card.featured::before {
+      content: "🔥 Current Plan";
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: white;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .plan-name { font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+    .plan-price { font-size: 48px; font-weight: 800; color: var(--primary); margin: 15px 0 5px; line-height: 1; }
+    .plan-price span { font-size: 18px; font-weight: 400; color: var(--text-muted); }
+    .plan-desc { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+    .plan-features { list-style: none; padding: 0; margin: 0 0 30px 0; text-align: left; }
+    .plan-features li { padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 14px; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+    html.dark .plan-features li { border-color: rgba(255,255,255,0.05); }
+    .plan-cta { display: block; padding: 14px; background: linear-gradient(135deg, var(--primary), #ff8c00); color: white; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 15px; transition: var(--transition); }
+    .plan-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,106,0,0.3); }
+    .plan-cta.outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .plan-cta.outline:hover { background: var(--primary); color: white; }
+    .faq-section { margin: 50px 0; }
+    .faq-item { background: var(--card-bg); border-radius: 12px; padding: 20px 25px; margin-bottom: 15px; box-shadow: var(--shadow); }
+    .faq-item h4 { margin: 0 0 8px 0; color: var(--text-main); font-size: 16px; }
+    .faq-item p { margin: 0; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+    .beta-banner { background: linear-gradient(135deg, rgba(255,106,0,0.1), rgba(255,193,7,0.1)); border: 1px solid rgba(255,106,0,0.2); border-radius: var(--border-radius); padding: 25px 30px; text-align: center; margin-bottom: 40px; }
+    @media (max-width: 768px) { .plan-price { font-size: 36px; } }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
+
+  <header style="max-width: 960px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
+    <h1 style="color: var(--primary); margin: 0; font-size: 24px;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0; border: none; cursor: pointer;">🌙</button>
+      <a href="index.html" style="text-decoration: none; background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+    </div>
+  </header>
+
+  <div class="hero" style="padding: 50px 5% 30px;">
+    <h1>Simple, Transparent Pricing</h1>
+    <p style="font-size: 18px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">We believe in giving sellers the best start. No hidden fees, no surprises.</p>
+  </div>
+
+  <div class="pricing-container">
+
+    <div class="beta-banner">
+      <h2 style="margin: 0 0 8px 0; color: var(--primary); font-size: 22px;">🎉 Beta Launch — Everything is FREE</h2>
+      <p style="margin: 0; color: var(--text-muted); font-size: 15px;">During our beta phase, all features are available at zero cost. Lock in your seller spot now before paid plans launch.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- BUYER PLAN -->
+      <div class="plan-card">
+        <div class="plan-name">🛍️ Shopper</div>
+        <div class="plan-price">₹0 <span>/ forever</span></div>
+        <div class="plan-desc">Always free for buyers. No subscription, no membership.</div>
+        <ul class="plan-features">
+          <li>✅ Browse all 27+ markets</li>
+          <li>✅ Live stream shopping</li>
+          <li>✅ Wishlist & order tracking</li>
+          <li>✅ Secure UPI / card payments</li>
+          <li>✅ Product reviews & ratings</li>
+          <li>✅ PWA — install on phone</li>
+        </ul>
+        <a href="login.html" class="plan-cta">Start Shopping Free →</a>
+      </div>
+
+      <!-- SELLER BETA PLAN -->
+      <div class="plan-card featured">
+        <div class="plan-name">🏪 Seller — Beta</div>
+        <div class="plan-price">₹0 <span>/ month</span></div>
+        <div class="plan-desc">0% commission. Free setup. Full access during beta.</div>
+        <ul class="plan-features">
+          <li>✅ Unlimited product listings</li>
+          <li>✅ Live stream commerce studio</li>
+          <li>✅ Real-time order notifications</li>
+          <li>✅ AI demand insights</li>
+          <li>✅ Bulk CSV upload</li>
+          <li>✅ POS barcode scanner</li>
+          <li>✅ KYC verification badge</li>
+          <li>✅ Referral earnings program</li>
+          <li>✅ Bank payout via Razorpay</li>
+          <li>⏳ VyaparSync Capital (coming soon)</li>
+        </ul>
+        <a href="retailer-register.html" class="plan-cta">Join Free as Seller →</a>
+      </div>
+
+      <!-- FUTURE PLAN -->
+      <div class="plan-card">
+        <div class="plan-name">🚀 Seller — Post-Beta</div>
+        <div class="plan-price">5% <span>commission</span></div>
+        <div class="plan-desc">Launching Q3 2026. Pay only when you sell.</div>
+        <ul class="plan-features">
+          <li>✅ Everything in Beta plan</li>
+          <li>✅ Priority support</li>
+          <li>✅ Promoted product listings</li>
+          <li>✅ Advanced analytics dashboard</li>
+          <li>✅ Multi-city seller expansion</li>
+          <li>✅ VyaparSync Capital access</li>
+          <li>✅ Dedicated account manager</li>
+        </ul>
+        <a href="retailer-register.html" class="plan-cta outline">Lock in Beta Now →</a>
+      </div>
+
+    </div>
+
+    <!-- HOW COMMISSION WORKS -->
+    <div style="background: var(--card-bg); border-radius: var(--border-radius); padding: 30px; box-shadow: var(--shadow); margin-bottom: 40px;">
+      <h2 style="margin: 0 0 15px 0; color: var(--text-main); font-size: 20px;">💡 How Our Commission Model Works</h2>
+      <p style="color: var(--text-muted); line-height: 1.7; margin: 0 0 15px 0;">We take a small percentage only on successful orders — no upfront fees, no monthly subscription. If you don't sell, you pay nothing.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+        <div style="text-align: center; padding: 20px; background: rgba(255,106,0,0.05); border-radius: 12px;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--primary);">0%</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">During Beta</div>
+        </div>
+        <div style="text-align: center; padding: 20px; background: rgba(255,106,0,0.05); border-radius: 12px;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--primary);">5%</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Post-Beta (vs 25-35% on big platforms)</div>
+        </div>
+        <div style="text-align: center; padding: 20px; background: rgba(255,106,0,0.05); border-radius: 12px;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--primary);">₹0</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Monthly Subscription</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <h2 style="margin: 0 0 25px 0; color: var(--text-main);">❓ Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <h4>When will the free beta end?</h4>
+        <p>We plan to transition to our commission model in Q3 2026. All sellers who join during beta will receive a 3-month grace period before any commission applies.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is there any setup fee or deposit?</h4>
+        <p>Absolutely none. Joining VyaparSync is completely free — no setup fees, no listing fees, no subscription. You only pay a commission on successful orders post-beta.</p>
+      </div>
+      <div class="faq-item">
+        <h4>How do payouts work?</h4>
+        <p>Funds are held in Razorpay Escrow until the order is confirmed shipped. Once dispatched, your earnings are auto-transferred to your connected bank account within 3-5 business days.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can buyers return products?</h4>
+        <p>Yes. See our <a href="refund.html" style="color: var(--primary); font-weight: bold;">Refund & Return Policy</a> for full details. Seller protection is built into the platform.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="script.js?v=8"></script>
+
+  <footer style="background: var(--nav-bg); color: white; text-align: center; padding: 20px 5%; margin-top: auto;">
+    <p style="margin: 0 0 8px 0; font-size: 14px; opacity: 0.9;">&copy; 2026 VyaparSync — India's Local Markets, Delivered</p>
+    <p style="margin: 0; font-size: 13px; line-height: 2;">
+      <a href="about.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">About</a> |
+      <a href="pricing.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Pricing</a> |
+      <a href="terms.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Terms</a> |
+      <a href="privacy.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Privacy</a> |
+      <a href="refund.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Refund Policy</a> |
+      <a href="support.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Support</a>
+    </p>
+  </footer>
+
+</body>
+</html>

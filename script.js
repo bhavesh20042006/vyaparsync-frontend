@@ -3,6 +3,13 @@ const API_URL = (hostname === "localhost" || hostname === "127.0.0.1" || hostnam
     ? `http://${hostname}:5000`
     : "https://vyaparsync.onrender.com";
 
+// 🔥 KEEP-ALIVE PING: Prevents Render free-tier cold starts (pings every 9 min)
+(function keepBackendAwake() {
+    const ping = () => fetch(`${API_URL}/products?limit=1&_ping=1`).catch(() => {});
+    ping(); // immediate ping on page load
+    setInterval(ping, 9 * 60 * 1000); // then every 9 minutes
+})();
+
 // =======================================================
 // 🛡️ SECURITY HELPERS (XSS PREVENTION)
 // =======================================================
