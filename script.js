@@ -147,7 +147,7 @@ let isFetchingHome = false;
 function loadHome() {
     if (isFetchingHome) return;
     isFetchingHome = true;
-    const container = document.getElementById("products");
+    const container = document.getElementById("products") || document.getElementById("wishlist-container") || document.getElementById("customerOrdersList") || document.querySelector("main");
     if (!container) {
         isFetchingHome = false;
         return;
@@ -342,7 +342,7 @@ function renderMarketGrid(markets, isNearby) {
 
 function loadShops(marketName) {
     currentMarketName = marketName;
-    const container = document.getElementById("products");
+    const container = document.getElementById("products") || document.getElementById("wishlist-container") || document.getElementById("customerOrdersList") || document.querySelector("main");
     container.innerHTML = `
     <div id="current-view" data-view="markets"></div>
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
@@ -372,7 +372,7 @@ function loadShops(marketName) {
 }
 
 function loadProducts(shopName) {
-    const container = document.getElementById("products");
+    const container = document.getElementById("products") || document.getElementById("wishlist-container") || document.getElementById("customerOrdersList") || document.querySelector("main");
     container.innerHTML = `
     <div id="current-view" data-view="shop" data-shop="${shopName}"></div>
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
@@ -497,7 +497,7 @@ function loadProductDetails(productId) {
     const product = currentProducts.find(p => p._id === productId);
     if (!product) return;
 
-    const container = document.getElementById("products");
+    const container = document.getElementById("products") || document.getElementById("wishlist-container") || document.getElementById("customerOrdersList") || document.querySelector("main");
 
     const NO_IMG_SVG_LARGE = `data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='600' height='600' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='42%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='72px'%3E📷%3C/text%3E%3Ctext x='50%25' y='60%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20px' fill='%23999'%3ENo Photo Yet%3C/text%3E%3C/svg%3E`;
     let imageSrc = product.image
@@ -669,7 +669,7 @@ function applyFilters() {
     if (inStock) fetchUrl += `inStock=true&`;
     fetchUrl += `sort=${sort}`;
 
-    const container = document.getElementById("products");
+    const container = document.getElementById("products") || document.getElementById("wishlist-container") || document.getElementById("customerOrdersList") || document.querySelector("main");
     const isSearchActive = document.getElementById("current-view") && document.getElementById("current-view").getAttribute("data-view") === "search";
 
     if (!isSearchActive) {
