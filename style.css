@@ -175,6 +175,12 @@ header {
 }
 .mobile-nav-links a:hover { background: rgba(255,106,0,0.08); color: var(--primary); }
 
+.mobile-nav-links .nav-btn {
+  box-shadow: none !important;
+  margin-bottom: 8px !important;
+  width: 100% !important;
+  border-radius: 8px !important;
+}
 
 header h2 {
   margin: 0;
