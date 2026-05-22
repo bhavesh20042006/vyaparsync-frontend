@@ -560,22 +560,35 @@ html.dark .buy-now-btn:hover {
   header {
     flex-direction: row; 
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
     gap: 10px;
     padding: 10px 4%;
   }
 
   .header-logo-search {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
+    display: contents; /* Flattens so logo and search bar become direct children of header */
   }
 
   .header-logo-search h2 {
     font-size: 18px !important;
+    order: 1;
+    flex: 1; /* Pushes the buttons to the right */
+    margin: 0;
+  }
+
+  .dark-mode-header-btn {
+    order: 2;
+    padding: 6px 10px !important;
+    height: 34px;
+  }
+
+  /* Show hamburger */
+  .hamburger-btn {
+    display: flex !important;
+    order: 3;
+    height: 34px;
+    padding: 6px !important;
   }
 
   /* Show search bar full width on mobile */
@@ -583,12 +596,8 @@ html.dark .buy-now-btn:hover {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-    order: 3; /* Push to next line */
-  }
-
-  /* Show hamburger */
-  .hamburger-btn {
-    display: flex !important;
+    order: 4; /* Push to next line below the logo and buttons */
+    margin-top: 5px;
   }
 
   .nav-buttons {
@@ -599,10 +608,11 @@ html.dark .buy-now-btn:hover {
     display: flex;
     overflow-x: auto;
     flex-wrap: nowrap;
-    padding: 10px 4%;
-    gap: 10px;
+    padding: 8px 4%;
+    gap: 8px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    align-items: center;
   }
 
   .filter-nav::-webkit-scrollbar { display: none; }
@@ -612,11 +622,25 @@ html.dark .buy-now-btn:hover {
   }
 
   .filter-nav select, .filter-nav input[type="number"] {
-    font-size: 13px;
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+    height: 30px;
+  }
+
+  .filter-nav label {
+    font-size: 12px !important;
   }
 
   .filter-nav input[type="number"] {
-    width: 55px !important;
+    width: 50px !important;
+  }
+
+  #langBanner {
+    padding: 6px 4% !important;
+  }
+  
+  #langBanner * {
+    font-size: 12px !important;
   }
 
   .hero h1 {
