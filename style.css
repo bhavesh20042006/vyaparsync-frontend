@@ -757,8 +757,15 @@ html.dark .bottom-nav {
   color: var(--primary-hover);
 }
 
+.bottom-nav-item svg {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 2px;
+  stroke-width: 2.2;
+}
+
 .bottom-nav-item span {
-  font-size: 20px;
+  font-size: 11px;
 }
 
 @media (max-width: 768px) {
