@@ -643,8 +643,49 @@ html.dark .buy-now-btn:hover {
     font-size: 12px !important;
   }
 
+  .hero {
+    padding: 25px 5% 15px !important;
+  }
+
   .hero h1 {
-    font-size: 1.5em; /* Smaller for mobile */
+    font-size: 1.5em !important;
+    margin-bottom: 8px !important;
+  }
+
+  #heroSubtitle {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Shrink hero stats and step icons */
+  .hero > div > div > div[style*="font-size: 2em"] {
+    font-size: 1.5em !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* Shrink hero labels */
+  .hero > div > div > div[style*="font-size: 12px"],
+  .hero > div > div > div[style*="font-size: 13px"] {
+    font-size: 10px !important;
+  }
+
+  /* Make hero buttons more compact */
+  .hero > div > a[style*="padding"] {
+    padding: 10px 20px !important;
+    font-size: 13px !important;
+    width: 100% !important; /* Make buttons full width on small screens */
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* Make trust badges smaller and tighter */
+  .hero > div:last-child {
+    gap: 10px !important;
+    margin-top: 15px !important;
+  }
+
+  .hero > div:last-child span {
+    font-size: 10px !important;
   }
 
   /* Fix for mobile product grids having side-by-side buttons */
