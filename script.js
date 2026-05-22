@@ -216,6 +216,16 @@ function loadHome() {
         .catch(err => {
             console.error("Fetch Error:", err);
             isFetchingHome = false;
+            const grid = document.getElementById("products-grid");
+            if (grid) {
+                grid.innerHTML = `
+                    <div class="error-state" style="width: 100%;">
+                        <div class="error-state-icon">📡</div>
+                        <h3 class="error-state-title">Could not load products</h3>
+                        <p class="error-state-msg">Check your internet connection and try again.</p>
+                        <button class="error-state-btn" onclick="isFetchingHome=false; loadHome()">🔄 Try Again</button>
+                    </div>`;
+            }
         });
 }
 
@@ -2316,14 +2326,7 @@ function handleSearchInput(event) {
 }
 
 function initUIFeatures() {
-    // Waking Up UI
-    const wakingUp = document.getElementById("waking-up-screen");
-    if (wakingUp) {
-        setTimeout(() => {
-            wakingUp.style.opacity = "0";
-            setTimeout(() => wakingUp.remove(), 500);
-        }, 15000); // 15 seconds
-    }
+    // (No more waking-up screen — keep-alive ping handles cold starts)
     
     // PWA Logic
     let deferredPrompt;
@@ -2377,12 +2380,179 @@ function initUIFeatures() {
     }
 }
 
+// =======================================================
+// 🍔 HAMBURGER MOBILE NAV
+// =======================================================
+function toggleMobileNav() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    const overlay = document.getElementById('mobileNavOverlay');
+    const btn = document.getElementById('hamburgerBtn');
+    const isOpen = drawer && drawer.classList.contains('open');
+    if (isOpen) {
+        drawer && drawer.classList.remove('open');
+        overlay && overlay.classList.remove('open');
+        btn && btn.classList.remove('active');
+        btn && btn.setAttribute('aria-expanded', 'false');
+    } else {
+        // Sync user state in mobile drawer
+        const mobileUser = document.getElementById('mobileUserSection');
+        const desktopUser = document.getElementById('userSection');
+        if (mobileUser && desktopUser) mobileUser.innerHTML = desktopUser.innerHTML;
+        drawer && drawer.classList.add('open');
+        overlay && overlay.classList.add('open');
+        btn && btn.classList.add('active');
+        btn && btn.setAttribute('aria-expanded', 'true');
+    }
+}
+function closeMobileNav() {
+    document.getElementById('mobileNavDrawer')?.classList.remove('open');
+    document.getElementById('mobileNavOverlay')?.classList.remove('open');
+    document.getElementById('hamburgerBtn')?.classList.remove('active');
+}
+
+// =======================================================
+// 🌐 HINDI / ENGLISH LANGUAGE TOGGLE
+// =======================================================
+const translations = {
+    en: {
+        'heroTitle': "India's Local Markets, Delivered",
+        'heroSubtitle': "Experience the authenticity of local bazaars without leaving your home. Real-time inventory straight from the shopkeeper's hands to yours.",
+        'local-markets': 'Local Markets',
+        'cities-live': 'Cities Live',
+        'commission': 'Commission (Beta)',
+        'live-commerce': 'Live Commerce',
+        'step1-title': '1. Explore',
+        'step1-desc': 'Find products from real shops across Indian markets.',
+        'step2-title': '2. Connect',
+        'step2-desc': 'Chat with sellers or watch them sell live.',
+        'step3-title': '3. Secure Pay',
+        'step3-desc': '100% Escrow protected Razorpay checkout.',
+        'step4-title': '4. Fast Delivery',
+        'step4-desc': 'ONDC logistics partner brings it to your door.',
+        'join-sellers': 'Join 100+ Early Sellers on VyaparSync',
+        'join-desc': "Be part of India's first bazaar live-commerce platform. 0% commission during beta. No subscription ever.",
+        'beta-commission': 'Commission during Beta',
+        'markets-count': 'Iconic Indian Markets',
+        'live-feature': 'Live Stream Commerce',
+        'start-shopping': '🛍️ Start Shopping',
+        'become-seller': '🚀 Become a Seller — Free',
+        'join-free': '🚀 Join Free',
+        'langBtn': '🇮🇳 हिंदी'
+    },
+    hi: {
+        'heroTitle': 'भारत के स्थानीय बाजार, आपके दरवाजे तक',
+        'heroSubtitle': 'घर बैठे असली बाजार का अनुभव करें। दुकानदार से सीधे आप तक — रियल-टाइम इन्वेंटरी के साथ।',
+        'local-markets': 'स्थानीय बाजार',
+        'cities-live': 'शहर लाइव',
+        'commission': 'कमीशन (बीटा)',
+        'live-commerce': 'लाइव कॉमर्स',
+        'step1-title': '1. खोजें',
+        'step1-desc': 'भारतीय बाजारों में असली दुकानों के उत्पाद खोजें।',
+        'step2-title': '2. जुड़ें',
+        'step2-desc': 'विक्रेता से बात करें या उन्हें लाइव बेचते देखें।',
+        'step3-title': '3. सुरक्षित भुगतान',
+        'step3-desc': '100% एस्क्रो सुरक्षित रेजरपे चेकआउट।',
+        'step4-title': '4. तेज डिलीवरी',
+        'step4-desc': 'ONDC लॉजिस्टिक्स साझेदार आपके दरवाजे तक पहुंचाएगा।',
+        'join-sellers': 'VyaparSync पर 100+ शुरुआती विक्रेताओं से जुड़ें',
+        'join-desc': 'भारत के पहले बाजार लाइव-कॉमर्स प्लेटफॉर्म का हिस्सा बनें। बीटा में 0% कमीशन।',
+        'beta-commission': 'बीटा में कमीशन',
+        'markets-count': 'प्रसिद्ध भारतीय बाजार',
+        'live-feature': 'लाइव स्ट्रीम कॉमर्स',
+        'start-shopping': '🛍️ खरीदारी शुरू करें',
+        'become-seller': '🚀 विक्रेता बनें — मुफ्त',
+        'join-free': '🚀 मुफ्त जुड़ें',
+        'langBtn': '🇺🇸 English'
+    }
+};
+
+let currentLang = localStorage.getItem('lang') || 'en';
+
+function toggleLanguage() {
+    currentLang = currentLang === 'en' ? 'hi' : 'en';
+    localStorage.setItem('lang', currentLang);
+    applyLanguage();
+}
+
+function applyLanguage() {
+    const t = translations[currentLang];
+    document.documentElement.setAttribute('lang', currentLang);
+    
+    // Update text elements
+    const heroTitle = document.getElementById('heroTitle');
+    if (heroTitle && t.heroTitle) heroTitle.textContent = t.heroTitle;
+    
+    const heroSubtitle = document.getElementById('heroSubtitle');
+    if (heroSubtitle && t.heroSubtitle) heroSubtitle.textContent = t.heroSubtitle;
+    
+    // Update data-i18n elements
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+    });
+    
+    // Update buttons
+    document.querySelectorAll('[data-i18n-btn]').forEach(el => {
+        const key = el.getAttribute('data-i18n-btn');
+        if (t[key]) el.textContent = t[key];
+    });
+    
+    // Update the toggle button itself
+    const langBtn = document.getElementById('langToggleBtn');
+    if (langBtn && t.langBtn) langBtn.textContent = t.langBtn;
+}
+
+// =======================================================
+// 📧 WAITLIST FORM
+// =======================================================
+function joinWaitlist() {
+    const emailInput = document.getElementById('waitlistEmail');
+    if (!emailInput) return;
+    const email = emailInput.value.trim();
+    if (!email || !email.includes('@')) {
+        showToast('Please enter a valid email address.', 'error');
+        return;
+    }
+    // Save to localStorage as fallback (and optionally ping backend)
+    const existing = JSON.parse(localStorage.getItem('waitlist') || '[]');
+    if (!existing.includes(email)) existing.push(email);
+    localStorage.setItem('waitlist', JSON.stringify(existing));
+    
+    // Optimistic UI
+    emailInput.value = '';
+    showToast('🎉 You are on the waitlist! We will notify you soon.', 'success');
+    
+    // Try to ping backend silently
+    fetch(`${API_URL}/auth/waitlist`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+    }).catch(() => {}); // fail silently
+}
+
+// =======================================================
+// 🔄 ERROR STATE HELPERS (Retry Buttons)
+// =======================================================
+function showErrorState(containerId, message, retryFn) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = `
+        <div class="error-state">
+            <div class="error-state-icon">⚠️</div>
+            <h3 class="error-state-title">Something went wrong</h3>
+            <p class="error-state-msg">${message || 'Unable to load data. Please check your connection.'}</p>
+            <button class="error-state-btn" onclick="${retryFn}()">🔄 Try Again</button>
+        </div>
+    `;
+}
+
 if (document.readyState === "interactive" || document.readyState === "complete") {
     if (document.getElementById("products")) loadHome();
     if (typeof loadCart === "function") loadCart();
     if (typeof loadMyOrders === "function") loadMyOrders();
     if (typeof showUser === "function") showUser(); 
     initUIFeatures();
+    applyLanguage(); // Apply language on load
 } else {
     document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById("products")) loadHome();
@@ -2390,5 +2560,6 @@ if (document.readyState === "interactive" || document.readyState === "complete")
         if (typeof loadMyOrders === "function") loadMyOrders();
         if (typeof showUser === "function") showUser(); 
         initUIFeatures();
+        applyLanguage(); // Apply language on load
     });
 }

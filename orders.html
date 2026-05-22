@@ -4,96 +4,309 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Orders | VyaparSync</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="style.css?v=6">
-  <style>
-    .orders-container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: var(--card-bg);
-      padding: 30px;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-    }
-    
-    .order-card {
-      border: 1px solid rgba(0,0,0,0.05);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg-color);
-      transition: var(--transition);
-    }
-
-    body.dark .order-card {
-        border-color: rgba(255,255,255,0.05);
-    }
-
-    .order-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow);
-    }
-    
-    .order-info h3 { margin: 0 0 8px 0; color: var(--text-main); font-size: 18px; }
-    .order-info p { margin: 4px 0; color: var(--text-muted); font-size: 14px; }
-    
-    .status-badge {
-      padding: 8px 16px;
-      border-radius: 30px;
-      font-weight: bold;
-      font-size: 14px;
-      display: inline-block;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    
-    .status-pending  { background: rgba(255, 153, 0, 0.1);  color: #e67e22; border: 1px solid #e67e22; }
-    .status-shipped   { background: rgba(46, 204, 113, 0.1); color: #27ae60; border: 1px solid #2ecc71; }
-    .status-delivered { background: rgba(46, 204, 113, 0.15); color: #16a085; border: 1px solid #1abc9c; }
-    .status-cancelled { background: rgba(231, 76, 60, 0.1);  color: #c0392b; border: 1px solid #e74c3c; }
-  </style>
-
+  <meta name="description" content="Track your orders from VyaparSync. Real-time order status from local Indian markets.">
+  <link rel="stylesheet" href="style.css?v=9">
   <meta name="theme-color" content="#ff6a00">
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/icon-192x192.png">
   <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
   <link rel="manifest" href="/manifest.json">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .orders-container {
+      max-width: 820px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .order-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: var(--transition);
+    }
+    html.dark .order-card { border-color: rgba(255,255,255,0.06); }
+
+    .order-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .order-info h3 { margin: 0 0 6px 0; color: var(--text-main); font-size: 17px; font-weight: 700; }
+    .order-info p { margin: 3px 0; color: var(--text-muted); font-size: 13px; }
+    
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 13px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    
+    .status-pending   { background: rgba(243,156,18,0.12); color: #e67e22; border: 1px solid rgba(243,156,18,0.3); }
+    .status-confirmed { background: rgba(52,152,219,0.12); color: #2980b9; border: 1px solid rgba(52,152,219,0.3); }
+    .status-packed    { background: rgba(155,89,182,0.12); color: #8e44ad; border: 1px solid rgba(155,89,182,0.3); }
+    .status-shipped   { background: rgba(46,204,113,0.12); color: #27ae60; border: 1px solid rgba(46,204,113,0.3); }
+    .status-delivered { background: rgba(22,160,133,0.12); color: #16a085; border: 1px solid rgba(22,160,133,0.3); }
+    .status-cancelled { background: rgba(231,76,60,0.12); color: #c0392b; border: 1px solid rgba(231,76,60,0.3); }
+
+    .order-timeline {
+      display: flex;
+      align-items: flex-start;
+      margin: 18px 0 4px;
+      position: relative;
+    }
+
+    .order-product-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      margin-top: 14px;
+    }
+    html.dark .order-product-row { border-top-color: rgba(255,255,255,0.06); }
+
+    .order-product-img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .order-action-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      transition: 0.2s;
+    }
+
+    .whatsapp-share-btn { background: #25D366; color: white; }
+    .review-btn { background: var(--primary); color: white; }
+    .track-btn { background: rgba(0,0,0,0.06); color: var(--text-main); border: 1px solid rgba(0,0,0,0.1) !important; }
+    html.dark .track-btn { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1) !important; }
+    .order-action-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .skeleton-order {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (max-width: 600px) {
+      .order-header { flex-direction: column; }
+      .order-timeline { overflow-x: auto; }
+    }
+  </style>
 </head>
 <body style="margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
 
-  <header style="max-width: 800px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
-    <h1 style="color: var(--primary); margin: 0; font-size: 28px;">🛍 VyaparSync</h1>
-    <div style="display: flex; gap: 15px; align-items: center;">
-        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: #2d3436; color: white; border-radius: 8px; margin: 0; cursor: pointer; border: none;">🌙 Dark</button>
+  <header style="max-width: 820px; margin: 20px auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
+    <h1 style="color: var(--primary); margin: 0; font-size: 24px;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <button onclick="toggleDark()" style="width: auto; padding: 8px 14px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0; cursor: pointer; border: none; font-size: 14px;">🌙</button>
         <a href="index.html" style="text-decoration: none; background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
     </div>
   </header>
 
   <div class="orders-container">
-    <h2 style="margin-top: 0; border-bottom: 2px solid rgba(0,0,0,0.05); padding-bottom: 15px; color: var(--text-main);">My Order History 📦</h2>
-    <p style="font-size: 14px; color: var(--text-muted); margin-top: -10px; margin-bottom: 20px;">Need help with an order? Contact us at <a href="mailto:vyaparsync.support@gmail.com" style="color: var(--primary); text-decoration: underline;">vyaparsync.support@gmail.com</a></p>
+    <div style="margin-bottom: 25px;">
+      <h2 style="margin: 0 0 6px 0; color: var(--text-main); font-size: 26px; font-weight: 800;">My Orders 📦</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Need help? <a href="mailto:vyaparsync.support@gmail.com" style="color: var(--primary); font-weight: 600;">vyaparsync.support@gmail.com</a></p>
+    </div>
     
     <div id="customerOrdersList">
-        <p style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading your orders...</p>
+        <!-- Shimmer skeletons -->
+        <div class="skeleton-order">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+            <div class="shimmer" style="height: 18px; width: 200px; border-radius: 6px;"></div>
+            <div class="shimmer" style="height: 28px; width: 90px; border-radius: 20px;"></div>
+          </div>
+          <div class="shimmer" style="height: 14px; width: 150px; border-radius: 4px; margin-bottom: 8px;"></div>
+          <div class="shimmer" style="height: 60px; border-radius: 10px; margin-top: 16px;"></div>
+        </div>
+        <div class="skeleton-order">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+            <div class="shimmer" style="height: 18px; width: 180px; border-radius: 6px;"></div>
+            <div class="shimmer" style="height: 28px; width: 80px; border-radius: 20px;"></div>
+          </div>
+          <div class="shimmer" style="height: 14px; width: 130px; border-radius: 4px; margin-bottom: 8px;"></div>
+          <div class="shimmer" style="height: 60px; border-radius: 10px; margin-top: 16px;"></div>
+        </div>
     </div>
   </div>
 
   <div id="toast-container"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-<script src="script.js?v=99"></script>
+  <script src="script.js?v=14"></script>
+  <script>
+    const API_URL_ORDERS = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000' : 'https://vyaparsync.onrender.com';
 
+    const ORDER_STATUSES = ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered'];
+
+    function getStatusClass(status) {
+        if (!status) return 'status-pending';
+        const s = status.toLowerCase();
+        if (s.includes('deliver')) return 'status-delivered';
+        if (s.includes('ship')) return 'status-shipped';
+        if (s.includes('pack')) return 'status-packed';
+        if (s.includes('confirm')) return 'status-confirmed';
+        if (s.includes('cancel')) return 'status-cancelled';
+        return 'status-pending';
+    }
+
+    function buildTimeline(currentStatus) {
+        if (!currentStatus || currentStatus.toLowerCase().includes('cancel')) return '';
+        
+        const steps = [
+            { key: 'Confirmed', icon: '✅', label: 'Confirmed' },
+            { key: 'Packed',    icon: '📦', label: 'Packed'    },
+            { key: 'Shipped',   icon: '🚚', label: 'Shipped'   },
+            { key: 'Delivered', icon: '🏠', label: 'Delivered' }
+        ];
+
+        const currentIdx = steps.findIndex(s => currentStatus.toLowerCase().includes(s.key.toLowerCase()));
+
+        return `<div class="order-timeline">` + steps.map((step, i) => {
+            let dotClass = 'timeline-dot';
+            let labelClass = 'timeline-label';
+            if (i < currentIdx) { dotClass += ' done'; labelClass += ' done'; }
+            else if (i === currentIdx) { dotClass += ' active'; labelClass += ' active'; }
+            
+            return `<div class="timeline-step">
+                <div class="${dotClass}">${i < currentIdx ? '✓' : step.icon}</div>
+                <div class="${labelClass}">${step.label}</div>
+            </div>`;
+        }).join('') + `</div>`;
+    }
+
+    async function loadMyOrders() {
+        const container = document.getElementById('customerOrdersList');
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            container.innerHTML = `
+                <div class="error-state" style="padding: 60px 20px;">
+                    <div class="error-state-icon">🔐</div>
+                    <h3 class="error-state-title">Login Required</h3>
+                    <p class="error-state-msg">Please log in to view your order history.</p>
+                    <a href="login.html" class="error-state-btn" style="text-decoration: none; display: inline-block; padding: 10px 24px;">Login to VyaparSync</a>
+                </div>`;
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL_ORDERS}/orders/my`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!res.ok) throw new Error('Failed to load orders');
+            const orders = await res.json();
+
+            if (!orders.length) {
+                container.innerHTML = `
+                    <div class="error-state" style="padding: 60px 20px;">
+                        <div class="error-state-icon">🛒</div>
+                        <h3 class="error-state-title">No orders yet</h3>
+                        <p class="error-state-msg">Explore local markets and place your first order!</p>
+                        <a href="index.html" class="error-state-btn" style="text-decoration: none; display: inline-block; padding: 10px 24px;">Start Shopping</a>
+                    </div>`;
+                return;
+            }
+
+            // Remove shimmer skeletons
+            document.querySelectorAll('.skeleton-order').forEach(el => el.remove());
+
+            container.innerHTML = orders.map(order => {
+                const statusClass = getStatusClass(order.status);
+                const timeline = buildTimeline(order.status);
+                const date = new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                const safeProduct = DOMPurify.sanitize(order.productName || 'Product');
+                const safeShop = DOMPurify.sanitize(order.shopName || '');
+                const imgSrc = order.productImage || '';
+                const waText = encodeURIComponent(`Hi! I need help with Order #${order._id?.slice(-8).toUpperCase()} placed on VyaparSync.`);
+
+                const canReview = order.status && order.status.toLowerCase().includes('deliver');
+
+                return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h3>${safeProduct}</h3>
+                            <p>🏬 ${safeShop || 'Local Shop'}</p>
+                            <p>📅 ${date} &nbsp;|&nbsp; 🪙 Qty: <b>${order.quantity || 1}</b> &nbsp;|&nbsp; 💰 <b>₹${order.totalAmount || order.price || '--'}</b></p>
+                            <p style="font-size: 11px; color: var(--text-muted);">Order ID: #${String(order._id || '').slice(-8).toUpperCase()}</p>
+                        </div>
+                        <span class="status-badge ${statusClass}">${order.status || 'Pending'}</span>
+                    </div>
+
+                    ${timeline}
+
+                    ${imgSrc ? `
+                    <div class="order-product-row">
+                        <img src="${imgSrc}" class="order-product-img" alt="${safeProduct}" loading="lazy" onerror="this.style.display='none'">
+                        <div>
+                            <div style="font-size: 14px; font-weight: 600; color: var(--text-main);">${safeProduct}</div>
+                            <div style="font-size: 13px; color: var(--text-muted);">₹${order.price || '--'} × ${order.quantity || 1}</div>
+                        </div>
+                    </div>` : ''}
+
+                    <div class="order-actions">
+                        <a href="https://wa.me/919811401786?text=${waText}" target="_blank" rel="noopener" class="order-action-btn whatsapp-share-btn">💬 WhatsApp Support</a>
+                        ${canReview ? `<button class="order-action-btn review-btn" onclick="openReviewPrompt('${order.productId}', '${safeProduct}')">⭐ Leave Review</button>` : ''}
+                        <button class="order-action-btn track-btn" onclick="alert('Tracking will be available once your order is shipped. Current status: ${order.status || 'Pending'}')">📍 Track Order</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+        } catch (err) {
+            container.innerHTML = `
+                <div class="error-state">
+                    <div class="error-state-icon">⚠️</div>
+                    <h3 class="error-state-title">Could not load orders</h3>
+                    <p class="error-state-msg">Check your internet connection and try again.</p>
+                    <button class="error-state-btn" onclick="loadMyOrders()">🔄 Retry</button>
+                </div>`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadMyOrders);
+  </script>
 
 <footer style="background: var(--nav-bg); color: white; text-align: center; padding: 20px 5%; margin-top: auto;">
   <p style="margin: 0; font-size: 14px;">
-    &copy; 2026 VyaparSync. All rights reserved. | <a href="about.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">About / How it works</a> | <a href="terms.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Terms</a> | <a href="privacy.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Privacy</a> | <a href="support.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Support</a>
+    &copy; 2026 VyaparSync. All rights reserved. | <a href="about.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">About</a> | <a href="terms.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Terms</a> | <a href="privacy.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Privacy</a> | <a href="support.html" style="color: var(--primary); text-decoration: none; font-weight: bold;">Support</a>
   </p>
 </footer>
 

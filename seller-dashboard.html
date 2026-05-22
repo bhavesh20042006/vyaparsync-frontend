@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Seller Dashboard - VyaparSync</title>
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=9">
   <style>
     body {
       display: flex;
@@ -85,7 +85,7 @@
       width: 100%; padding: 12px 15px; border: 2px solid rgba(0,0,0,0.1); border-radius: 8px; box-sizing: border-box;
       background: transparent; color: var(--text-main); font-family: 'Poppins', sans-serif; transition: var(--transition);
     }
-    body.dark .form-group input { border-color: rgba(255,255,255,0.1); }
+    html.dark th, html.dark td { border-color: rgba(255,255,255,0.05); }
     .form-group input:focus { border-color: var(--primary); outline: none; }
     
     .btn-primary {
@@ -99,7 +99,7 @@
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     th { text-align: left; padding: 15px; border-bottom: 2px solid rgba(0,0,0,0.05); color: var(--text-muted); font-weight: 600; }
     td { padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle; color: var(--text-main); }
-    body.dark th, body.dark td { border-color: rgba(255,255,255,0.05); }
+    html.dark th, html.dark td { border-color: rgba(255,255,255,0.05); }
     
     .btn-delete { background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: var(--transition); }
     .btn-delete:hover { background: #ff6b81; transform: scale(1.05); }
@@ -183,7 +183,7 @@
 
   <meta name="theme-color" content="#ff6a00">
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/icon-192x192.png">
   <script>if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');</script>
   <link rel="manifest" href="/manifest.json">
 
@@ -216,10 +216,10 @@
   </div>
 
   <div class="stats-grid">
-    <div class="stat-card"><h3>Total Revenue</h3><p id="stat-revenue">₹0</p></div>
-    <div class="stat-card" style="border-left-color: #f39c12;"><h3>Pending Escrow</h3><p id="stat-escrow" style="color: #f39c12;">₹0</p></div>
-    <div class="stat-card"><h3>Active Orders</h3><p id="stat-orders">0</p></div>
-    <div class="stat-card"><h3>Products Listed</h3><p id="stat-products">0</p></div>
+    <div class="stat-card loading"><h3>Total Revenue</h3><p id="stat-revenue">Loading...</p></div>
+    <div class="stat-card loading" style="border-left-color: #f39c12;"><h3>Pending Escrow</h3><p id="stat-escrow" style="color: #f39c12;">Loading...</p></div>
+    <div class="stat-card loading"><h3>Active Orders</h3><p id="stat-orders">Loading...</p></div>
+    <div class="stat-card loading"><h3>Products Listed</h3><p id="stat-products">Loading...</p></div>
   </div>
 
   <div class="form-card" style="margin-top: 20px; border-left: 5px solid #9b59b6; background: linear-gradient(135deg, #1a1a1a, #2c1e33);">
@@ -403,12 +403,12 @@
       
       <div style="display: flex; gap: 15px;">
         <div class="form-group" style="flex: 1;">
-          <label>Price (₹)</label>
-          <input type="number" id="price" placeholder="1500">
+          <label>Price (₹) <span style="color:#e74c3c">*</span></label>
+          <input type="number" id="price" placeholder="1500" min="1" max="10000000" step="1">
         </div>
         <div class="form-group" style="flex: 1;">
-          <label>Initial Stock</label>
-          <input type="number" id="stock" placeholder="10">
+          <label>Initial Stock <span style="color:#e74c3c">*</span></label>
+          <input type="number" id="stock" placeholder="10" min="0" max="100000" step="1">
         </div>
       </div>
 
@@ -607,6 +607,10 @@
         const imageFile = document.getElementById("image").files[0];
 
         if (!name || !price || !stock) return showToast("Please fill all required fields", "error");
+        const parsedPrice = Number(price);
+        if (isNaN(parsedPrice) || parsedPrice < 1) return showToast("Price must be at least ₹1", "error");
+        const parsedStock = Number(stock);
+        if (isNaN(parsedStock) || parsedStock < 0 || !Number.isInteger(parsedStock)) return showToast("Stock must be a non-negative whole number", "error");
 
         btn.innerText = "Uploading to Cloud... ⏳";
         btn.disabled = true;
@@ -660,7 +664,11 @@
         try {
             const res = await fetch(`${API_URL}/products/me`, { headers: { "Authorization": `Bearer ${token}` } });
             const products = await res.json();
-            document.getElementById("stat-products").innerText = products.length;
+            const statProducts = document.getElementById("stat-products");
+            if (statProducts) {
+                statProducts.innerText = products.length;
+                statProducts.closest('.stat-card')?.classList.remove('loading');
+            }
             const tbody = document.getElementById("sellerProductList");
             tbody.innerHTML = "";
             if (products.length === 0) return tbody.innerHTML = `<tr><td colspan="4">No products listed.</td></tr>`;
@@ -792,9 +800,12 @@
                     </tr>
                 `;
             });
-            document.getElementById("stat-revenue").innerText = `₹${revenue}`;
-            document.getElementById("stat-escrow").innerText = `₹${escrow}`;
-            document.getElementById("stat-orders").innerText = pending;
+            const statRev = document.getElementById("stat-revenue");
+            const statEsc = document.getElementById("stat-escrow");
+            const statOrd = document.getElementById("stat-orders");
+            if (statRev) { statRev.innerText = `₹${revenue}`; statRev.closest('.stat-card')?.classList.remove('loading'); }
+            if (statEsc) { statEsc.innerText = `₹${escrow}`; statEsc.closest('.stat-card')?.classList.remove('loading'); }
+            if (statOrd) { statOrd.innerText = pending; statOrd.closest('.stat-card')?.classList.remove('loading'); }
         } catch (err) { console.error(err); }
     }
 

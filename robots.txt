@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin-dashboard.html
+Disallow: /seller-dashboard.html
+Disallow: /live-seller.html
+Disallow: /cart.html
+
+Sitemap: https://vyaparsync-frontend.vercel.app/sitemap.xml
