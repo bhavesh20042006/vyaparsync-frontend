@@ -830,9 +830,7 @@ html.dark .buy-now-btn:hover {
   }
   
   /* Prevent content hiding behind bottom nav */
-  body {
-    padding-bottom: 75px !important;
-  }
+  body { padding-bottom: 0; }
 }
 
 /* 📱 APP-LIKE BOTTOM NAVIGATION */
@@ -1696,3 +1694,35 @@ html.dark .onboarding-progress-dot { background: rgba(255,255,255,0.1); }
   white-space: nowrap;
 }
 .timeline-label.done, .timeline-label.active { color: var(--text-main); }
+
+/* ?? SITE FOOTER */
+.site-footer {
+  background: var(--nav-bg);
+  color: white;
+  text-align: center;
+  padding: 15px 5%;
+  margin-top: auto;
+}
+.site-footer p {
+  margin: 0 0 5px 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+.site-footer .footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+}
+.site-footer a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 11px;
+}
+@media (max-width: 768px) {
+  .site-footer {
+    padding-bottom: 80px;
+  }
+}

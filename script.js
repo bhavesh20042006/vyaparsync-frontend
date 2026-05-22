@@ -1326,6 +1326,14 @@ async function loadWishlist() {
 
     } catch (err) {
         showToast("Failed to load wishlist", "error");
+        if (container) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:60px 20px;">
+                    <p style="color:var(--text-muted);margin-bottom:15px;">Could not load wishlist.</p>
+                    <button onclick="loadWishlist()" style="background:var(--primary);color:white;padding:10px 24px;border-radius:8px;border:none;font-weight:600;cursor:pointer;">Retry</button>
+                </div>
+            `;
+        }
     }
 }
 
