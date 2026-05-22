@@ -2348,7 +2348,7 @@ function initUIFeatures() {
                 }
                 deferredPrompt = null;
                 const banner = document.getElementById('pwa-install-banner');
-                if(banner) banner.style.bottom = '-100px';
+                if(banner) banner.style.bottom = '-250px';
             }
         });
     }

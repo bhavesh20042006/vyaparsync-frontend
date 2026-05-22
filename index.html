@@ -220,14 +220,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 <script src="script.js?v=14" defer></script>
 
-<div id="pwa-install-banner" style="position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--card-bg, #fff); padding: 15px 25px; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; z-index: 9999; transition: bottom 0.5s ease-in-out;">
+<div id="pwa-install-banner" style="position: fixed; bottom: -250px; left: 50%; transform: translateX(-50%); background: var(--card-bg, #fff); padding: 15px 25px; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; z-index: 9999; transition: bottom 0.5s ease-in-out;">
   <img src="/icon-192x192.png" style="width: 40px; height: 40px; border-radius: 8px;" alt="Logo">
   <div>
     <b style="color: var(--text-main); font-size: 14px;">Install VyaparSync</b>
     <div style="color: var(--text-muted); font-size: 12px;">Shop faster, easily!</div>
   </div>
   <button id="pwa-install-btn" style="background: var(--primary, #ff6a00); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Install</button>
-  <button onclick="document.getElementById('pwa-install-banner').style.bottom = '-100px'" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
+  <button onclick="document.getElementById('pwa-install-banner').style.bottom = '-250px'" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
 </div>
 
 <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="position: fixed; bottom: 20px; right: 20px; background: var(--primary, #ff6a00); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: none; z-index: 1000; align-items: center; justify-content: center;">↑</button>
