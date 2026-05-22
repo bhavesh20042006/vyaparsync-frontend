@@ -113,7 +113,17 @@
   </div>
 </div>
 
-<nav class="filter-nav">
+<div class="mobile-filter-bar">
+    <button onclick="document.getElementById('filterNav').classList.toggle('active')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg> Sort</button>
+    <button onclick="document.getElementById('filterNav').classList.toggle('active')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filter</button>
+</div>
+
+<nav class="filter-nav" id="filterNav">
+    <div class="filter-nav-header">
+        <h3>Sort & Filter</h3>
+        <button onclick="document.getElementById('filterNav').classList.remove('active')" style="background:none;border:none;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+
     <select id="filterCategory" onchange="applyFilters()" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc; outline: none;">
         <option value="All">All Categories</option>
         <option value="Electronics">Electronics</option>
@@ -149,6 +159,10 @@
         <option value="price_desc">Price: High to Low</option>
         <option value="rating">Highest Rated</option>
     </select>
+
+    <div class="filter-nav-footer">
+        <button onclick="document.getElementById('filterNav').classList.remove('active');">Apply & View Results</button>
+    </div>
 </nav>
 
 <section class="hero" style="padding: 50px 5% 40px;">

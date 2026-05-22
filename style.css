@@ -241,6 +241,14 @@ nav,
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
+.mobile-filter-bar {
+  display: none;
+}
+
+.filter-nav-header, .filter-nav-footer {
+  display: none;
+}
+
 .filter-nav {
   background: var(--card-bg);
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -604,35 +612,100 @@ html.dark .buy-now-btn:hover {
     display: none !important; /* Hidden on mobile, use bottom nav instead */
   }
 
+  .mobile-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 4%;
+    gap: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background: var(--bg-color);
+  }
+  
+  .mobile-filter-bar button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: var(--card-bg);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-main);
+    cursor: pointer;
+  }
+
   .filter-nav {
     display: flex;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding: 8px 4%;
-    gap: 8px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    flex-direction: column;
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background: var(--card-bg);
+    z-index: 2000;
+    padding: 20px 4%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+    transition: 0.3s ease-in-out;
+    align-items: stretch;
+    gap: 15px;
+    box-sizing: border-box;
+  }
+
+  .filter-nav.active {
+    bottom: 0;
+  }
+
+  .filter-nav-header, .filter-nav-footer {
+    display: flex !important;
+    justify-content: space-between;
     align-items: center;
   }
 
-  .filter-nav::-webkit-scrollbar { display: none; }
+  .filter-nav-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text-main);
+  }
 
-  .filter-nav > * {
-    flex-shrink: 0;
+  .filter-nav-header button {
+    color: var(--text-main);
+  }
+
+  .filter-nav-footer button {
+    width: 100%;
+    background: var(--primary);
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
   }
 
   .filter-nav select, .filter-nav input[type="number"] {
-    font-size: 12px !important;
-    padding: 4px 8px !important;
-    height: 30px;
+    font-size: 14px !important;
+    padding: 10px !important;
+    height: 40px;
+    width: 100% !important;
+  }
+
+  .filter-nav > div {
+    justify-content: space-between;
   }
 
   .filter-nav label {
-    font-size: 12px !important;
+    font-size: 14px !important;
+    padding: 10px 0;
   }
 
-  .filter-nav input[type="number"] {
-    width: 50px !important;
+  .filter-nav select#sortFilter {
+    margin-left: 0 !important;
   }
 
   #langBanner {
