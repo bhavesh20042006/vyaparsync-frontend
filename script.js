@@ -1274,7 +1274,7 @@ window.updateCartQuantity = function (id, change) {
 // =======================================================
 
 async function loadWishlist() {
-    const container = document.getElementById("products");
+    const container = document.getElementById("wishlist-container");
     if (!container) return;
 
     const token = localStorage.getItem("token");
