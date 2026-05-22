@@ -1,3 +1,12 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 /* 📐 GLOBAL FLEX LAYOUT FOR FOOTER CONSISTENCY */
 body {
   display: flex;
