@@ -839,7 +839,7 @@ html.dark .buy-now-btn:hover {
   }
   
   /* Prevent content hiding behind bottom nav */
-  body { padding-bottom: 0; }
+  body { padding-bottom: 85px !important; }
 }
 
 /* 📱 APP-LIKE BOTTOM NAVIGATION */
@@ -1201,7 +1201,7 @@ html.dark .auth-select {
     overflow: hidden;
   }
 
-  .horizontal-scroll-grid .product>button {
+  .horizontal-scroll-grid .product>button:not(.wishlist-btn) {
     display: none !important;
   }
 
@@ -1732,7 +1732,10 @@ html.dark .onboarding-progress-dot { background: rgba(255,255,255,0.1); }
 }
 @media (max-width: 768px) {
   .site-footer {
-    padding-bottom: 110px !important;
+    padding: 15px 5%;
+  }
+  body {
+    padding-bottom: 85px !important;
   }
 }
 
