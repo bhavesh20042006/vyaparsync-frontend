@@ -455,7 +455,7 @@ function createProductHTML(p) {
       <div class="product" style="position: relative; cursor: pointer;" onclick="loadProductDetails('${p._id}')">
         <a href="${waLink}" target="_blank" onclick="event.stopPropagation();" style="position: absolute; top: 50px; right: 10px; background: #25D366; color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s;">📤</a>
         <button onclick="event.stopPropagation(); toggleWishlist('${p._id}', this)" style="position: absolute; top: 10px; right: 10px; background: white; border: none; border-radius: 50%; width: 35px; height: 35px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: ${heartColor}; z-index: 10; padding: 0; margin: 0; transition: transform 0.2s;">
-            ♥
+            &#10084;
         </button>
         <img src="${safeImage}" alt="${attrName}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
         <h3>${safeName}</h3>
@@ -568,7 +568,7 @@ function loadProductDetails(productId) {
                 <div style="display: flex; gap: 15px; margin-top: 30px;">
                     <button onclick="addToCartWithSize('${product._id}')" style="flex: 1; padding: 15px; background: #f1c40f; color: #111; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">🛒 Add to Cart</button>
                     <button onclick="buyWithSize('${product._id}')" style="flex: 1; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">⚡ Buy Now</button>
-                    <button onclick="toggleWishlist('${product._id}', this)" style="flex: 1; padding: 15px; background: rgba(0,0,0,0.05); color: var(--text-main); border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">?? Wishlist</button>
+                    
                 </div>
             </div>
             
