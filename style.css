@@ -1723,6 +1723,19 @@ html.dark .onboarding-progress-dot { background: rgba(255,255,255,0.1); }
 }
 @media (max-width: 768px) {
   .site-footer {
-    padding-bottom: 80px;
+    padding-bottom: 110px !important;
+  }
+}
+
+
+#back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1500;
+}
+@media (max-width: 768px) {
+  #back-to-top {
+    bottom: 100px !important;
   }
 }
