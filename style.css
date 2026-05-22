@@ -552,8 +552,8 @@ html.dark .buy-now-btn:hover {
 /* 📱 MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
   header {
-    flex-direction: row; /* Keep on one row with hamburger */
-    flex-wrap: nowrap;
+    flex-direction: row; 
+    flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
     padding: 10px 4%;
@@ -562,24 +562,31 @@ html.dark .buy-now-btn:hover {
   .header-logo-search {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
   }
 
   .header-logo-search h2 {
     font-size: 18px !important;
   }
 
-  /* Show search bar on mobile, but make it take full width on a new line or adapt it */
+  /* Show search bar full width on mobile */
   .header-logo-search > div {
-    display: none; /* We will show it below header instead, or keep hidden and add to drawer */
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    order: 3; /* Push to next line */
   }
 
-  /* Show hamburger, hide desktop nav */
+  /* Show hamburger */
   .hamburger-btn {
     display: flex !important;
   }
 
   .nav-buttons {
-    display: none !important; /* Hidden on mobile, use drawer instead */
+    display: none !important; /* Hidden on mobile, use bottom nav instead */
   }
 
   .filter-nav {
@@ -628,6 +635,64 @@ html.dark .buy-now-btn:hover {
   .auth-wrapper~footer {
     margin-top: 10px !important;
     padding: 10px 5% !important;
+  }
+  
+  /* Prevent content hiding behind bottom nav */
+  body {
+    padding-bottom: 75px !important;
+  }
+}
+
+/* 📱 APP-LIKE BOTTOM NAVIGATION */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--nav-bg);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+  z-index: 2000;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+}
+
+html.dark .bottom-nav {
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #888;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  gap: 4px;
+  transition: 0.2s;
+  flex: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav-item.active {
+  color: var(--primary);
+}
+
+.bottom-nav-item:hover {
+  color: var(--primary-hover);
+}
+
+.bottom-nav-item span {
+  font-size: 20px;
+}
+
+@media (max-width: 768px) {
+  .bottom-nav {
+    display: flex;
   }
 }
 
