@@ -568,9 +568,9 @@ html.dark .buy-now-btn:hover {
     font-size: 18px !important;
   }
 
-  /* Hide search bar on mobile (use hamburger menu for full search) */
+  /* Show search bar on mobile, but make it take full width on a new line or adapt it */
   .header-logo-search > div {
-    display: none;
+    display: none; /* We will show it below header instead, or keep hidden and add to drawer */
   }
 
   /* Show hamburger, hide desktop nav */
@@ -607,7 +607,13 @@ html.dark .buy-now-btn:hover {
   }
 
   .hero h1 {
-    font-size: 1.7em;
+    font-size: 1.5em; /* Smaller for mobile */
+  }
+
+  /* Fix for mobile product grids having side-by-side buttons */
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
   }
 
   .auth-wrapper {
@@ -970,7 +976,8 @@ html.dark .auth-select {
     margin: 4px 0 !important;
   }
 
-  .horizontal-scroll-grid .product>div[style*="display: flex"] {
+  .horizontal-scroll-grid .product > div[style*="display: flex"],
+  .product-grid .product > div[style*="display: flex"] {
     flex-direction: column;
     gap: 4px !important;
     margin-top: 4px !important;
@@ -978,9 +985,11 @@ html.dark .auth-select {
   }
 
   .horizontal-scroll-grid .product .add-to-cart-btn,
-  .horizontal-scroll-grid .product .buy-now-btn {
-    padding: 4px !important;
-    font-size: 9px !important;
+  .horizontal-scroll-grid .product .buy-now-btn,
+  .product-grid .product .add-to-cart-btn,
+  .product-grid .product .buy-now-btn {
+    padding: 6px !important;
+    font-size: 11px !important;
     margin: 0 !important;
     width: 100%;
   }
