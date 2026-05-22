@@ -143,9 +143,15 @@ function getShopSkeletons(count = 4) {
     return html;
 }
 
+let isFetchingHome = false;
 function loadHome() {
+    if (isFetchingHome) return;
+    isFetchingHome = true;
     const container = document.getElementById("products");
-    if (!container) return;
+    if (!container) {
+        isFetchingHome = false;
+        return;
+    }
 
     container.innerHTML = `
     <div id="current-view" data-view="home"></div>
@@ -189,7 +195,10 @@ function loadHome() {
         .then(products => {
             currentProducts = products;
             const grid = document.getElementById("products-grid");
-            if (!grid) return;
+            if (!grid) {
+                isFetchingHome = false;
+                return;
+            }
             grid.innerHTML = "";
             if (products.length === 0) {
                 grid.innerHTML = `<div style="text-align: center; padding: 40px 20px; width: 100%;">
@@ -202,6 +211,11 @@ function loadHome() {
                     grid.innerHTML += createProductHTML(p);
                 });
             }
+            isFetchingHome = false;
+        })
+        .catch(err => {
+            console.error("Fetch Error:", err);
+            isFetchingHome = false;
         });
 }
 
@@ -211,6 +225,27 @@ function loadHome() {
 // =======================================================
 
 function getUserLocation() {
+    document.getElementById("userLocationDisplay").innerText = "Locating... 🛰️";
+    
+    // Silent IP-based location fetch first
+    fetch("http://ip-api.com/json/")
+      .then(res => res.json())
+      .then(data => {
+          if(data.status === "success") {
+              localStorage.setItem("userLat", data.lat);
+              localStorage.setItem("userLng", data.lon);
+              const disp = document.getElementById("userLocationDisplay");
+              if (disp) disp.innerText = `${data.city} (IP) 🟢`;
+              showToast(`Location detected: ${data.city}`, "success");
+              fetchNearbyMarkets(data.lat, data.lon);
+          } else {
+              fallbackToGPS();
+          }
+      })
+      .catch(() => fallbackToGPS());
+}
+
+function fallbackToGPS() {
     if (navigator.geolocation) {
         document.getElementById("userLocationDisplay").innerText = "Locating satellite... 🛰️";
 
@@ -395,14 +430,26 @@ function createProductHTML(p) {
         trustScoreHtml = `<div style="font-size: 11px; color: #27ae60; font-weight: bold; margin-bottom: 5px;">Trust Score: ${p.retailerId.trustScore}/100</div>`;
     }
 
+    const shareUrl = encodeURIComponent(`${window.location.origin}/?q=${encodeURIComponent(p.name)}`);
+    const shareText = encodeURIComponent(`Check out ${p.name} for ₹${p.price} on VyaparSync!`);
+    const waLink = `https://wa.me/?text=${shareText}%20${shareUrl}`;
+    
+    let stockText = "";
+    if (p.stock > 0 && p.stock <= 5) stockText = `<span style="color: #e67e22; font-weight: bold; font-size: 13px;">Only ${p.stock} left!</span>`;
+    else if (p.stock > 5) stockText = `<span style="color: #27ae60; font-weight: bold; font-size: 13px;">In Stock</span>`;
+    else stockText = `<span style="color: #e74c3c; font-weight: bold; font-size: 13px;">Out of Stock</span>`;
+    
+    let cartBtnDisabled = p.stock < 1 ? "disabled" : "";
+
     return `
       <div class="product" style="position: relative; cursor: pointer;" onclick="loadProductDetails('${p._id}')">
+        <a href="${waLink}" target="_blank" onclick="event.stopPropagation();" style="position: absolute; top: 50px; right: 10px; background: #25D366; color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.2s;">📤</a>
         <button onclick="event.stopPropagation(); toggleWishlist('${p._id}', this)" style="position: absolute; top: 10px; right: 10px; background: white; border: none; border-radius: 50%; width: 35px; height: 35px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: ${heartColor}; z-index: 10; padding: 0; margin: 0; transition: transform 0.2s;">
             ♥
         </button>
         <img src="${safeImage}" alt="${attrName}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23eeeeee%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2216px%22 fill=%22%23999999%22%3ENo Image%3C/text%3E%3C/svg%3E';">
         <h3>${safeName}</h3>
-        <p style="cursor: pointer; margin-bottom: 5px;" onclick="event.stopPropagation(); loadShops('${safeMarket}')">
+        <p style="cursor: pointer; margin-bottom: 5px;" onclick="event.stopPropagation(); window.location.href='seller-profile.html?shop=' + encodeURIComponent('${safeShopName}')">
             🏬 ${safeShopName} ${badgeHtml} | 🏙️ ${safeMarket}
         </p>
         ${trustScoreHtml}
@@ -411,7 +458,7 @@ function createProductHTML(p) {
             ${starsHtml} <span style="font-weight: bold; color: var(--text-main);">${rating}</span> (${p.totalReviews || 0} reviews)
         </div>
 
-        <p>Stock: <b>${p.stock}</b></p>
+        <p>${stockText}</p>
         <p class="price">₹${p.price}</p>
         
         <div style="margin-top: auto; display: flex; flex-direction: column; width: 100%;">
@@ -428,8 +475,8 @@ function createProductHTML(p) {
             `}
 
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px; width: 100%;">
-                <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p._id}')" style="margin-top: 0; background: #f1c40f; color: #333; flex: 1;">🛒 Add</button>
-                <button class="buy-now-btn" onclick="event.stopPropagation(); buy('${p._id}')" style="margin-top: 0; flex: 1;">⚡ Buy</button>
+                <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p._id}')" ${cartBtnDisabled} style="margin-top: 0; background: #f1c40f; color: #333; flex: 1;">🛒 Add</button>
+                <button class="buy-now-btn" onclick="event.stopPropagation(); buy('${p._id}')" ${cartBtnDisabled} style="margin-top: 0; flex: 1;">⚡ Buy</button>
             </div>
         </div>
       </div>
@@ -1710,7 +1757,14 @@ function loadMyOrders() {
         headers: { "Authorization": `Bearer ${token}` }
     })
         .then(async res => {
-            if (!res.ok) throw new Error("Failed to load orders");
+            if (res.status === 502 || res.status === 503) {
+                 showToast("Servers are waking up, fetching orders...", "info");
+                 return [];
+            }
+            if (!res.ok) {
+                 if(res.status === 401 || res.status === 403) throw new Error("session_expired");
+                 throw new Error("Failed to load orders");
+            }
             return res.json();
         })
         .then(orders => {
@@ -1823,10 +1877,11 @@ function loadMyOrders() {
         })
         .catch(err => {
             console.error(err);
+            const isAuth = err.message === "session_expired";
             listContainer.innerHTML = `
           <div style="text-align:center;padding:60px 20px">
             <p style="color:var(--text-muted);margin-bottom:16px">
-              Session expired or failed to load orders. Please log in again.
+              ${isAuth ? 'Session expired. Please log in again.' : 'Servers are waking up or failed to load orders. Please try again.'}
             </p>
             <a href="login.html" style="background:var(--primary);color:white;
               padding:12px 28px;border-radius:8px;text-decoration:none;
@@ -2201,18 +2256,139 @@ updateCartBadge();
 
 
 // =======================================================
-// INITIALIZATION
 // =======================================================
+// INITIALIZATION & UI/UX FEATURES
+// =======================================================
+
+function handleSearchInput(event) {
+    const query = event.target.value.toLowerCase().trim();
+    const dropdown = document.getElementById("search-autocomplete-dropdown");
+    
+    // URL Syncing feature on type
+    const newUrl = new URL(window.location);
+    if(query) {
+        newUrl.searchParams.set('q', query);
+    } else {
+        newUrl.searchParams.delete('q');
+    }
+    window.history.pushState({}, '', newUrl);
+
+    if (query.length < 2) {
+        if(dropdown) dropdown.style.display = "none";
+        delayFilter();
+        return;
+    }
+    
+    let suggestions = [];
+    // Static smart suggestions
+    const commonSearches = ["Silk saree", "Chandni Chowk", "Electronics", "Kurtis", "Shoes"];
+    commonSearches.forEach(term => {
+        if (term.toLowerCase().includes(query)) suggestions.push({text: term, type: 'search'});
+    });
+    
+    // Dynamic from currentProducts
+    const matchedProducts = currentProducts.filter(p => p.name.toLowerCase().includes(query)).slice(0, 3);
+    matchedProducts.forEach(p => suggestions.push({text: p.name, type: 'product', id: p._id}));
+    
+    if(dropdown) {
+        dropdown.innerHTML = "";
+        if(suggestions.length > 0) {
+            suggestions.forEach(s => {
+                const div = document.createElement("div");
+                div.style.padding = "10px 15px";
+                div.style.cursor = "pointer";
+                div.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
+                div.innerHTML = s.type === 'search' ? `🔍 ${s.text}` : `📦 ${s.text}`;
+                div.onclick = () => {
+                    document.getElementById("mainSearchInput").value = s.text;
+                    dropdown.style.display = "none";
+                    applyFilters();
+                };
+                dropdown.appendChild(div);
+            });
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+    
+    delayFilter();
+}
+
+function initUIFeatures() {
+    // Waking Up UI
+    const wakingUp = document.getElementById("waking-up-screen");
+    if (wakingUp) {
+        setTimeout(() => {
+            wakingUp.style.opacity = "0";
+            setTimeout(() => wakingUp.remove(), 500);
+        }, 15000); // 15 seconds
+    }
+    
+    // PWA Logic
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const banner = document.getElementById('pwa-install-banner');
+        if(banner) banner.style.bottom = '20px';
+    });
+    
+    const installBtn = document.getElementById('pwa-install-btn');
+    if(installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                const banner = document.getElementById('pwa-install-banner');
+                if(banner) banner.style.bottom = '-100px';
+            }
+        });
+    }
+
+    // URL Search Syncing - Initial Load
+    const urlParams = new URLSearchParams(window.location.search);
+    const q = urlParams.get('q');
+    if (q) {
+        const searchInput = document.getElementById("mainSearchInput");
+        if(searchInput) {
+            searchInput.value = q;
+            // Wait for products to load then filter
+            setTimeout(() => { applyFilters(); }, 1000);
+        }
+    }
+    
+    // Back to top scroll listener
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('back-to-top');
+        if(btn) {
+            if(window.scrollY > 300) btn.style.display = 'flex';
+            else btn.style.display = 'none';
+        }
+    });
+
+    const mainSearchInput = document.getElementById("mainSearchInput");
+    if(mainSearchInput) {
+        mainSearchInput.addEventListener("input", handleSearchInput);
+    }
+}
+
 if (document.readyState === "interactive" || document.readyState === "complete") {
     if (document.getElementById("products")) loadHome();
     if (typeof loadCart === "function") loadCart();
     if (typeof loadMyOrders === "function") loadMyOrders();
     if (typeof showUser === "function") showUser(); 
+    initUIFeatures();
 } else {
     document.addEventListener("DOMContentLoaded", () => {
         if(document.getElementById("products")) loadHome();
         if (typeof loadCart === "function") loadCart();
         if (typeof loadMyOrders === "function") loadMyOrders();
         if (typeof showUser === "function") showUser(); 
+        initUIFeatures();
     });
 }

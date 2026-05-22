@@ -30,16 +30,29 @@
 </head>
 <body style="margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
 
+<!-- Waking Up UI -->
+<div id="waking-up-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color, #ffffff); z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s;">
+  <div style="font-size: 3rem; animation: pulse 1.5s infinite;">☕</div>
+  <h2 style="color: var(--text-main, #333); margin-top: 20px;">Waking up our servers...</h2>
+  <p style="color: var(--text-muted, #777); text-align: center; max-width: 300px;">Since we are on a free tier, the first load takes around 15 seconds. Hang tight!</p>
+</div>
+
 <header class="header-top">
   <div class="header-logo-search">
     <h2>🛍 VyaparSync</h2>
-    <input 
-      type="text" 
-      id="mainSearchInput" 
-      class="search-bar"
-      placeholder="Search products, markets..." 
-      onkeyup="delayFilter()" 
-    >
+    <div style="position: relative; width: 100%; max-width: 400px; display: inline-block;">
+      <input 
+        type="text" 
+        id="mainSearchInput" 
+        class="search-bar"
+        placeholder="Search products, markets..." 
+        onkeyup="handleSearchInput(event)" 
+        autocomplete="off"
+        style="width: 100%; box-sizing: border-box;"
+      >
+      <div id="search-autocomplete-dropdown" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: var(--card-bg, #fff); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; max-height: 300px; overflow-y: auto;">
+      </div>
+    </div>
   </div>
   
   <div class="nav-buttons">
@@ -118,6 +131,29 @@
     <div style="text-align: center;"><div style="font-size: 2em; font-weight: 800; color: var(--primary);">🔴</div><div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Live Commerce</div></div>
   </div>
 
+  <div style="display: flex; justify-content: center; gap: 20px; margin-top: 40px; flex-wrap: wrap;">
+    <div style="text-align: center; max-width: 200px;">
+        <div style="font-size: 2em; margin-bottom: 10px;">🔍</div>
+        <div style="font-weight: bold; color: var(--text-main);">1. Explore</div>
+        <div style="font-size: 13px; color: var(--text-muted);">Find products from real shops across Indian markets.</div>
+    </div>
+    <div style="text-align: center; max-width: 200px;">
+        <div style="font-size: 2em; margin-bottom: 10px;">💬</div>
+        <div style="font-weight: bold; color: var(--text-main);">2. Connect</div>
+        <div style="font-size: 13px; color: var(--text-muted);">Chat with sellers or watch them sell live.</div>
+    </div>
+    <div style="text-align: center; max-width: 200px;">
+        <div style="font-size: 2em; margin-bottom: 10px;">💳</div>
+        <div style="font-weight: bold; color: var(--text-main);">3. Secure Pay</div>
+        <div style="font-size: 13px; color: var(--text-muted);">100% Escrow protected Razorpay checkout.</div>
+    </div>
+    <div style="text-align: center; max-width: 200px;">
+        <div style="font-size: 2em; margin-bottom: 10px;">🚚</div>
+        <div style="font-weight: bold; color: var(--text-main);">4. Fast Delivery</div>
+        <div style="font-size: 13px; color: var(--text-muted);">ONDC logistics partner brings it to your door.</div>
+    </div>
+  </div>
+
   <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px; flex-wrap: wrap;">
     <a href="#" onclick="document.getElementById('products')&&document.getElementById('products').scrollIntoView({behavior:'smooth'});return false;" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ff6a00,#ff8c00);color:white;text-decoration:none;padding:14px 28px;border-radius:30px;font-size:15px;font-weight:700;box-shadow:0 4px 15px rgba(255,106,0,0.3);transition:0.3s;">🛍️ Start Shopping</a>
     <a href="retailer-register.html" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#131921,#2d3436);color:white;text-decoration:none;padding:14px 28px;border-radius:30px;font-size:15px;font-weight:700;box-shadow:0 4px 15px rgba(0,0,0,0.2);transition:0.3s;border:1px solid rgba(255,255,255,0.1);">🚀 Become a Seller — Free</a>
@@ -140,9 +176,41 @@
 
 <div id="toast-container"></div>
 
+<section style="padding: 40px 5%; background: var(--card-bg, #fff); border-top: 1px solid rgba(0,0,0,0.05); text-align: center;">
+  <h2 style="color: var(--text-main); margin-bottom: 20px;">Trusted by Sellers & Buyers Across India</h2>
+  <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 250px; max-width: 350px; padding: 20px; border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+      <p style="color: var(--text-muted); font-style: italic;">"VyaparSync helped my Chandni Chowk shop reach customers in Mumbai. The 0% commission is a game changer!"</p>
+      <div style="margin-top: 15px; font-weight: bold; color: var(--text-main);">— Ramesh T., Seller</div>
+    </div>
+    <div style="flex: 1; min-width: 250px; max-width: 350px; padding: 20px; border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+      <p style="color: var(--text-muted); font-style: italic;">"I can now buy authentic Banarasi sarees directly from weavers at wholesale prices. Delivery was super fast."</p>
+      <div style="margin-top: 15px; font-weight: bold; color: var(--text-main);">— Priya S., Buyer</div>
+    </div>
+  </div>
+</section>
+
+<section style="padding: 40px 5%; text-align: center; background: rgba(255, 106, 0, 0.05);">
+  <h2 style="color: var(--text-main); margin-bottom: 10px;">Meet the Founder</h2>
+  <img src="https://ui-avatars.com/api/?name=Bhavesh+Khullar&background=ff6a00&color=fff&size=100" style="border-radius: 50%; margin: 10px auto;" alt="Founder">
+  <p style="color: var(--text-muted); max-width: 600px; margin: 10px auto;">VyaparSync was built with a vision to digitize India's iconic offline markets, connecting small retailers directly to buyers nationwide without heavy commissions.</p>
+</section>
+
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
-<script src="script.js?v=99"></script>
+<script src="script.js?v=13" defer></script>
+
+<div id="pwa-install-banner" style="position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--card-bg, #fff); padding: 15px 25px; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; z-index: 9999; transition: bottom 0.5s ease-in-out;">
+  <img src="/icon-192.png" style="width: 40px; height: 40px; border-radius: 8px;" alt="Logo">
+  <div>
+    <b style="color: var(--text-main); font-size: 14px;">Install VyaparSync</b>
+    <div style="color: var(--text-muted); font-size: 12px;">Shop faster, easily!</div>
+  </div>
+  <button id="pwa-install-btn" style="background: var(--primary, #ff6a00); color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer;">Install</button>
+  <button onclick="document.getElementById('pwa-install-banner').style.bottom = '-100px'" style="background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer;">✕</button>
+</div>
+
+<button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="position: fixed; bottom: 20px; right: 20px; background: var(--primary, #ff6a00); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 20px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: none; z-index: 1000; align-items: center; justify-content: center;">↑</button>
 
 
 <footer style="background: var(--nav-bg); color: white; text-align: center; padding: 20px 5%; margin-top: auto;">
