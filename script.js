@@ -2198,3 +2198,21 @@ function updateCartBadge() {
 }
 // Run on load (merged into main listener)
 updateCartBadge();
+
+
+// =======================================================
+// INITIALIZATION
+// =======================================================
+if (document.readyState === "interactive" || document.readyState === "complete") {
+    if (document.getElementById("products")) loadHome();
+    if (typeof loadCart === "function") loadCart();
+    if (typeof loadMyOrders === "function") loadMyOrders();
+    if (typeof showUser === "function") showUser(); 
+} else {
+    document.addEventListener("DOMContentLoaded", () => {
+        if(document.getElementById("products")) loadHome();
+        if (typeof loadCart === "function") loadCart();
+        if (typeof loadMyOrders === "function") loadMyOrders();
+        if (typeof showUser === "function") showUser(); 
+    });
+}
