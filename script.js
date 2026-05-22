@@ -1316,9 +1316,9 @@ async function loadWishlist() {
 
         container.innerHTML = `
             <div id="current-view" data-view="wishlist"></div>
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-                <button onclick="window.location.href='index.html'" style="background: var(--card-bg); color: var(--text-main); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; width: auto; display: inline-block;">⬅ Back to Home</button>
-                <h2 style="font-size: 24px; font-weight: 700; margin: 0; color: var(--text-main);">❤️ My Wishlist</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 style="font-size: 24px; font-weight: 700; margin: 0; color: var(--text-main);">&#10084;&#65039; My Wishlist</h2>
+                <button onclick="window.location.href='index.html'" style="background: var(--nav-bg); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">&#8592; Go Back</button>
             </div>
             <div id="grid" class="product-grid"></div>
         `;
