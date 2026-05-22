@@ -232,6 +232,17 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
+            if (res.status === 401 || res.status === 403) {
+                localStorage.removeItem('token');
+                container.innerHTML = `
+                    <div class="error-state" style="padding: 60px 20px;">
+                        <div class="error-state-icon">??</div>
+                        <h3 class="error-state-title">Session Expired</h3>
+                        <p class="error-state-msg">Your session has expired. Please log in again.</p>
+                        <a href="login.html" class="error-state-btn" style="text-decoration: none; display: inline-block; padding: 10px 24px;">Login</a>
+                    </div>`;
+                return;
+            }
             if (!res.ok) throw new Error('Failed to load orders');
             const orders = await res.json();
 

@@ -568,6 +568,7 @@ function loadProductDetails(productId) {
                 <div style="display: flex; gap: 15px; margin-top: 30px;">
                     <button onclick="addToCartWithSize('${product._id}')" style="flex: 1; padding: 15px; background: #f1c40f; color: #111; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">🛒 Add to Cart</button>
                     <button onclick="buyWithSize('${product._id}')" style="flex: 1; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">⚡ Buy Now</button>
+                    <button onclick="toggleWishlist('${product._id}', this)" style="flex: 1; padding: 15px; background: rgba(0,0,0,0.05); color: var(--text-main); border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s;">?? Wishlist</button>
                 </div>
             </div>
             
@@ -1295,6 +1296,20 @@ async function loadWishlist() {
         const res = await fetch(`${API_URL}/products/my-wishlist`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
+        if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem('token');
+            if (container) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:60px 20px;">
+                        <h3 style="margin-bottom: 10px; color: var(--text-main);">Session Expired</h3>
+                        <p style="color:var(--text-muted);margin-bottom:15px;">Please log in again to view your wishlist.</p>
+                        <a href="login.html" style="background:var(--primary);color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">Login</a>
+                    </div>
+                `;
+            }
+            return;
+        }
+        if (!res.ok) throw new Error("Failed to fetch wishlist");
         const products = await res.json();
 
         currentWishlist = products.map(p => p._id);
