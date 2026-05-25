@@ -498,7 +498,7 @@ html.dark .product img {
 }
 
 /* 🔘 MODERN BUTTONS */
-.add-to-cart-btn, .btn-primary {
+.add-to-cart-btn, .btn-primary, .buy-now-btn {
   background: linear-gradient(135deg, var(--primary), #ff8c00);
   color: white;
   border: none;
@@ -1287,7 +1287,6 @@ html.dark .auth-select {
     margin: 5px 0 !important;
   }
 
-  button,
   .add-to-cart-btn,
   .buy-now-btn {
     padding: 8px;
