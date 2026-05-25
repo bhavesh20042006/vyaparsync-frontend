@@ -1,5 +1,5 @@
 const hostname = window.location.hostname;
-const API_URL = (hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("192.168.") || window.location.protocol === "file:")
+const API_URL = (hostname === "localhost" || hostname === "127.0.0.1" || hostname.startsWith("192.168."))
     ? `http://${hostname}:5000`
     : "https://vyaparsync.onrender.com";
 
@@ -302,6 +302,11 @@ function fetchNearbyMarkets(lat, lng) {
         .then(res => res.json())
         .then(markets => {
             renderMarketGrid(markets, true);
+        })
+        .catch(err => {
+            console.error("Fetch markets error:", err);
+            const grid = document.getElementById("markets-grid");
+            if (grid) grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">Could not load markets. Please check your connection.</p>`;
         });
 }
 
@@ -313,6 +318,11 @@ function fetchAllMarkets() {
             // Convert simple strings to object format so the renderer works for both
             const formatted = markets.map(m => typeof m === 'string' ? { name: m } : m);
             renderMarketGrid(formatted, false);
+        })
+        .catch(err => {
+            console.error("Fetch markets error:", err);
+            const grid = document.getElementById("markets-grid");
+            if (grid) grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">Could not load markets. Please check your connection.</p>`;
         });
 }
 
