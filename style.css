@@ -498,8 +498,7 @@ html.dark .product img {
 }
 
 /* 🔘 MODERN BUTTONS */
-button,
-.add-to-cart-btn {
+.add-to-cart-btn, .btn-primary {
   background: linear-gradient(135deg, var(--primary), #ff8c00);
   color: white;
   border: none;
@@ -518,7 +517,7 @@ button,
   box-shadow: 0 4px 10px rgba(255, 106, 0, 0.2);
 }
 
-button:hover,
+.btn-primary:hover,
 .add-to-cart-btn:hover {
   background: linear-gradient(135deg, var(--primary-hover), #e67e00);
   transform: translateY(-3px);
@@ -526,7 +525,7 @@ button:hover,
   box-shadow: 0 8px 18px rgba(255, 106, 0, 0.4);
 }
 
-button:active,
+.btn-primary:active,
 .add-to-cart-btn:active {
   transform: scale(0.95);
   /* Tactile squeeze effect */
@@ -1436,7 +1435,7 @@ html.dark .auth-select {
 }
 
 /* ⏳ DISABLED / LOADING STATE FOR ALL BUTTONS */
-button:disabled,
+.btn-primary:disabled,
 .btn-auth:disabled,
 .auth-submit-btn:disabled,
 .nav-btn:disabled,
