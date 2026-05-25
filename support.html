@@ -108,14 +108,47 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Failsafe to prevent any horizontal overflow on mobile */
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    .legal-container, .support-container, .pricing-container, .about-container, .refund-container, .terms-container {
+      width: 100% !important;
+      max-width: 100vw !important;
+      box-sizing: border-box !important;
+      overflow-wrap: break-word !important;
+      word-wrap: break-word !important;
+      word-break: break-word !important;
+    }
+    * {
+      box-sizing: border-box !important;
+    }
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+    }
+    @media (max-width: 768px) {
+      .hero {
+        padding: 20px 15px !important;
+      }
+      .legal-section, .about-section, .support-card, .plan-card {
+        padding: 20px 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  </style>
 </head>
 <body style="margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
 
-  <header style="max-width: 800px; margin: 20px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
-    <h1 style="color: var(--primary); margin: 0; font-size: clamp(22px, 5vw, 28px);">🛍 VyaparSync</h1>
-    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-        <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0;">🌙</button>
-        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
+  <header style="width: 100%; max-width: 900px; margin: 20px auto; padding: 0 5%; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; box-sizing: border-box;">
+    <h1 style="color: var(--primary); margin: 0; font-size: clamp(20px, 6vw, 28px); flex-shrink: 1;">🛍 VyaparSync</h1>
+    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
+        <button onclick="toggleDark()" style="padding: 8px 12px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0; border: none; cursor: pointer;">🌙</button>
+        <a href="index.html" style="text-decoration: none; background: var(--text-main); color: var(--bg-color); padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 13px; white-space: nowrap;">⬅ Back to Store</a>
     </div>
   </header>
 

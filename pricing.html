@@ -20,7 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     .pricing-container { max-width: 960px; margin: 40px auto; padding: 0 20px; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin: 40px 0; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 25px; margin: 40px 0; }
     .plan-card {
       background: var(--card-bg);
       border-radius: var(--border-radius);
@@ -65,11 +65,44 @@
     .beta-banner { background: linear-gradient(135deg, rgba(255,106,0,0.1), rgba(255,193,7,0.1)); border: 1px solid rgba(255,106,0,0.2); border-radius: var(--border-radius); padding: 25px 30px; text-align: center; margin-bottom: 40px; }
     @media (max-width: 768px) { .plan-price { font-size: 36px; } }
   </style>
+
+  <style>
+    /* Failsafe to prevent any horizontal overflow on mobile */
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    .legal-container, .support-container, .pricing-container, .about-container, .refund-container, .terms-container {
+      width: 100% !important;
+      max-width: 100vw !important;
+      box-sizing: border-box !important;
+      overflow-wrap: break-word !important;
+      word-wrap: break-word !important;
+      word-break: break-word !important;
+    }
+    * {
+      box-sizing: border-box !important;
+    }
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+    }
+    @media (max-width: 768px) {
+      .hero {
+        padding: 20px 15px !important;
+      }
+      .legal-section, .about-section, .support-card, .plan-card {
+        padding: 20px 15px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  </style>
 </head>
 <body style="margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh;">
 
-  <header style="max-width: 960px; margin: 20px auto; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; background: transparent; box-shadow: none; position: static;">
-    <h1 style="color: var(--primary); margin: 0; font-size: 24px;">🛍 VyaparSync</h1>
+  <header style="width: 100%; max-width: 900px; margin: 20px auto; padding: 0 5%; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; box-sizing: border-box;">
+    <h1 style="color: var(--primary); margin: 0; font-size: clamp(20px, 6vw, 28px); flex-shrink: 1;">🛍 VyaparSync</h1>
     <div style="display: flex; gap: 12px; align-items: center;">
       <button onclick="toggleDark()" style="width: auto; padding: 8px 15px; background: var(--text-main); color: var(--bg-color); border-radius: 8px; margin: 0; border: none; cursor: pointer;">🌙</button>
       <a href="index.html" style="text-decoration: none; background: var(--primary); color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;">⬅ Back to Store</a>
