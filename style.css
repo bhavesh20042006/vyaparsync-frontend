@@ -840,6 +840,8 @@ html.dark .buy-now-btn:hover {
   
   /* Prevent content hiding behind bottom nav */
   body { padding-bottom: 85px !important; }
+  body:has(footer), body:has(.site-footer) { padding-bottom: 0 !important; }
+  footer, .site-footer { padding-bottom: 85px !important; }
 }
 
 /* 📱 APP-LIKE BOTTOM NAVIGATION */
