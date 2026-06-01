@@ -191,7 +191,13 @@ function loadHome() {
     }
 
     fetch(`${API_URL}/products`)
-        .then(res => res.json())
+        .then(async res => {
+            if (res.status === 502 || res.status === 503) {
+                throw new Error("SERVER_WAKING_UP");
+            }
+            if (!res.ok) throw new Error("Network response was not ok");
+            return res.json();
+        })
         .then(products => {
             currentProducts = products;
             const grid = document.getElementById("products-grid");
@@ -218,13 +224,23 @@ function loadHome() {
             isFetchingHome = false;
             const grid = document.getElementById("products-grid");
             if (grid) {
-                grid.innerHTML = `
-                    <div class="error-state" style="width: 100%;">
-                        <div class="error-state-icon">📡</div>
-                        <h3 class="error-state-title">Could not load products</h3>
-                        <p class="error-state-msg">Check your internet connection and try again.</p>
-                        <button class="error-state-btn" onclick="isFetchingHome=false; loadHome()">🔄 Try Again</button>
-                    </div>`;
+                if (err.message === "SERVER_WAKING_UP") {
+                    grid.innerHTML = `
+                        <div class="error-state" style="width: 100%;">
+                            <div class="error-state-icon">⏳</div>
+                            <h3 class="error-state-title">Server is waking up...</h3>
+                            <p class="error-state-msg">Our backend is starting up. It may take up to 50 seconds. Please wait a moment and try again.</p>
+                            <button class="error-state-btn" onclick="isFetchingHome=false; loadHome()">🔄 Try Again</button>
+                        </div>`;
+                } else {
+                    grid.innerHTML = `
+                        <div class="error-state" style="width: 100%;">
+                            <div class="error-state-icon">📡</div>
+                            <h3 class="error-state-title">Could not load products</h3>
+                            <p class="error-state-msg">Check your internet connection and try again.</p>
+                            <button class="error-state-btn" onclick="isFetchingHome=false; loadHome()">🔄 Try Again</button>
+                        </div>`;
+                }
             }
         });
 }
@@ -238,16 +254,16 @@ function getUserLocation() {
     document.getElementById("userLocationDisplay").innerText = "Locating... 🛰️";
     
     // Silent IP-based location fetch first
-    fetch("http://ip-api.com/json/")
+    fetch("https://ipapi.co/json/")
       .then(res => res.json())
       .then(data => {
-          if(data.status === "success") {
-              localStorage.setItem("userLat", data.lat);
-              localStorage.setItem("userLng", data.lon);
+          if(data.latitude && data.longitude) {
+              localStorage.setItem("userLat", data.latitude);
+              localStorage.setItem("userLng", data.longitude);
               const disp = document.getElementById("userLocationDisplay");
-              if (disp) disp.innerText = `${data.city} (IP) 🟢`;
+              if (disp) disp.innerText = `${data.city} (IP) 📍`;
               showToast(`Location detected: ${data.city}`, "success");
-              fetchNearbyMarkets(data.lat, data.lon);
+              fetchNearbyMarkets(data.latitude, data.longitude);
           } else {
               fallbackToGPS();
           }
@@ -299,21 +315,39 @@ function fallbackToGPS() {
 function fetchNearbyMarkets(lat, lng) {
     // Fetch markets within 50km (50000 meters)
     fetch(`${API_URL}/products/markets/nearby?lat=${lat}&lng=${lng}&radius=50000`)
-        .then(res => res.json())
+        .then(async res => {
+            if (res.status === 502 || res.status === 503) {
+                throw new Error("SERVER_WAKING_UP");
+            }
+            if (!res.ok) throw new Error("Network response was not ok");
+            return res.json();
+        })
         .then(markets => {
             renderMarketGrid(markets, true);
         })
         .catch(err => {
             console.error("Fetch markets error:", err);
             const grid = document.getElementById("markets-grid");
-            if (grid) grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">Could not load markets. Please check your connection.</p>`;
+            if (grid) {
+                if (err.message === "SERVER_WAKING_UP") {
+                    grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">Server is waking up... Please wait a moment and refresh.</p>`;
+                } else {
+                    grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">Could not load markets. Please check your connection.</p>`;
+                }
+            }
         });
 }
 
 function fetchAllMarkets() {
     // Old fallback route just grabs string names
     fetch(`${API_URL}/products/markets`)
-        .then(res => res.json())
+        .then(async res => {
+            if (res.status === 502 || res.status === 503) {
+                throw new Error("SERVER_WAKING_UP");
+            }
+            if (!res.ok) throw new Error("Network response was not ok");
+            return res.json();
+        })
         .then(markets => {
             // Convert simple strings to object format so the renderer works for both
             const formatted = markets.map(m => typeof m === 'string' ? { name: m } : m);
@@ -322,7 +356,13 @@ function fetchAllMarkets() {
         .catch(err => {
             console.error("Fetch markets error:", err);
             const grid = document.getElementById("markets-grid");
-            if (grid) grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">Could not load markets. Please check your connection.</p>`;
+            if (grid) {
+                if (err.message === "SERVER_WAKING_UP") {
+                    grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">Server is waking up... Please wait a moment and refresh.</p>`;
+                } else {
+                    grid.innerHTML = `<p style="padding: 20px; color: var(--text-muted);">Could not load markets. Please check your connection.</p>`;
+                }
+            }
         });
 }
 
